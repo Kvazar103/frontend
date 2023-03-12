@@ -11,20 +11,31 @@ import Recommended_offers from "./components/Recommended_offers/Recommended_offe
 import AddUser from "./components/AddUser/AddUser";
 import Background from "./components/Background/Background";
 import Login from "./components/Login/Login";
+import Profile from "./components/Profile/Profile";
+import AddObject from "./components/AddObject/AddObject";
+import RealtyObject from "./components/RealtyObject/RealtyObject";
+import RealtyObjectsSlider from "./components/RealtySlider/RealtyObjectsSlider";
+
 
 
 function App() {
   return (
     <div className="App">
         <Header/>
-        {/*<img src={lviv_sunrises_and_sunsets} alt={"lviv_background"} className={css.lviv_sunrises_and_sunsets}/>*/}
         <Routes>
             <Route exact path="/" element={<Background />} />
-
             <Route exact path="/register" element={<AddUser />} />
             <Route exact path="/login" element={<Login/>}/>
+            <Route exact path="/profile" element={<Profile/>}/>
+            <Route exact path="/:id/addObject" element={<AddObject/>}/>
+            {/*<Route exact path="/object/:id" element={<RealtyObject/>}/>*/}
+            <Route exact path="/" element={<RealtyObjectsSlider />} />
         </Routes>
-<Footer/>
+
+
+        <br/><br/> <br/>
+   <Footer/>
+
     </div>
   );
 }

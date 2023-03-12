@@ -5,7 +5,7 @@ import Navbar from 'react-bootstrap/Navbar';
  function Footer(){
     return(
 
-        <Navbar  expand="lg" variant="dark" bg="dark">
+        <Navbar  expand="lg" variant="dark" bg="dark" fixed="bottom">
             <Container>
                 <Navbar.Brand className={css.FooterStyle} href="#">Львів 2023</Navbar.Brand>
             </Container>
