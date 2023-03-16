@@ -13,7 +13,7 @@ const register=(name,surname,email,login,password,phone_number)=>{
         phone_number
     })
 }
-const saveObject = (address,distinct,rooms,square,real_estate,sum,currency,type_of_order_of_real_estate) => {
+const saveObject = (address,distinct,rooms,square,real_estate,sum,currency,type_of_order_of_real_estate,images) => {
     const customer=JSON.parse(localStorage.getItem("customer"));
   return axios.post(API_URL+customer.id+"/addObject",{
       address,
@@ -23,7 +23,8 @@ const saveObject = (address,distinct,rooms,square,real_estate,sum,currency,type_
       real_estate,
       sum,
       currency,
-      type_of_order_of_real_estate
+      type_of_order_of_real_estate,
+      images
   })
 }
 
