@@ -59,7 +59,7 @@ export default function AddObject(){
     const [selectedImages, setSelectedImages] = useState([]);
 
     const onSelectFile = (event) => {
-        setObject({...object,[event.target.name]:event.target.files})
+        setObject({...object,[event.target.name]:event.target.file})
         // const selectedFiles = event.target.files;
         // const selectedFilesArray = Array.from(selectedFiles);
         //
@@ -154,7 +154,7 @@ export default function AddObject(){
                                 <input
                                     type="file"
                                     name="images"
-                                    onChange={onInputChange}
+                                    onChange={onSelectFile}
                                     value={object.images}
                                     multiple
                                     accept="image/png , image/jpeg, image/webp"
