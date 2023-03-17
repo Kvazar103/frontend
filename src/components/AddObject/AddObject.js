@@ -19,9 +19,10 @@ export default function AddObject(){
             sum:"",
             currency:"",
             type_of_order_of_real_estate:""
-        },
-        images:""
+        }
+        // images:null
     })
+    const [images,setImages]=useState('');
 
 
 
@@ -59,7 +60,8 @@ export default function AddObject(){
     const [selectedImages, setSelectedImages] = useState([]);
 
     const onSelectFile = (event) => {
-        setObject({...object,[event.target.name]:event.target.files})
+        // setObject({...object,[event.target.name]:event.target.files})
+        setImages(event.target.file);
         // const selectedFiles = event.target.files;
         // const selectedFilesArray = Array.from(selectedFiles);
         //
@@ -154,8 +156,8 @@ export default function AddObject(){
                                 <input
                                     type="file"
                                     name="images"
-                                    onChange={onInputChange}
-                                    value={object.images}
+                                    onChange={onSelectFile}
+                                    value={images}
                                     multiple
                                     accept="image/png , image/jpeg, image/webp"
                                 />
