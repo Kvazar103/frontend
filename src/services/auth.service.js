@@ -27,6 +27,14 @@ const saveObject = (address,distinct,rooms,square,real_estate,sum,currency,type_
   })
 }
 
+const saveObjectV2 = (object,img) => {
+    const customer=JSON.parse(localStorage.getItem("customer"));
+    return axios.post(API_URL+customer.id+"/addObject",{
+        object,
+        img
+    })
+}
+
 const login=(login,password)=>{
     return axios.post(API_URL+"login",{
         login,
@@ -55,6 +63,7 @@ const AuthService={
     login,
     logout,
     getCurrentUser,
-    saveObject
+    saveObject,
+    saveObjectV2
 }
 export default AuthService;

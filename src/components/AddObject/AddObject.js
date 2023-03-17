@@ -20,16 +20,17 @@ export default function AddObject(){
             currency:"",
             type_of_order_of_real_estate:""
         }
-        // images:null
     })
-    const [images,setImages]=useState('');
+    const [images,setImages]=useState("");
+
 
 
 
     const handleSave =async (e) => {
         e.preventDefault();
         const customer=JSON.parse(localStorage.getItem("customer"));
-        await axios.post(`http://localhost:8080/${customer.id}/addObject`,object)
+        // await axios.post(`http://localhost:8080/${customer.id}/addObject`,object,images)
+        await AuthService.saveObjectV2(object, images)
         const c= await axios.get(`http://localhost:8080/customer/${customer.id}`);
         localStorage.setItem('customer', JSON.stringify(c.data));
         navigate("/object/:id")
@@ -61,7 +62,7 @@ export default function AddObject(){
 
     const onSelectFile = (event) => {
         // setObject({...object,[event.target.name]:event.target.files})
-        setImages(event.target.file);
+        setImages(event.target.value);
         // const selectedFiles = event.target.files;
         // const selectedFilesArray = Array.from(selectedFiles);
         //
@@ -156,7 +157,7 @@ export default function AddObject(){
                                 <input
                                     type="file"
                                     name="images"
-                                    onChange={onSelectFile}
+                                    onChange={(e)=>onSelectFile(e)}
                                     value={images}
                                     multiple
                                     accept="image/png , image/jpeg, image/webp"
@@ -166,27 +167,27 @@ export default function AddObject(){
 
 
 
-                            {selectedImages.length>10?(          <p className="error">
-                                You can't upload more than 10 images! <br />
-                                <span>
-              please delete <b> {selectedImages.length - 10} </b> of them{" "}
-            </span>
-                            </p>):<div></div>}
+            {/*                {selectedImages.length>10?(          <p className="error">*/}
+            {/*                    You can't upload more than 10 images! <br />*/}
+            {/*                    <span>*/}
+            {/*  please delete <b> {selectedImages.length - 10} </b> of them{" "}*/}
+            {/*</span>*/}
+            {/*                </p>):<div></div>}*/}
 
-                            <div className="images">
-                                {selectedImages &&
-                                    selectedImages.map((image, index) => {
-                                        return (
-                                            <div key={image} className="image">
-                                                <img src={image} height="200" alt="upload" />
-                                                <button onClick={() => deleteHandler(image)}>
-                                                    delete image
-                                                </button>
-                                                <p>{index + 1}</p>
-                                            </div>
-                                        );
-                                    })}
-                            </div>
+            {/*                <div className="images">*/}
+            {/*                    {selectedImages &&*/}
+            {/*                        selectedImages.map((image, index) => {*/}
+            {/*                            return (*/}
+            {/*                                <div key={image} className="image">*/}
+            {/*                                    <img src={image} height="200" alt="upload" />*/}
+            {/*                                    <button onClick={() => deleteHandler(image)}>*/}
+            {/*                                        delete image*/}
+            {/*                                    </button>*/}
+            {/*                                    <p>{index + 1}</p>*/}
+            {/*                                </div>*/}
+            {/*                            );*/}
+            {/*                        })}*/}
+            {/*                </div>*/}
                         </section>
 
 
