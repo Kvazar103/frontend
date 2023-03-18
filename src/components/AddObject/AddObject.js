@@ -5,6 +5,7 @@ import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import AuthService from "../../services/auth.service";
 
+
 export default function AddObject(){
 
     let navigate = useNavigate();
@@ -21,16 +22,22 @@ export default function AddObject(){
             type_of_order_of_real_estate:""
         }
     })
-    const [images,setImages]=useState("");
+    const [images,setImages]=useState('');
 
 
 
 
     const handleSave =async (e) => {
         e.preventDefault();
+
         const customer=JSON.parse(localStorage.getItem("customer"));
-        // await axios.post(`http://localhost:8080/${customer.id}/addObject`,object,images)
-        await AuthService.saveObjectV2(object, images)
+        const formData = new FormData();
+        formData.append("images", images[0]);
+        console.log(images[0])
+        console.log(object)
+        formData.append("body",JSON.stringify(object));
+        await axios.post(`http://localhost:8080/${customer.id}/addObject`,formData)
+        // await AuthService.saveObjectV2(object, formData)
         const c= await axios.get(`http://localhost:8080/customer/${customer.id}`);
         localStorage.setItem('customer', JSON.stringify(c.data));
         navigate("/object/:id")
@@ -60,22 +67,10 @@ export default function AddObject(){
     }
     const [selectedImages, setSelectedImages] = useState([]);
 
-    const onSelectFile = (event) => {
-        // setObject({...object,[event.target.name]:event.target.files})
-        setImages(event.target.value);
-        // const selectedFiles = event.target.files;
-        // const selectedFilesArray = Array.from(selectedFiles);
-        //
-        // const imagesArray = selectedFilesArray.map((file) => {
-        //     return URL.createObjectURL(file);
-        //
-        // });
-        //
-        // setSelectedImages((previousImages) => previousImages.concat(imagesArray));
-        //
-        // // FOR BUG IN CHROME
-        // event.target.value = "";
-    };
+    const onFileChangeHandler=(e)=>{
+        setImages(e.target.files);
+
+    }
 
     function deleteHandler(image) {
         setSelectedImages(selectedImages.filter((e) => e !== image));
@@ -156,11 +151,11 @@ export default function AddObject(){
                                 <span>up to 10 images</span>
                                 <input
                                     type="file"
-                                    name="images"
-                                    onChange={(e)=>onSelectFile(e)}
-                                    value={images}
+                                    // name="images"
+                                    onChange={onFileChangeHandler}
+                                    // value={images}
                                     multiple
-                                    accept="image/png , image/jpeg, image/webp"
+                                    // accept="image/png , image/jpeg, image/webp"
                                 />
                             </label>
                             <br />
