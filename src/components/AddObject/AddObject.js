@@ -32,10 +32,11 @@ export default function AddObject(){
 
         const customer=JSON.parse(localStorage.getItem("customer"));
         const formData = new FormData();
+        formData.append("body",JSON.stringify(object))
         formData.append("images", images[0]);
         console.log(images[0])
         console.log(object)
-        formData.append("body",JSON.stringify(object));
+        // formData.append("body",JSON.stringify(object));
         await axios.post(`http://localhost:8080/${customer.id}/addObject`,formData)
         // await AuthService.saveObjectV2(object, formData)
         const c= await axios.get(`http://localhost:8080/customer/${customer.id}`);
