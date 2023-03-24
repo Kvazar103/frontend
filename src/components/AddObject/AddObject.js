@@ -23,6 +23,7 @@ export default function AddObject(){
         }
     })
     const [images,setImages]=useState('');
+    const [selectedImages, setSelectedImages] = useState([]);
 
 
 
@@ -33,7 +34,11 @@ export default function AddObject(){
         const customer=JSON.parse(localStorage.getItem("customer"));
         const formData = new FormData();
         formData.append("body",JSON.stringify(object))
-        formData.append("images", images[0]);
+        for (let i = 0; i < images.length; i++) {
+
+            formData.append(`images`, images[i])
+        }
+        // formData.append("images", images[0]);
         console.log(images[0])
         console.log(object)
         // formData.append("body",JSON.stringify(object));
@@ -66,18 +71,27 @@ export default function AddObject(){
                 type_of_order_of_real_estate: e.target.value
             }})
     }
-    const [selectedImages, setSelectedImages] = useState([]);
 
     const onFileChangeHandler=(e)=>{
+
+
         setImages(e.target.files);
 
-    }
 
-    function deleteHandler(image) {
-        setSelectedImages(selectedImages.filter((e) => e !== image));
-        URL.revokeObjectURL(image);
-    }
+        const selectedFiles = e.target.files;
 
+        const selectedFilesArray = Array.from(selectedFiles);
+
+        const imagesArray = selectedFilesArray.map((file) => {
+            return URL.createObjectURL(file);
+        });
+
+        setSelectedImages((previousImages) => previousImages.concat(imagesArray));
+
+        // FOR BUG IN CHROME
+        // event.target.value = "";
+
+    }
 
     return(<div className="container">
             <br/><br/><br/><br/>
@@ -152,38 +166,38 @@ export default function AddObject(){
                                 <span>up to 10 images</span>
                                 <input
                                     type="file"
-                                    // name="images"
+                                    name="images"
                                     onChange={onFileChangeHandler}
                                     // value={images}
                                     multiple
-                                    // accept="image/png , image/jpeg, image/webp"
+                                    accept="image/png , image/jpeg, image/webp"
                                 />
                             </label>
                             <br />
 
 
 
-            {/*                {selectedImages.length>10?(          <p className="error">*/}
-            {/*                    You can't upload more than 10 images! <br />*/}
-            {/*                    <span>*/}
-            {/*  please delete <b> {selectedImages.length - 10} </b> of them{" "}*/}
-            {/*</span>*/}
-            {/*                </p>):<div></div>}*/}
+                            {selectedImages.length>10?(          <p className="error">
+                                You can't upload more than 10 images! <br />
+                                <span>
+              please delete <b> {selectedImages.length - 10} </b> of them{" "}
+            </span>
+                            </p>):<div></div>}
 
-            {/*                <div className="images">*/}
-            {/*                    {selectedImages &&*/}
-            {/*                        selectedImages.map((image, index) => {*/}
-            {/*                            return (*/}
-            {/*                                <div key={image} className="image">*/}
-            {/*                                    <img src={image} height="200" alt="upload" />*/}
-            {/*                                    <button onClick={() => deleteHandler(image)}>*/}
-            {/*                                        delete image*/}
-            {/*                                    </button>*/}
-            {/*                                    <p>{index + 1}</p>*/}
-            {/*                                </div>*/}
-            {/*                            );*/}
-            {/*                        })}*/}
-            {/*                </div>*/}
+                            {/*<div className="images">*/}
+                            {/*    {selectedImages &&*/}
+                            {/*        selectedImages.map((image, index) => {*/}
+                            {/*            return (*/}
+                            {/*                <div key={image} className="image">*/}
+                            {/*                    <img src={image} height="200" alt="upload" />*/}
+                            {/*                    <button onClick={() => deleteHandler(image)}>*/}
+                            {/*                        delete image*/}
+                            {/*                    </button>*/}
+                            {/*                    <p>{index + 1}</p>*/}
+                            {/*                </div>*/}
+                            {/*            );*/}
+                            {/*        })}*/}
+                            {/*</div>*/}
                         </section>
 
 

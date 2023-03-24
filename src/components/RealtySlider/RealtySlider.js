@@ -1,16 +1,53 @@
-import {Component, useState} from "react";
+import {Component, useEffect, useState} from "react";
 import Slider from "react-slick";
 
 import css from "./slider.module.css";
+import axios from "axios";
+import {forEach} from "react-bootstrap/ElementChildren";
+import {useNavigate} from "react-router-dom";
 
 
 export default function RealtySlider(props){
 
     let {item}=props;
+    let images = item.images;
+    let [nameSurname,setNameSurname]=useState('');
+    let [user,setUser]=useState({});
+    let navigate=useNavigate();
 
-    console.log(item)
+    useEffect(()=>{
+        let allCustomers=axios.get("http://localhost:8080/getAllCustomers")
+        allCustomers.then(value => {
+            let customers=value.data;
+            for(let customer of customers){
+                let realtyObjectList=customer.my_realty_objectList;
+                if(realtyObjectList!=null){
+                    for (let realty of realtyObjectList){
+                        // console.log(realty)
+                        if(realty.id===item.id){
+                            console.log(realty)
+                            setNameSurname(customer.name+customer.surname)
+                            setUser(customer)
+                        }
+                    }
+                }
+            }
+        })
+    },[item.id])
 
-        return (<div className={css.card} >
+    console.log(nameSurname.toString())
+
+    const handleClick = (e) => {
+        e.preventDefault();
+        navigate("/object/"+item.id)
+        window.location.reload()
+    }
+    let x=`http://localhost:8080/images/${nameSurname}/${images[0]}`;
+    console.log(x)
+
+
+        return (<div className={css.card} onClick={handleClick}>
+                <img src={x} height="175px" width="398px"/>
                         <b class="size18">{item.price?item.price.sum:"0"} {item.price?item.price.currency:"0"}</b>
                         <h3>{item.address} </h3>
                         <p>{item.distinct}</p>

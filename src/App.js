@@ -28,7 +28,7 @@ function App() {
             <Route exact path="/login" element={<Login/>}/>
             <Route exact path="/profile" element={<Profile/>}/>
             <Route exact path="/:id/addObject" element={<AddObject/>}/>
-            {/*<Route exact path="/object/:id" element={<RealtyObject/>}/>*/}
+            <Route exact path="/object/:id" element={<RealtyObject/>}/>
             <Route exact path="/" element={<RealtyObjectsSlider />} />
         </Routes>
 

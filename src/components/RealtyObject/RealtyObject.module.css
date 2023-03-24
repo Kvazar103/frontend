@@ -1,0 +1,21 @@
+.carousel{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50%;
+    width: 50%;
+    /*max-width: 1080px;*/
+    margin-left: 130px;
+    margin-top: 10px;
+    padding: 100px;
+}
+.carousel-container {
+    max-width: 850px;
+    height: 100px;
+}
+.img{
+    max-width: 1000px;
+    max-height: 600px;
+    /*min-width: 500px;*/
+    /*min-height: 100px;*/
+}
