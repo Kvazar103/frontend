@@ -1,21 +1,86 @@
 .carousel{
     display: flex;
-    justify-content: center;
-    align-items: center;
+
+    /*justify-content: center;*/
+    /*align-items: center;*/
     height: 50%;
     width: 50%;
     /*max-width: 1080px;*/
     margin-left: 130px;
     margin-top: 10px;
     padding: 100px;
+
 }
-.carousel-container {
-    max-width: 850px;
+.carousel_container {
+    width: 850px;
     height: 100px;
+    /*max-width: 1000px;*/
+    /*max-height: 600px;*/
+    margin-bottom: 600px;
+    margin-left: 90px;
 }
+.carousel_and_form{
+    display: flex;
+}
+
+
 .img{
     max-width: 1000px;
-    max-height: 600px;
+    max-height: 500px;
     /*min-width: 500px;*/
     /*min-height: 100px;*/
+
+}
+
+.form{
+    border:0.1px solid darkgray;
+    border-radius: 25px;
+    width: 330px;
+    height: 500px;
+    margin-top: 73px;
+    margin-left: 20px;
+    padding:0px 15px 15px 15px;
+
+}
+.form_image{
+    display: flex;
+}
+.image_in_form{
+    /*display: block;*/
+    width: 177px;
+    height: 83px;
+    /*flex-direction: column;*/
+  justify-content: flex-start;
+}
+.address_and_sum{
+    display: flex;
+    justify-content: space-between;
+    width: 850px;
+    margin-left: 90px;
+}
+.for_gray{
+    color: darkgray;
+    display: flex;
+}
+
+.for_li{
+    /*width: 150px;*/
+    min-width: 150px;
+    padding-top: 12px;
+    /*margin-right: 10px;*/
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+.for_ul {
+    margin-left: 90px;
+
+}
+.for_two_ul{
+    display: flex;
+    justify-content: space-between;
+    width: 850px;
+}
+.for_h4_ul{
+    display: flex;
+    margin-left: 90px;
 }

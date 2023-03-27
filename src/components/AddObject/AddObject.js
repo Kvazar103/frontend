@@ -11,8 +11,9 @@ export default function AddObject(){
     let navigate = useNavigate();
 
     const [object,setObject]=useState({
+        district:"",
         address:"",
-        distinct:"",
+        apt_suite_building:"",
         rooms:"",
         square:"",
         real_estate:"",
@@ -98,14 +99,34 @@ export default function AddObject(){
             <div className="row">
                 <div className="col-md-6 offset-md-3 border rounded p-4 mt-2 shadow">
                     <form className="row g-3" onSubmit={(e)=>handleSave(e)}>
+                        <div className="col-md-4">
+                            <label htmlFor="inputZip" className="form-label">City</label>
+                            <select id="inputState2" name="city"  className={css.d} >
+                                <option defaultValue={"Lviv"}>Lviv</option>
+
+                            </select>
+                        </div>
+                        <div className="col-md-4">
+                            <label htmlFor="inputZip" className="form-label">District</label>
+                            <select id="inputState2" name="district" value={object.district} onChange={(e) => onInputChange(e)} className={css.d} >
+                                <option defaultValue={""}>Choose District</option>
+                                <option value="Galickiy">Galickiy</option>
+                                <option value="Zaliznichniy">Zaliznichniy</option>
+                                <option value="Lichakivskiy">Lichakivskiy</option>
+                                <option value="Sikhivskiy">Sikhivskiy</option>
+                                <option value="Frankivskiy">Frankivskiy</option>
+                                <option value="Shevchenkivskiy">Shevchenkivskiy</option>
+                            </select>
+                        </div>
+
                         <div className="col-12">
-                            <label htmlFor="inputAddress" className="form-label">Address</label>
+                            <label htmlFor="inputAddress" className="form-label">Street Address</label>
                             <input type="text" className="form-control" name="address" value={object.address} onChange={(e) => onInputChange(e)} id="inputAddress" placeholder="1234 Main St"/>
                         </div>
                         <div className="col-12">
-                            <label htmlFor="inputAddress2" className="form-label">Distinct</label>
-                            <input type="text" className="form-control" name="distinct" value={object.distinct} onChange={(e) => onInputChange(e)} id="inputAddress2"
-                                   placeholder="Apartment, studio, or floor"/>
+                            <label htmlFor="inputAddress2" className="form-label">Apt,suite or building</label>
+                            <input type="text" className="form-control" name="apt_suite_building" value={object.apt_suite_building} onChange={(e) => onInputChange(e)} id="inputAddress2"
+                                   placeholder="Apt,suite or building"/>
                         </div>
                         <div className="col-md-4">
                             <label htmlFor="inputEmail4" className="form-label">Rooms</label>
@@ -119,7 +140,6 @@ export default function AddObject(){
                             <label htmlFor="inputZip" className="form-label">Real estate</label>
                             <select id="inputState2" name="real_estate" value={object.real_estate} onChange={(e) => onInputChange(e)} className={css.d} >
                                 <option defaultValue={""}>Choose...</option>
-                                <option>...</option>
                                 <option value="Apartment">Apartment</option>
                                 <option value="House">House</option>
                                 <option value="Garage">Garage</option>
@@ -137,7 +157,6 @@ export default function AddObject(){
                             <label htmlFor="inputZip" className="form-label">Currency</label>
                             <select id="inputState2" name="currency" value={object.price.currency} onChange={(e) => onCurrencyChange(e)} className={css.c} >
                                 <option defaultValue={""}>Choose...</option>
-                                <option>...</option>
                                 <option value="EUR">EUR</option>
                                 <option value="USD">USD</option>
                                 <option value="UAH">UAH</option>
@@ -147,7 +166,6 @@ export default function AddObject(){
                             <label htmlFor="inputState" className="form-label">Type of real estate</label>
                             <select id="inputState" className={css.b} name="type_of_real_estate" value={object.price.type_of_order_of_real_estate} onChange={(e) => onTypeOfRealEstateChange(e)}>
                                 <option defaultValue={""}>Choose...</option>
-                                <option>...</option>
                                 <option value="Sell">Sell</option>
                                 <option value="Rent_for_a_month">Rent for a month</option>
                                 <option value="Rent_per_day">Rent per day</option>

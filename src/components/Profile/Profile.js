@@ -1,17 +1,22 @@
 import AuthService from "../../services/auth.service";
 import { MDBCol, MDBContainer, MDBRow, MDBCard, MDBCardText, MDBCardBody, MDBCardImage, MDBBtn, MDBTypography } from 'mdb-react-ui-kit';
+import {useEffect, useState} from "react";
 
 function Profile (){
 
    const customer=AuthService.getCurrentUser();
 
-   // return(<div className="container">
-   //     <br/><br/><br/><h1>Your profile</h1><br/>
-   //     <h3>Name:{customer.name}</h3>
-   //     <h3>Surname:{customer.surname}</h3>
-   //
-   //
-   // </div>)
+   const [img,setImg]=useState('http://localhost:8080/images/profile/profile_picture.jpg');
+
+    useEffect(()=>{
+        let customer_img=`http://localhost:8080/images/${customer.name}${customer.surname}_avatar/${customer.avatar}`;
+
+        if(customer.avatar!=null){
+            setImg(customer_img)
+        }
+    },[customer.avatar, customer.name, customer.surname])
+
+
     return (
         <div className="gradient-custom-2" style={{ backgroundColor: '#9de2ff' }}>
             <MDBContainer className="py-5 h-100">
@@ -20,7 +25,7 @@ function Profile (){
                         <MDBCard>
                             <div className="rounded-top text-white d-flex flex-row" style={{ backgroundColor: '#000', height: '200px' }}>
                                 <div className="ms-4 mt-5 d-flex flex-column" style={{ width: '150px' }}>
-                                    <MDBCardImage src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-profiles/avatar-1.webp"
+                                    <MDBCardImage src={img}
                                                   alt="Generic placeholder image" className="mt-4 mb-2 img-thumbnail" fluid style={{ width: '150px', zIndex: '1' }} />
                                     <MDBBtn outline color="dark" style={{height: '36px', overflow: 'visible'}}>
                                         Edit profile

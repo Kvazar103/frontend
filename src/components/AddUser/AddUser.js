@@ -2,6 +2,7 @@ import {Link, useNavigate} from "react-router-dom";
 import {useState} from "react";
 import axios from "axios";
 import css from "../../images/lviv_city/lviv_sunrises_and_sunsets.module.css";
+import AuthService from "../../services/auth.service";
 
 
 export default function AddUser(){
@@ -15,17 +16,31 @@ export default function AddUser(){
         password:"",
         phone_number:"",
     });
+    const [avatar,setAvatar]=useState('');
 
     const { name, surname, email,login,password,phone_number } = user;
 
     const onInputChange = (e) => {
         setUser({ ...user, [e.target.name]: e.target.value });
     };
+    const onFileChange = (e) => {
+      setAvatar(e.target.files)
+    }
 
     const onSubmit = async (e) => {
         e.preventDefault();
-        await axios.post("http://localhost:8080/save", user);
-        navigate("/");
+
+        const formData=new FormData();
+        formData.append("customer",JSON.stringify(user))
+        formData.append("avatar",avatar[0])
+        console.log(user)
+        console.log(avatar)
+        await axios.post("http://localhost:8080/save",formData);
+        // navigate("/");
+        AuthService.login(user.login,user.password).then(()=>{
+            navigate("/");
+            window.location.reload();
+        })
     };
 
 
@@ -114,6 +129,16 @@ export default function AddUser(){
                                 value={phone_number}
                                 onChange={(e) => onInputChange(e)}
                             />
+                        </div>
+                        <div className="mb-3">
+                            <label htmlFor="Choose your avatar" className="form-label">
+                                Choose your avatar
+                            </label><br/>
+                            <input type={"file"}
+                                   className="form-control"
+                                   name="avatar"
+                                   accept="image/png, image/jpeg"
+                                   onChange={onFileChange}/>
                         </div>
                         <button type="submit" className="btn btn-outline-primary">
                             Submit
