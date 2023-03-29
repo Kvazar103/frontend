@@ -4,6 +4,7 @@ import {useState} from "react";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import AuthService from "../../services/auth.service";
+import realtyObject from "../RealtyObject/RealtyObject";
 
 
 export default function AddObject(){
@@ -16,6 +17,8 @@ export default function AddObject(){
         apt_suite_building:"",
         rooms:"",
         square:"",
+        details:"",
+        // detailsTWO:"",
         real_estate:"",
         price:{
             sum:"",
@@ -27,8 +30,6 @@ export default function AddObject(){
     const [selectedImages, setSelectedImages] = useState([]);
 
 
-
-
     const handleSave =async (e) => {
         e.preventDefault();
 
@@ -36,7 +37,6 @@ export default function AddObject(){
         const formData = new FormData();
         formData.append("body",JSON.stringify(object))
         for (let i = 0; i < images.length; i++) {
-
             formData.append(`images`, images[i])
         }
         // formData.append("images", images[0]);
@@ -46,8 +46,16 @@ export default function AddObject(){
         await axios.post(`http://localhost:8080/${customer.id}/addObject`,formData)
         // await AuthService.saveObjectV2(object, formData)
         const c= await axios.get(`http://localhost:8080/customer/${customer.id}`);
+
         localStorage.setItem('customer', JSON.stringify(c.data));
-        navigate("/object/:id")
+        console.log(c.data.my_realty_objectList)
+        // setRealtyList(c.data.my_realty_objectList)
+        let realtyList=c.data.my_realty_objectList;
+        console.log(realtyList)
+        let lastElement=realtyList.slice(-1)
+        console.log(lastElement[0].id)
+
+        navigate(`/object/${lastElement[0].id}`)
         window.location.reload()
     }
 
@@ -171,12 +179,6 @@ export default function AddObject(){
                                 <option value="Rent_per_day">Rent per day</option>
                             </select>
                         </div>
-                        {/*<div>*/}
-                        {/*    <div>*/}
-                        {/*        add photos*/}
-                        {/*    </div>*/}
-                        {/*    <input type="file"/>*/}
-                        {/*</div>*/}
                         <section>
                             <label>
                                 + Add Images
@@ -193,8 +195,6 @@ export default function AddObject(){
                             </label>
                             <br />
 
-
-
                             {selectedImages.length>10?(          <p className="error">
                                 You can't upload more than 10 images! <br />
                                 <span>
@@ -202,23 +202,12 @@ export default function AddObject(){
             </span>
                             </p>):<div></div>}
 
-                            {/*<div className="images">*/}
-                            {/*    {selectedImages &&*/}
-                            {/*        selectedImages.map((image, index) => {*/}
-                            {/*            return (*/}
-                            {/*                <div key={image} className="image">*/}
-                            {/*                    <img src={image} height="200" alt="upload" />*/}
-                            {/*                    <button onClick={() => deleteHandler(image)}>*/}
-                            {/*                        delete image*/}
-                            {/*                    </button>*/}
-                            {/*                    <p>{index + 1}</p>*/}
-                            {/*                </div>*/}
-                            {/*            );*/}
-                            {/*        })}*/}
-                            {/*</div>*/}
                         </section>
-
-
+                        <div className="col-12">
+                            <label htmlFor="inputDetails" className="form-label">Details</label>
+                            <textarea style={{width:500,height:200,whiteSpace:"pre-line"}} name="details" onChange={onInputChange} rows="5" cols="30" placeholder="write something about your object">
+                            </textarea>
+                        </div>
 
                         {selectedImages.length>10?(<div className="col-12">   <br/>
                             <button type="submit" disabled className="btn btn-primary">Add new object</button>
@@ -226,7 +215,9 @@ export default function AddObject(){
                             <button type="submit" className="btn btn-primary">Add new object</button>
                         </div>)}
                     </form>
-                </div></div></div>
+                </div>
+            </div>
+    </div>
 
     )
 }

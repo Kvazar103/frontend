@@ -22,6 +22,8 @@ function RealtyObject(){
     const [monthOrDay,setMonthOrDay]=useState('');
     const [currencySign,setCurrencySign]=useState('');
     const [rooms,setRooms]=useState('');
+    const [realtyDetails,setRealtyDetails]=useState('');
+
 
     let url=window.location.toString()  //присвоюємо стрінгову урлу даної сторінки
     console.log(url.substring(29));
@@ -38,8 +40,10 @@ function RealtyObject(){
 
     useEffect(()=>{
         setMessageInTextAre(`I'm interested in: ${realtyObject.real_estate} that located at the address: ${realtyObject.address},${realtyObject.apt_suite_building}.Please contact me as soon as possible.`)
+        setRealtyDetails(`${realtyObject.details}`)
 
-    },[realtyObject.address, realtyObject.apt_suite_building, realtyObject.real_estate])
+
+    },[realtyObject.address, realtyObject.apt_suite_building, realtyObject.dateOfCreation, realtyObject.details, realtyObject.real_estate])
     useEffect(()=>{
         if(realtyObject.price != null && realtyObject.price.currency === "USD"){
             setCurrencySign("$")
@@ -154,6 +158,7 @@ function RealtyObject(){
         return(thumbList)
     }
 
+
     return(
         <div>
         <div className={css.carousel_and_form}>
@@ -195,7 +200,9 @@ function RealtyObject(){
                 </Button><br/><br/>
                 <Form.Group className={css.form_image}>
                     <div>
+                        <a href={`/${userObject.id}/profile`}>
                     <img src={img} width="80px" height="80px"/>
+                        </a>
                     </div>
                     <div className={css.image_in_form}>
                         <div>{userObject.name} {userObject.surname}</div>
@@ -232,11 +239,19 @@ function RealtyObject(){
                 </ul>
                     <ul className={css.for_ul}>
                         <li className={css.for_li}>ID:{realtyObject.id}</li>
-                        <li className={css.for_li}>Real estate:{realtyObject.real_estate}</li>
-                        <li className={css.for_li}>Last updated:</li>
+                        <li className={css.for_li}>Real&nbsp;estate:{realtyObject.real_estate}</li>
+                        <li className={css.for_li}>Last&nbsp;updated:</li>
+                        {/*<li className={css.for_li}>Days&nbsp;published:</li>*/}
 
                     </ul>
+
                 </div>
+            </div>
+            <div className={css.for_details}>
+               {/*<h3 className={css.for_details_h3}>details</h3>*/}
+                 <p className={css.p_wrap}>
+                     {realtyDetails}
+                 </p>
             </div>
         </div>)
 

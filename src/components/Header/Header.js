@@ -17,14 +17,17 @@ function Header() {
     const [showForDaily, setShowForDaily] = useState(false);
 
     const [currentUser,setCurrentUser]=useState(undefined);
+    const [url,setUrl]=useState("")
 
     let navigate = useNavigate();
+
 
     useEffect(()=>{
         const customer=AuthService.getCurrentUser();
 
         if(customer){
             setCurrentUser(customer)
+            setUrl(`/${customer.id}/profile`)
             console.log(customer)
         }
         // EventBus.on("logout", () => {
@@ -114,7 +117,7 @@ function Header() {
 
                         {currentUser&&(<Navbar.Collapse className="justify-content-end">
                             <Navbar.Text>
-                                &nbsp;&nbsp;Signed in as: <a href="/profile">{currentUser.name}</a>
+                                &nbsp;&nbsp;Signed in as: <a href={url}>{currentUser.name}</a>
                             </Navbar.Text>
                         </Navbar.Collapse>)}
 

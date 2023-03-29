@@ -26,7 +26,7 @@ function App() {
             <Route exact path="/" element={<Background />} />
             <Route exact path="/register" element={<AddUser />} />
             <Route exact path="/login" element={<Login/>}/>
-            <Route exact path="/profile" element={<Profile/>}/>
+            <Route exact path="/:id/profile" element={<Profile/>}/>
             <Route exact path="/:id/addObject" element={<AddObject/>}/>
             <Route exact path="/object/:id" element={<RealtyObject/>}/>
             <Route exact path="/" element={<RealtyObjectsSlider />} />
