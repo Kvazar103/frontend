@@ -83,6 +83,7 @@
 .for_h4_ul{
     display: flex;
     margin-left: 90px;
+    color: #ceaa4d !important;
 }
 .for_details{
     display: flex;
