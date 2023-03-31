@@ -7,7 +7,7 @@ import {Button, Form, Stack} from "react-bootstrap";
 import Pagination from "./Pagination";
 // import RealtyObjectPaginationElement from "./RealtyObjectPaginationElement";
 
-let PageSize = 10;
+let PageSize = 5;
 function Profile (){
 
    // const customer=AuthService.getCurrentUser();
@@ -25,7 +25,7 @@ function Profile (){
         const firstPageIndex = (currentPage - 1) * PageSize;
         const lastPageIndex = firstPageIndex + PageSize;
         return customerRealtyList.slice(firstPageIndex, lastPageIndex);
-    }, [currentPage]);
+    }, [currentPage, customerRealtyList]);
 
 
 
@@ -181,12 +181,21 @@ function Profile (){
 
            </Form>
       </div>
-    <div>
+    <div className={css.my_realty_objects}>
+        <h4 style={{display:"flex",marginLeft:"30px"}}>My realty objects({customerRealtyList.length})</h4>
         {currentTableData.map(item=>{
-            return(<tr>
-                <td>{item.address}</td>
-
-            </tr>)
+            let x=`http://localhost:8080/images/${customer.name}${customer.surname}/${item.images[0]}`;
+            console.log(x)
+            console.log(item)
+            return(
+                <div className={css.one_realty}>
+                    <div>
+                        <img src={x} width="120px" height="93px"/>
+                    </div>
+                    <div>
+                        {item.address}
+                    </div>
+                </div>)
         })}
         <Pagination
             className="pagination-bar"
