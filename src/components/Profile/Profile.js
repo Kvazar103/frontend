@@ -1,13 +1,13 @@
 import AuthService from "../../services/auth.service";
 import { MDBCol, MDBContainer, MDBRow, MDBCard, MDBCardText, MDBCardBody, MDBCardImage, MDBBtn, MDBTypography } from 'mdb-react-ui-kit';
-import {useEffect, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import axios from "axios";
 import css from './profile.module.css'
 import {Button, Form, Stack} from "react-bootstrap";
 import Pagination from "./Pagination";
-import RealtyObjectPaginationElement from "./RealtyObjectPaginationElement";
+// import RealtyObjectPaginationElement from "./RealtyObjectPaginationElement";
 
-
+let PageSize = 10;
 function Profile (){
 
    // const customer=AuthService.getCurrentUser();
@@ -18,9 +18,16 @@ function Profile (){
    const [customerAddedToFavorite,setCustomerAddedToFavorite]=useState([]);
    const [customerIdFromUrl,setCustomerIdFromUrl]=useState('')
 
-   const [loading,setLoading]=useState(false);
-   const [currentPage,setCurrentPage]=useState(1);
-   const [realtiesPerPage] = useState(5);
+
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const currentTableData = useMemo(() => {
+        const firstPageIndex = (currentPage - 1) * PageSize;
+        const lastPageIndex = firstPageIndex + PageSize;
+        return customerRealtyList.slice(firstPageIndex, lastPageIndex);
+    }, [currentPage]);
+
+
 
    useEffect(()=>{
        let url=window.location.toString()  //присвоюємо стрінгову урлу даної сторінки
@@ -39,7 +46,7 @@ function Profile (){
                 setCustomer(value.data)
                 setCustomerRealtyList(value.data.my_realty_objectList)
                 setCustomerAddedToFavorite(value.data.added_to_favorites)
-                setLoading(false)
+
 
             })
     },[customerIdFromUrl])
@@ -57,11 +64,6 @@ function Profile (){
 
 
     // Get current posts
-    const indexOfLastPost = currentPage * realtiesPerPage;
-    const indexOfFirstPost = indexOfLastPost - realtiesPerPage;
-    const currentRealties = customerRealtyList.slice(indexOfFirstPost, indexOfLastPost);
-
-    const paginate = pageNumber => setCurrentPage(pageNumber);
 
 
     return (
@@ -180,13 +182,18 @@ function Profile (){
            </Form>
       </div>
     <div>
-        <RealtyObjectPaginationElement realties={currentRealties} loading={loading}/>
+        {currentTableData.map(item=>{
+            return(<tr>
+                <td>{item.address}</td>
 
+            </tr>)
+        })}
         <Pagination
-            variant="outlined"
-            realtiesPerPage={realtiesPerPage}
-            totalRealties={customerRealtyList.length}
-            paginate={paginate}
+            className="pagination-bar"
+            currentPage={currentPage}
+            totalCount={customerRealtyList.length}
+            pageSize={PageSize}
+            onPageChange={page => setCurrentPage(page)}
         />
     </div>
 </div>
