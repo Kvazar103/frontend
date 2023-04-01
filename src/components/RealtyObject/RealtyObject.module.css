@@ -11,6 +11,7 @@
     padding: 100px;
 
 }
+
 .carousel_container {
     width: 850px;
     height: 100px;
@@ -100,5 +101,15 @@
     margin-left: 90px;
     text-align: left;
     margin-top: 15px;
+}
+.buttons{
+    position:relative;;
+    top:-620px;
+    left: 50px;
+    bottom: 130px;
+    margin-left: 30px;
+}
+.button{
+    margin: 5px;
 }
 

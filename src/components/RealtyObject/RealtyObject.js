@@ -4,6 +4,13 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from "react-responsive-carousel";
 import css from './RealtyObject.module.css'
 import {Button, Form} from "react-bootstrap";
+import deleteIcon from '../../images/realtyObject_image_icons/delete-1487-svgrepo-com.svg';
+import editIcon from '../../images/realtyObject_image_icons/edit-svgrepo-com.svg';
+import heartIcon from '../../images/realtyObject_image_icons/heart-01-svgrepo-com.svg';
+import heartRedIcon from '../../images/realtyObject_image_icons/heart-red-svgrepo-com.svg';
+import reportIcon from '../../images/realtyObject_image_icons/report-flag-1420-svgrepo-com.svg';
+import shareIcon from '../../images/realtyObject_image_icons/share-ios-export-svgrepo-com.svg';
+import AuthService from "../../services/auth.service";
 
 
 function RealtyObject(){
@@ -25,6 +32,11 @@ function RealtyObject(){
     const [realtyDetails,setRealtyDetails]=useState('');
 
 
+    // const currentUser=AuthService.getCurrentUser();
+    //
+    // console.log("curr")
+    // console.log(currentUser)
+    // console.log("curr")
     let url=window.location.toString()  //присвоюємо стрінгову урлу даної сторінки
     console.log(url.substring(29));
     let realtyIdFromUrl=url.substring(29);
@@ -95,6 +107,9 @@ function RealtyObject(){
 
     },[ realtyObject.price, realtyObject.real_estate, realtyObject.rooms])
 
+    let currentUser=JSON.parse(localStorage.getItem("customer"));
+    console.log("currentUsser")
+    // console.log(currentUser)
     useEffect(()=>{
         axios.get("http://localhost:8080/getAllCustomers")
             .then(value => {
@@ -114,13 +129,28 @@ function RealtyObject(){
                                 console.log(slicedPhone)
                                 setSlicedPhoneNumber(slicedPhone)
 
+                                   if(currentUser!=null && currentUser.id !== customer.id){
+                                   console.log("id>")
+                                   console.log(currentUser.id)
+                                   console.log(customer.id)
+                                   console.log("<id")
+                                   document.getElementById("delete").hidden=true
+                                   document.getElementById("button_for_delete").hidden=true
+                                   document.getElementById("edit").hidden=true
+                                   document.getElementById("button_for_edit").hidden=true
+                                   document.getElementById("buttons").style.marginLeft="140px"
+                                }
                             }
                         }
                     }
                 }
             })
-    },[phoneNumber, realtyObject.id])
-    // console.log(userObject)
+    },[currentUser, currentUser.id, phoneNumber, realtyObject.id])
+    console.log(userObject)
+    console.log("uo");
+    // useEffect(()=>{
+    //
+    // },[currentUser.id, userObject.id])
 
     function handleChange(index) {
         setCurrentIndex(index);
@@ -130,6 +160,7 @@ function RealtyObject(){
         <div>
             <br/><br/><br/>
             <img src={`http://localhost:8080/images/${nameSurname}/${image}`} className={css.img}/>
+
         </div>
     ))
 
@@ -147,6 +178,17 @@ function RealtyObject(){
         document.getElementById("phone").innerHTML=`+380 ${userObject.phone_number}`
         document.getElementById("butt").hidden=true
     }
+    const onHeartClick = (e) => {
+      // e.preventDefault();
+      //   let x=e.target.getAttribute('src')
+        if(e.target.getAttribute('src')===heartIcon){
+            e.target.setAttribute('src',heartRedIcon)
+        }else {
+            e.target.setAttribute('src',heartIcon)
+        }
+
+
+    }
 
     console.log(typeOfOrder)
     const renderCustomThumbs = () => {  //функція для рендерінгу thumb(картинки під головною картинкою в каруселі) з фіксованою висотою
@@ -162,8 +204,10 @@ function RealtyObject(){
 
     return(
         <div>
+
         <div className={css.carousel_and_form}>
-        <div className="carousel-wrapper">
+        <div className="carousel-wrapper" >
+
         <Carousel
             showArrows={true}
             // autoPlay={true}
@@ -215,8 +259,17 @@ function RealtyObject(){
 
 
             </Form>
+
         </div>
         </div>
+            <div className={css.buttons} id="buttons">
+                <Button className={css.button} onClick={onHeartClick} variant="light"><img id="heart" width="24px" height="24px" src={heartIcon}/></Button>
+                <Button className={css.button} variant="light"><img width="24px" height="24px" src={shareIcon}/></Button>
+                <Button className={css.button} id="button_for_edit" variant="light"><img id="edit" width="24px" height="24px" src={editIcon}/></Button>
+                <Button className={css.button} id="button_for_delete" variant="light"><img id="delete" width="24px" height="24px" src={deleteIcon}/></Button>
+                <Button className={css.button} variant="light"><img width="24px" height="24px" src={reportIcon}/></Button>
+
+            </div>
             <div className={css.address_and_sum}>
                 <div>
                     <h1>{realtyObject.address} street,{realtyObject.apt_suite_building}</h1>
