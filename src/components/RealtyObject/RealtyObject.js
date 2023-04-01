@@ -40,7 +40,8 @@ function RealtyObject(){
 
     useEffect(()=>{
         setMessageInTextAre(`I'm interested in: ${realtyObject.real_estate} that located at the address: ${realtyObject.address},${realtyObject.apt_suite_building}.Please contact me as soon as possible.`)
-        setRealtyDetails(`${realtyObject.details}`)
+        // setRealtyDetails(`${realtyObject.details}`)
+        setRealtyDetails(realtyObject.details)
 
 
     },[realtyObject.address, realtyObject.apt_suite_building, realtyObject.dateOfCreation, realtyObject.details, realtyObject.real_estate])

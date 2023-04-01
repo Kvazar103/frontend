@@ -5,6 +5,7 @@ import axios from "axios";
 import css from './profile.module.css'
 import {Button, Form, Stack} from "react-bootstrap";
 import Pagination from "./Pagination";
+import {useNavigate} from "react-router-dom";
 // import RealtyObjectPaginationElement from "./RealtyObjectPaginationElement";
 
 let PageSize = 5;
@@ -16,7 +17,9 @@ function Profile (){
    const [customer,setCustomer]=useState('');
    const [customerRealtyList,setCustomerRealtyList]=useState([]);
    const [customerAddedToFavorite,setCustomerAddedToFavorite]=useState([]);
-   const [customerIdFromUrl,setCustomerIdFromUrl]=useState('')
+   const [customerIdFromUrl,setCustomerIdFromUrl]=useState('');
+
+   let navigate=useNavigate();
 
 
     const [currentPage, setCurrentPage] = useState(1);
@@ -36,6 +39,7 @@ function Profile (){
        let customerIdFromUrl=splitUrl.slice(-1)
        setCustomerIdFromUrl(customerIdFromUrl)
    },[])
+
 
 
 
@@ -59,8 +63,6 @@ function Profile (){
             setImg(customer_img)
         }
     },[customer.avatar, customer.name, customer.surname])
-
-
 
 
     // Get current posts
@@ -187,13 +189,29 @@ function Profile (){
             let x=`http://localhost:8080/images/${customer.name}${customer.surname}/${item.images[0]}`;
             console.log(x)
             console.log(item)
+            let monthOrDay="";
+            if(item.price!=null && item.price.type_of_order_of_real_estate==="Rent_for_a_month"){
+                monthOrDay="/month";
+            }else if(item.price!=null && item.price.type_of_order_of_real_estate==="Rent_per_day"){
+                monthOrDay="/day"
+            }else {
+                monthOrDay=""
+            }
+
             return(
                 <div className={css.one_realty}>
                     <div>
-                        <img src={x} width="120px" height="93px"/>
+                        <a href={`http://localhost:3000/object/${item.id}`}> <img src={x} width="120px" height="93px"/></a>
                     </div>
-                    <div>
-                        {item.address}
+                    <div style={{textAlign:"left",width:"142px"}}>
+                        {/*{item.address}*/}
+                        <span>{item.real_estate} for {item.price.type_of_order_of_real_estate==="Sell"?"sale":"rent"}</span><br/>
+                        <span>{item.price?item.price.sum:"0"} {item.price?item.price.currency:"0"}{monthOrDay?monthOrDay:""}</span>
+                    </div>
+                    <div style={{textAlign:"left",width:"350px"}}>
+                        <a href={`http://localhost:3000/object/${item.id}`}>
+                            <span>{item.address} {item.apt_suite_building},{item.city},{item.district} district</span></a><br/>
+                        <span>{item.square} sq.m</span>
                     </div>
                 </div>)
         })}
