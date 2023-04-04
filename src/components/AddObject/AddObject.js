@@ -18,7 +18,6 @@ export default function AddObject(){
         rooms:"",
         square:"",
         details:"",
-        // detailsTWO:"",
         real_estate:"",
         price:{
             sum:"",

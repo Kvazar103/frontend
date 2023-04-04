@@ -31,6 +31,9 @@ function RealtyObject(){
     const [rooms,setRooms]=useState('');
     const [realtyDetails,setRealtyDetails]=useState('');
 
+    const [userObjectId,setUserObjectId]=useState('');
+
+    let currentUser=AuthService.getCurrentUser();
 
     // const currentUser=AuthService.getCurrentUser();
     //
@@ -56,7 +59,7 @@ function RealtyObject(){
         setRealtyDetails(realtyObject.details)
 
 
-    },[realtyObject.address, realtyObject.apt_suite_building, realtyObject.dateOfCreation, realtyObject.details, realtyObject.real_estate])
+    },[realtyObject.address, realtyObject.apt_suite_building, realtyObject.details, realtyObject.real_estate])
     useEffect(()=>{
         if(realtyObject.price != null && realtyObject.price.currency === "USD"){
             setCurrencySign("$")
@@ -107,50 +110,42 @@ function RealtyObject(){
 
     },[ realtyObject.price, realtyObject.real_estate, realtyObject.rooms])
 
-    let currentUser=JSON.parse(localStorage.getItem("customer"));
-    console.log("currentUsser")
-    // console.log(currentUser)
-    useEffect(()=>{
-        axios.get("http://localhost:8080/getAllCustomers")
+    useEffect( () => {
+
+              axios.get("http://localhost:8080/getAllCustomers")
             .then(value => {
-                let customers=value.data
-                for(let customer of customers){
-                    let realtyObjectList=customer.my_realty_objectList;
-                    if(realtyObjectList!=null){
-                        for (let realty of realtyObjectList){
-                            if(realty.id===realtyObject.id){
+
+                let customers = value.data
+                for (let customer of customers) {
+                    let realtyObjectList = customer.my_realty_objectList;
+                    if (realtyObjectList != null) {
+                        for (let realty of realtyObjectList) {
+                            if (realty.id === realtyObject.id) {
                                 setUserObject(customer)
-                                setNameSurname(customer.name+customer.surname)
+                                setUserObjectId(customer.id)
+                                setNameSurname(customer.name + customer.surname)
                                 setPhoneNumber(customer.phone_number)
                                 console.log(phoneNumber)
-                                let phoneToString=phoneNumber.toString()
+                                let phoneToString = phoneNumber.toString()
                                 console.log(phoneToString)
-                                let slicedPhone=phoneToString.slice(0,3)
+                                let slicedPhone = phoneToString.slice(0, 3)
                                 console.log(slicedPhone)
                                 setSlicedPhoneNumber(slicedPhone)
-
-                                   if(currentUser!=null && currentUser.id !== customer.id){
-                                   console.log("id>")
-                                   console.log(currentUser.id)
-                                   console.log(customer.id)
-                                   console.log("<id")
-                                   document.getElementById("delete").hidden=true
-                                   document.getElementById("button_for_delete").hidden=true
-                                   document.getElementById("edit").hidden=true
-                                   document.getElementById("button_for_edit").hidden=true
-                                   document.getElementById("buttons").style.marginLeft="140px"
+                                if (((currentUser != null) && (currentUser.id !== customer.id)) || (currentUser == null)) {
+                                    document.getElementById("delete").hidden = true
+                                    document.getElementById("button_for_delete").hidden = true
+                                    document.getElementById("edit").hidden = true
+                                    document.getElementById("button_for_edit").hidden = true
+                                    document.getElementById("buttons").style.marginLeft = "140px"
                                 }
                             }
                         }
                     }
                 }
             })
-    },[currentUser, currentUser.id, phoneNumber, realtyObject.id])
+    },[ phoneNumber, realtyObject.id])
     console.log(userObject)
     console.log("uo");
-    // useEffect(()=>{
-    //
-    // },[currentUser.id, userObject.id])
 
     function handleChange(index) {
         setCurrentIndex(index);
@@ -159,7 +154,7 @@ function RealtyObject(){
     const renderSlides=realtyObjectImages.map((image)=>(
         <div>
             <br/><br/><br/>
-            <img src={`http://localhost:8080/images/${nameSurname}/${image}`} className={css.img}/>
+            <img src={`http://localhost:8080/images/${userObjectId}id/${image}`} className={css.img}/>
 
         </div>
     ))
@@ -178,24 +173,35 @@ function RealtyObject(){
         document.getElementById("phone").innerHTML=`+380 ${userObject.phone_number}`
         document.getElementById("butt").hidden=true
     }
-    const onHeartClick = (e) => {
-      // e.preventDefault();
-      //   let x=e.target.getAttribute('src')
-        if(e.target.getAttribute('src')===heartIcon){
-            e.target.setAttribute('src',heartRedIcon)
-        }else {
-            e.target.setAttribute('src',heartIcon)
-        }
+    const onHeartClick = async (e) => {
+        e.preventDefault();
+        //   let x=e.target.getAttribute('src')
+        const formData=new FormData();
+        if (e.target.getAttribute('src') === heartIcon) {
+            e.target.setAttribute('src', heartRedIcon)
+            formData.append("realtyObject",JSON.stringify(realtyObject));
+            // formData.append("userObject",JSON.stringify(currentUser));
+            await axios.patch(`http://localhost:8080/update/customer/${currentUser.id}/addedToFavoriteList`,formData)
+            const c=await axios.get(`http://localhost:8080/customer/${currentUser.id}`)
+            localStorage.setItem('customer',JSON.stringify(c.data));
+        } else {
+            e.target.setAttribute('src', heartIcon)
 
+        }
+        // console.log(currentUser.added_to_favorite)
+        //
+        // if(currentUser.added_to_favorite){
+        //     console.log(currentUser.added_to_favorite)
+        // }
 
     }
 
     console.log(typeOfOrder)
-    const renderCustomThumbs = () => {  //функція для рендерінгу thumb(картинки під головною картинкою в каруселі) з фіксованою висотою
+    const renderCustomThumbs =() => {  //функція для рендерінгу thumb(картинки під головною картинкою в каруселі) з фіксованою висотою
         const thumbList=realtyObjectImages.map((image,index)=>
             <picture key={index}>
-                <source data-srcSet={`http://localhost:8080/images/${nameSurname}/${image}`} type="image/jpg"/>
-                <img src={`http://localhost:8080/images/${nameSurname}/${image}`} height="70"/>
+                <source data-srcSet={`http://localhost:8080/images/${userObjectId}id/${image}`} type="image/jpg"/>
+                <img src={`http://localhost:8080/images/${userObjectId}id/${image}`} height="70"/>
             </picture>
         )
         return(thumbList)

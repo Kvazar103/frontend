@@ -26,7 +26,7 @@ export default function RealtySlider(props){
                         // console.log(realty)
                         if(realty.id===item.id){
                             console.log(realty)
-                            setNameSurname(customer.name+customer.surname)
+                            setNameSurname(customer.id+"id")
                             setUser(customer)
                         }
                     }

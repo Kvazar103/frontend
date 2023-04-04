@@ -15,6 +15,7 @@ import Profile from "./components/Profile/Profile";
 import AddObject from "./components/AddObject/AddObject";
 import RealtyObject from "./components/RealtyObject/RealtyObject";
 import RealtyObjectsSlider from "./components/RealtySlider/RealtyObjectsSlider";
+import UpdateUser from "./components/UpdateUser/UpdateUser";
 
 
 
@@ -30,6 +31,7 @@ function App() {
             <Route exact path="/:id/addObject" element={<AddObject/>}/>
             <Route exact path="/object/:id" element={<RealtyObject/>}/>
             <Route exact path="/" element={<RealtyObjectsSlider />} />
+            <Route exact path="/:id/updateProfile" element={<UpdateUser/>}/>
         </Routes>
 
 
