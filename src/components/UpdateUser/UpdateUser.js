@@ -187,7 +187,7 @@ export default function UpdateUser() {
                         <button type="submit" className="btn btn-outline-primary">
                             Submit
                         </button>
-                        <Link className="btn btn-outline-danger mx-2" to="/">
+                        <Link className="btn btn-outline-danger mx-2" to={`/${idFromUrl[0]}/profile`}>
                             Cancel
                         </Link>
                     </form>

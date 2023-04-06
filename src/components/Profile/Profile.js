@@ -1,5 +1,4 @@
 import AuthService from "../../services/auth.service";
-import { MDBCol, MDBContainer, MDBRow, MDBCard, MDBCardText, MDBCardBody, MDBCardImage, MDBBtn, MDBTypography } from 'mdb-react-ui-kit';
 import {useEffect, useMemo, useState} from "react";
 import axios from "axios";
 import css from './profile.module.css'
@@ -8,7 +7,7 @@ import Pagination from "./Pagination";
 import {useNavigate} from "react-router-dom";
 // import RealtyObjectPaginationElement from "./RealtyObjectPaginationElement";
 
-let PageSize = 5;
+let pageSize = 5;
 function Profile (){
 
    let currentUser=AuthService.getCurrentUser();
@@ -25,8 +24,8 @@ function Profile (){
     const [currentPage, setCurrentPage] = useState(1);
 
     const currentTableData = useMemo(() => {
-        const firstPageIndex = (currentPage - 1) * PageSize;
-        const lastPageIndex = firstPageIndex + PageSize;
+        const firstPageIndex = (currentPage - 1) * pageSize;
+        const lastPageIndex = firstPageIndex + pageSize;
         return customerRealtyList.slice(firstPageIndex, lastPageIndex);
     }, [currentPage, customerRealtyList]);
 
@@ -97,6 +96,9 @@ function Profile (){
                         console.log("curr and cus")
                         // console.log(customer)
                         document.getElementById("edit_profile_button").hidden=false;
+                        document.getElementById("change_password_profile_button").hidden=false;
+                        document.getElementById("delete_profile_button").hidden=false;
+                        document.getElementById("saved_objects_button").hidden=false;
                     }
                 })
 
@@ -113,12 +115,14 @@ function Profile (){
     },[customer.avatar, customer.name, customer.surname])
 
     const onUpdateClick = () => {
-
             navigate(`/${customerIdFromUrl}/updateProfile`)
     }
-
-    // Get current posts
-
+    const onChangePasswordClick = () => {
+       navigate(`/${customerIdFromUrl}/changePassword`)
+    }
+    const onSavedObjectsClick = () => {
+      navigate(`/${customerIdFromUrl}/favoriteObjects`)
+    }
 
     return (
      <div>
@@ -140,7 +144,11 @@ function Profile (){
                     <div className="col-8">&nbsp;&nbsp;{customer.email}</div>
                 </div>
                 <Button id="edit_profile_button" onClick={onUpdateClick} style={{marginRight:"83px",marginTop:"18px"}} variant="success" hidden={true}>Update profile</Button>
+                <Button id="change_password_profile_button" onClick={onChangePasswordClick}  style={{position:"absolute",top:"216px",right:"850px"}} variant="success" hidden={true}>Change password</Button>
+                <Button id="saved_objects_button" onClick={onSavedObjectsClick} style={{position:"absolute",top:"216px",right:"710px"}} hidden={true}>Saved objects</Button>
+                <Button id="delete_profile_button" style={{position:"absolute",top:"216px",right:"570px"}} variant="danger" hidden={true}>Delete profile</Button>
             </div>
+            {/*style={{position:"absolute",bottom:"470px",left:"600px"}}*/}
         </div>
            <Form className={css.form}><br/>
                <p style={{textAlign:"left"}}>Contact with {customer.name} {customer.surname}</p>
@@ -202,7 +210,7 @@ function Profile (){
             className="pagination-bar"
             currentPage={currentPage}
             totalCount={customerRealtyList.length}
-            pageSize={PageSize}
+            pageSize={pageSize}
             onPageChange={page => setCurrentPage(page)}
         />
     </div>

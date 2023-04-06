@@ -187,14 +187,26 @@ function RealtyObject(){
         } else {
             e.target.setAttribute('src', heartIcon)
 
+            await axios.patch(`http://localhost:8080/delete/customer/${currentUser.id}/addedToFavoriteRealtyObject/${realtyObject.id}`)
+            const t=await axios.get(`http://localhost:8080/customer/${currentUser.id}`)
+            localStorage.setItem('customer',JSON.stringify(t.data));
         }
-        // console.log(currentUser.added_to_favorite)
-        //
-        // if(currentUser.added_to_favorite){
-        //     console.log(currentUser.added_to_favorite)
-        // }
+
 
     }
+    console.log("added to favorite")
+    console.log(currentUser.added_to_favorites)
+
+    if(currentUser && currentUser.added_to_favorites){
+        console.log(currentUser.added_to_favorites)
+        for(let x of currentUser.added_to_favorites){
+            if(x === realtyObject.id){
+               let element= document.getElementById("heart")
+                element.setAttribute("src",heartRedIcon)
+            }
+        }
+    }
+
 
     console.log(typeOfOrder)
     const renderCustomThumbs =() => {  //функція для рендерінгу thumb(картинки під головною картинкою в каруселі) з фіксованою висотою

@@ -97,8 +97,6 @@ import CheckButton from "react-validation/build/button";
                         </form>
                     </div>
                 </div>
-
-               {/*<input type="file"/>*/}
            </div>
         );
     }
