@@ -124,6 +124,7 @@ function Profile (){
       navigate(`/${customerIdFromUrl}/favoriteObjects`)
     }
 
+
     return (
      <div>
        <div className={css.header_and_form}>

@@ -4,9 +4,6 @@ import './App.css';
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
 import {Route, Router, Routes} from "react-router-dom";
-import lviv_sunrises_and_sunsets from './images/lviv_city/lviv_sunrises_and_sunsets.jpg';
-import css from './images/lviv_city/lviv_sunrises_and_sunsets.module.css'
-import Recommended_offers from "./components/Recommended_offers/Recommended_offers";
 import AddUser from "./components/AddUser/AddUser";
 import Background from "./components/Background/Background";
 import Login from "./components/Login/Login";
@@ -17,6 +14,7 @@ import RealtyObjectsSlider from "./components/RealtySlider/RealtyObjectsSlider";
 import UpdateUser from "./components/UpdateUser/UpdateUser";
 import ChangePassword from "./components/ChangePassword/ChangePassword";
 import FavoriteObjects from "./components/FavoriteObjects/FavoriteObjects";
+import UpdateRealtyObject from "./components/UpdateRealtyObject/UpdateRealtyObject";
 
 
 
@@ -35,6 +33,7 @@ function App() {
             <Route exact path="/:id/updateProfile" element={<UpdateUser/>}/>
             <Route exact path="/:id/changePassword" element={<ChangePassword/>}/>
             <Route exact path="/:id/favoriteObjects" element={<FavoriteObjects/>}/>
+            <Route exact path="/:id/updateRealtyObject" element={<UpdateRealtyObject/>}/>
         </Routes>
 
 

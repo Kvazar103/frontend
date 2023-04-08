@@ -3,7 +3,7 @@ import {useEffect, useState} from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from "react-responsive-carousel";
 import css from './RealtyObject.module.css'
-import {Button, Form} from "react-bootstrap";
+import {Alert, Button, Form} from "react-bootstrap";
 import deleteIcon from '../../images/realtyObject_image_icons/delete-1487-svgrepo-com.svg';
 import editIcon from '../../images/realtyObject_image_icons/edit-svgrepo-com.svg';
 import heartIcon from '../../images/realtyObject_image_icons/heart-01-svgrepo-com.svg';
@@ -11,6 +11,7 @@ import heartRedIcon from '../../images/realtyObject_image_icons/heart-red-svgrep
 import reportIcon from '../../images/realtyObject_image_icons/report-flag-1420-svgrepo-com.svg';
 import shareIcon from '../../images/realtyObject_image_icons/share-ios-export-svgrepo-com.svg';
 import AuthService from "../../services/auth.service";
+import {Navigate, useNavigate} from "react-router-dom";
 
 
 function RealtyObject(){
@@ -34,7 +35,7 @@ function RealtyObject(){
     const [userObjectId,setUserObjectId]=useState('');
 
     let currentUser=AuthService.getCurrentUser();
-
+    let navigate=useNavigate();
     // const currentUser=AuthService.getCurrentUser();
     //
     // console.log("curr")
@@ -52,6 +53,7 @@ function RealtyObject(){
 
             })
       },[realtyIdFromUrl])
+
 
     useEffect(()=>{
         setMessageInTextAre(`I'm interested in: ${realtyObject.real_estate} that located at the address: ${realtyObject.address},${realtyObject.apt_suite_building}.Please contact me as soon as possible.`)
@@ -143,7 +145,7 @@ function RealtyObject(){
                     }
                 }
             })
-    },[ phoneNumber, realtyObject.id])
+    },[currentUser, phoneNumber, realtyObject.id])
     console.log(userObject)
     console.log("uo");
 
@@ -178,6 +180,9 @@ function RealtyObject(){
         //   let x=e.target.getAttribute('src')
         const formData=new FormData();
         if (e.target.getAttribute('src') === heartIcon) {
+              if(currentUser==null){
+                navigate("/login");
+            }
             e.target.setAttribute('src', heartRedIcon)
             formData.append("realtyObject",JSON.stringify(realtyObject));
             // formData.append("userObject",JSON.stringify(currentUser));
@@ -194,8 +199,11 @@ function RealtyObject(){
 
 
     }
+    const onUpdateRealtyObjectClick = () => {
+      navigate(`/${realtyIdFromUrl}/updateRealtyObject`)
+    }
     console.log("added to favorite")
-    console.log(currentUser.added_to_favorites)
+    // console.log(currentUser.added_to_favorites)
 
     if(currentUser && currentUser.added_to_favorites){
         console.log(currentUser.added_to_favorites)
@@ -223,6 +231,7 @@ function RealtyObject(){
     return(
         <div>
 
+
         <div className={css.carousel_and_form}>
         <div className="carousel-wrapper" >
 
@@ -239,6 +248,7 @@ function RealtyObject(){
         >
             {renderSlides}
         </Carousel>
+
         </div>
         <div>
             <Form className={css.form}><br/>
@@ -283,7 +293,7 @@ function RealtyObject(){
             <div className={css.buttons} id="buttons">
                 <Button className={css.button} onClick={onHeartClick} variant="light"><img id="heart" width="24px" height="24px" src={heartIcon}/></Button>
                 <Button className={css.button} variant="light"><img width="24px" height="24px" src={shareIcon}/></Button>
-                <Button className={css.button} id="button_for_edit" variant="light"><img id="edit" width="24px" height="24px" src={editIcon}/></Button>
+                <Button className={css.button} onClick={onUpdateRealtyObjectClick} id="button_for_edit" variant="light"><img id="edit" width="24px" height="24px" src={editIcon}/></Button>
                 <Button className={css.button} id="button_for_delete" variant="light"><img id="delete" width="24px" height="24px" src={deleteIcon}/></Button>
                 <Button className={css.button} variant="light"><img width="24px" height="24px" src={reportIcon}/></Button>
 
