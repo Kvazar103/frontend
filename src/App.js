@@ -33,7 +33,7 @@ function App() {
             <Route exact path="/:id/updateProfile" element={<UpdateUser/>}/>
             <Route exact path="/:id/changePassword" element={<ChangePassword/>}/>
             <Route exact path="/:id/favoriteObjects" element={<FavoriteObjects/>}/>
-            <Route exact path="/:id/updateRealtyObject" element={<UpdateRealtyObject/>}/>
+            <Route exact path=":uId/:id/updateRealtyObject" element={<UpdateRealtyObject/>}/>
         </Routes>
 
 

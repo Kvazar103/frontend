@@ -200,7 +200,7 @@ function RealtyObject(){
 
     }
     const onUpdateRealtyObjectClick = () => {
-      navigate(`/${realtyIdFromUrl}/updateRealtyObject`)
+      navigate(`/${realtyIdFromUrl}/${currentUser.id}/updateRealtyObject`)
     }
     console.log("added to favorite")
     // console.log(currentUser.added_to_favorites)
@@ -322,7 +322,7 @@ function RealtyObject(){
                     <ul className={css.for_ul}>
                         <li className={css.for_li}>ID:{realtyObject.id}</li>
                         <li className={css.for_li}>Real&nbsp;estate:{realtyObject.real_estate}</li>
-                        <li className={css.for_li}>Last&nbsp;updated:</li>
+                        <li className={css.for_li}>Last&nbsp;updated:{realtyObject.dateOfUpdate}</li>
                         {/*<li className={css.for_li}>Days&nbsp;published:</li>*/}
 
                     </ul>
