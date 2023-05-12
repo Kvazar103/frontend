@@ -2,13 +2,14 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import {NavDropdown} from "react-bootstrap";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import icon from '../../images/register_icon/icon.png';
 // import css from '../../images/register_icon/icon.module.css';
 import AddUser from "../AddUser/AddUser";
 import {Link, useNavigate} from "react-router-dom";
 import AuthService from "../../services/auth.service";
 import css from './addOrder.module.css'
+import "./addOrder.module.css"
 
 
 function Header() {
@@ -20,6 +21,24 @@ function Header() {
     const [url,setUrl]=useState("")
 
     let navigate = useNavigate();
+
+    // useEffect(()=>{
+    //     // document.getElementById("search_on_header").hidden=true;
+    //     if(document.getElementById("search_on_header").hidden ===false){
+    //         window.location.reload();
+    //
+    //     }
+    // },[])
+
+
+
+    // useEffect(() => {
+    // if(document.getElementById("search_on_header").hidden === true){
+    //     window.location.reload();
+    //     // document.getElementById("search_on_header").hidden=true;
+    // }
+    // }, []);
+
 
 
     useEffect(()=>{
@@ -68,21 +87,27 @@ function Header() {
         <>
             <Navbar bg="dark" variant="dark"  fixed="top">
                 <Container>
-                    <Navbar.Brand href="/">Нерухомості Львів</Navbar.Brand>
+                    <Navbar.Brand className={"for_title"} href="/">Нерухомості Львів</Navbar.Brand>
+                    {/*<Navbar.Brand id="search_on_header" hidden={true}><input type="search"/></Navbar.Brand>*/}
                     <Nav className="me-auto" >
 
                         {currentUser&&<Nav.Link className={css.addOrder} href="/:id/addObject">Додати оголошення</Nav.Link>}
-                        <Nav.Link href="#pricing">Pricing</Nav.Link>
                         <NavDropdown title="Оренда" id="navbarScrollingDropdown"
                                      onMouseEnter={showDropdownForRent}
                                      onMouseLeave={hideDropdownForRent}
                                      show={showForRent}>
-                            {currentUser&& <NavDropdown.Item href="#action3">Квартира</NavDropdown.Item>}
-                            <NavDropdown.Item href="#action4">
+                            {/*{currentUser&& <NavDropdown.Item href="#action3">Квартира</NavDropdown.Item>}*/}
+                             <NavDropdown.Item onClick={()=>{navigate(`/Apartment:Rent_for_a_month/ /search`);window.location.reload();}}>
+                                 Квартира
+                             </NavDropdown.Item>
+                            <NavDropdown.Item onClick={()=>{navigate(`/House:Rent_for_a_month/ /search`);window.location.reload();}}>
                                 Будинок
                             </NavDropdown.Item>
+                            <NavDropdown.Item onClick={()=>{navigate(`/Garage:Rent_for_a_month/ /search`);window.location.reload();}}>
+                                Гараж
+                            </NavDropdown.Item>
                             <NavDropdown.Divider />
-                            <NavDropdown.Item href="#action5">
+                            <NavDropdown.Item onClick={()=>{navigate(`/Land:Rent_for_a_month/ /search`);window.location.reload(); }}>
                                 Земельна ділянка
                             </NavDropdown.Item>
                         </NavDropdown>
@@ -91,12 +116,17 @@ function Header() {
                                      onMouseLeave={hideDropdownForSell}
                                      show={showForSell}
                         >
-                            <NavDropdown.Item href="#action3">Квартира</NavDropdown.Item>
-                            <NavDropdown.Item href="#action4">
+                            <NavDropdown.Item onClick={()=>{navigate(`/Apartment:Sell/ /search`);window.location.reload();}}>
+                                Квартира
+                            </NavDropdown.Item>
+                            <NavDropdown.Item onClick={()=>{navigate(`/House:Sell/ /search`);window.location.reload();}}>
                                 Будинок
                             </NavDropdown.Item>
+                            <NavDropdown.Item onClick={()=>{navigate(`/Garage:Sell/ /search`);window.location.reload();}}>
+                                Гараж
+                            </NavDropdown.Item>
                             <NavDropdown.Divider />
-                            <NavDropdown.Item href="#action5">
+                            <NavDropdown.Item onClick={()=>{navigate(`/Land:Sell/ /search`);window.location.reload();}}>
                                 Земельна ділянка
                             </NavDropdown.Item>
                         </NavDropdown>
@@ -104,12 +134,17 @@ function Header() {
                                      onMouseEnter={showDropdownForDaily}
                                      onMouseLeave={hideDropdownForDaily}
                                      show={showForDaily}>
-                            <NavDropdown.Item href="#action3">Квартира</NavDropdown.Item>
-                            <NavDropdown.Item href="#action4">
+                            <NavDropdown.Item onClick={()=>{navigate(`/Apartment:Rent_per_day/ /search`);window.location.reload();}}>
+                                Квартира
+                            </NavDropdown.Item>
+                            <NavDropdown.Item onClick={()=>{navigate(`/House:Rent_per_day/ /search`);window.location.reload();}}>
                                 Будинок
                             </NavDropdown.Item>
+                            <NavDropdown.Item onClick={()=>{navigate(`/Garage:Rent_per_day/ /search`);window.location.reload();}}>
+                                Гараж
+                            </NavDropdown.Item>
                             <NavDropdown.Divider />
-                            <NavDropdown.Item href="#action5">
+                            <NavDropdown.Item onClick={()=>{navigate(`/Land:Rent_per_day/ /search`);window.location.reload();}}>
                                 Земельна ділянка
                             </NavDropdown.Item>
                         </NavDropdown>

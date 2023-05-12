@@ -11,6 +11,7 @@ import heartRedIcon from '../../images/realtyObject_image_icons/heart-red-svgrep
 import reportIcon from '../../images/realtyObject_image_icons/report-flag-1420-svgrepo-com.svg';
 import shareIcon from '../../images/realtyObject_image_icons/share-ios-export-svgrepo-com.svg';
 import AuthService from "../../services/auth.service";
+import realtyObjectNoImage from "../../images/realtyObjectImageIfNoImage/realtyObjectNoImage.jpg";
 import {Navigate, useNavigate} from "react-router-dom";
 
 
@@ -154,12 +155,14 @@ function RealtyObject(){
     }
 
     const renderSlides=realtyObjectImages.map((image)=>(
-        <div>
+      <div>
             <br/><br/><br/>
             <img src={`http://localhost:8080/images/${userObjectId}id/${image}`} className={css.img}/>
 
         </div>
+
     ))
+
 
     useEffect(()=>{
         let customer_img=`http://localhost:8080/images/${userObject.name}${userObject.surname}_avatar/${userObject.avatar}`;
@@ -168,7 +171,6 @@ function RealtyObject(){
             setImg(customer_img)
         }
     },[userObject.avatar, userObject.name, userObject.surname])
-
 
     const phoneShow=(e)=>{
         e.preventDefault();//для того, щоб сторінка не перезавантажувалася
@@ -233,9 +235,9 @@ function RealtyObject(){
 
 
         <div className={css.carousel_and_form}>
-        <div className="carousel-wrapper" >
+            <div className="carousel-wrapper" >
 
-        <Carousel
+               <Carousel
             showArrows={true}
             // autoPlay={true}
             infiniteLoop={true}
@@ -244,10 +246,11 @@ function RealtyObject(){
             // className="carousel-container"
             className={css.carousel_container}
             renderThumbs={renderCustomThumbs}
-            
         >
-            {renderSlides}
-        </Carousel>
+                   {renderSlides}
+                   <img src={`http://localhost:8080/images/realtyObjectEmptyImages/no_image_found.png`} className={css.img} style={{marginTop:"80px"}}/>
+
+               </Carousel>
 
         </div>
         <div>

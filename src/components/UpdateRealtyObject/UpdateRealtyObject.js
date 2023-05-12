@@ -56,6 +56,7 @@ export default function UpdateRealtyObject() {
                 }
                 setRealtyImagesUrl(c);
                 // console.log(realtyImagesUrl)
+        document.getElementById("inputAddImageId").hidden=true;
 
 
 
@@ -165,6 +166,7 @@ export default function UpdateRealtyObject() {
     // console.log(images);
     // console.log("images to show and to backend")
     // console.log(imageFiles)
+
 
     const onDeleteImageClick = (e) => {
 
@@ -311,11 +313,16 @@ export default function UpdateRealtyObject() {
                                 <option value="Rent_per_day">Rent per day</option>
                             </select>
                         </div>
+                        <div className="col-12">
+                            <label htmlFor="inputDetails" className="form-label">Details</label>
+                            <textarea style={{width:500,height:200,whiteSpace:"pre-line"}} name="details" value={realtyObject.details} onChange={onInputChange} rows="5" cols="30" placeholder="write something about your object">
+                            </textarea>
+                        </div>
                         <section>
-                            <label>
+                            <label style={{marginLeft:"220px"}}>
                                 + Add Images
                                 <br />
-                                <span>up to 10 images</span>
+                                {/*<span>up to 10 images</span>*/}
                                 <input
                                     type="file"
                                     name="images"
@@ -323,6 +330,7 @@ export default function UpdateRealtyObject() {
                                     // value={images}
                                     multiple
                                     accept="image/png , image/jpeg, image/webp"
+                                    id="inputAddImageId"
                                 />
                             </label>
                             <br />
@@ -342,11 +350,7 @@ export default function UpdateRealtyObject() {
 
 
                         </section>
-                        <div className="col-12">
-                            <label htmlFor="inputDetails" className="form-label">Details</label>
-                            <textarea style={{width:500,height:200,whiteSpace:"pre-line"}} name="details" value={realtyObject.details} onChange={onInputChange} rows="5" cols="30" placeholder="write something about your object">
-                            </textarea>
-                        </div>
+
 
                         {realtyImagesUrl.map(value => {
                             return(<div>

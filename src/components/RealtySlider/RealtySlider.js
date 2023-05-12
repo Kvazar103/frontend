@@ -46,8 +46,8 @@ export default function RealtySlider(props){
     console.log(x)
 
 
-        return (<div className={css.card} onClick={handleClick}>
-                <img src={x} height="175px" width="398px"/>
+        return (<div className={css.card} onClick={handleClick} style={{padding:"0px 10px 10px 0px"}}>
+                <img src={x} height="175px" width="398px" style={{borderRadius:"18px"}}/>
                         <b class="size18">{item.price?item.price.sum:"0"} {item.price?item.price.currency:"0"}</b>
                         <h3>{item.address} </h3>
                         <p>{item.distinct}</p>

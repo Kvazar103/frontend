@@ -15,11 +15,16 @@ import UpdateUser from "./components/UpdateUser/UpdateUser";
 import ChangePassword from "./components/ChangePassword/ChangePassword";
 import FavoriteObjects from "./components/FavoriteObjects/FavoriteObjects";
 import UpdateRealtyObject from "./components/UpdateRealtyObject/UpdateRealtyObject";
+import Search from "./components/Search/Search";
+import React, {useEffect} from "react";
 
 
 
 function App() {
-  return (
+
+
+
+    return (
     <div className="App">
         <Header/>
         <Routes>
@@ -34,6 +39,7 @@ function App() {
             <Route exact path="/:id/changePassword" element={<ChangePassword/>}/>
             <Route exact path="/:id/favoriteObjects" element={<FavoriteObjects/>}/>
             <Route exact path=":uId/:id/updateRealtyObject" element={<UpdateRealtyObject/>}/>
+            <Route exact path=":type/:input/search" element={<Search/>}/>
         </Routes>
 
 
