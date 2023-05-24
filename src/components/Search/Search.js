@@ -17,8 +17,10 @@ export default function Search() {
 
     let typedByUserText=splittedUrl[splittedUrl.length-1]
     let selectedByUserType=splittedUrl[splittedUrl.length-2]
-    // console.log("uuu")
-    // console.log(selectedByUserType)
+    console.log("uuu")
+    console.log(selectedByUserType)
+    let splitRealEstateAndType=selectedByUserType.split(":",2);
+    console.log(splitRealEstateAndType)
     let decodedTypedText=decodeURIComponent(typedByUserText); //decode if the text is in cyrillic
     const[searchedRealtyObjectList,setSearchedRealtyObjectList]=useState([]);
     const[filter,setFilter]=useState("null")
@@ -30,8 +32,9 @@ export default function Search() {
     const [currency,setCurrency]=useState("");
     const [sumFrom,setSumFrom]=useState(0);
     const [sumTo,setSumTo]=useState(0);
-    const [rooms,setRooms]=useState(null)
-
+    const [rooms,setRooms]=useState(null);
+    const [district,setDistrict]=useState("");
+    const [allRealtyObjectList,setAllRealtyObjectList]=useState([]);
 
     useEffect(()=>{
             const formData=new FormData();
@@ -42,6 +45,7 @@ export default function Search() {
                     console.log("axios post")
                     console.log(value.data)
                     setSearchedRealtyObjectList(value.data);
+                    setAllRealtyObjectList(value.data);
                 })
     },[decodedTypedText, selectedByUserType])
     const onInputChange=(e)=>{
@@ -153,7 +157,8 @@ export default function Search() {
         console.log(currency)
         console.log(sumFrom)
         console.log(sumTo)
-        const data=searchedRealtyObjectList;
+        // const data=searchedRealtyObjectList;
+        const data=allRealtyObjectList;
         console.log(data)
         let currencyToShow="";
         if(currency==="USD"){
@@ -183,7 +188,8 @@ export default function Search() {
         console.log(e)
         console.log(e.target.attributes.value.value)
         setRooms(e.target.id)
-        const data=searchedRealtyObjectList;
+        // const data=searchedRealtyObjectList;
+        const data=allRealtyObjectList;
         let newArr=[];
         for(let el of data){
             let a=Object.values(el);
@@ -202,11 +208,13 @@ export default function Search() {
         console.log(newArr)
         setSearchedRealtyObjectList(newArr)
     }
+
     const onClickDistrict = (e) => {
       console.log("on click district")
       console.log(e);
-      const data=searchedRealtyObjectList;
-      let newArr=[];
+      // const data=searchedRealtyObjectList;
+        const data=allRealtyObjectList;
+        let newArr=[];
       for(let el of data){
           let a=Object.values(el)
           if(a[0].district==e.target.id){

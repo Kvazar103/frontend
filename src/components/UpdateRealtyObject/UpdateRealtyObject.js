@@ -226,9 +226,10 @@ export default function UpdateRealtyObject() {
         const c=await axios.get(`http://localhost:8080/customer/${currentUser.id}`);
         localStorage.setItem('customer',JSON.stringify(c.data));
 
-        // navigate(`/object/${idFromUrl[0]}`)
-        // window.location.reload();
+        navigate(`/object/${idFromUrl[0]}`)
+        window.location.reload();
     };
+
 
 
 
