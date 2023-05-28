@@ -12,9 +12,7 @@ import "react-multi-carousel/lib/styles.css";
 
 export default function RealtyObjectsSlider() {
 
-
     const [data,setData]=useState([]);
-    const [one,setOne]=useState(null)
 
     const info=(obj)=>{
 

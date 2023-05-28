@@ -33,7 +33,6 @@ export default function Search() {
     const [sumFrom,setSumFrom]=useState(0);
     const [sumTo,setSumTo]=useState(0);
     const [rooms,setRooms]=useState(null);
-    const [district,setDistrict]=useState("");
     const [allRealtyObjectList,setAllRealtyObjectList]=useState([]);
 
     useEffect(()=>{

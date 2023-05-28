@@ -154,7 +154,8 @@ function RealtyObject(){
                     }
                 }
             })
-    },[currentUser, phoneNumber, realtyObject.id])
+    },[ phoneNumber, realtyObject.id])
+// },[currentUser, phoneNumber, realtyObject.id])
     console.log(userObject)
     console.log("uo");
 
