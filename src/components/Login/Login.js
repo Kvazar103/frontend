@@ -34,7 +34,7 @@ import CheckButton from "react-validation/build/button";
                 AuthService.login(login, password).then(
                     () => {
                         navigate("/");
-                        window.location.reload();
+                        // window.location.reload();
                     },
                     (error) => {
                         const resMessage =
