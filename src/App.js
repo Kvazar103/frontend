@@ -1,9 +1,11 @@
 
 import './App.css';
 
+import {Route,Routes} from "react-router-dom";
+import React from "react";
+
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
-import {Route, Router, Routes} from "react-router-dom";
 import AddUser from "./components/AddUser/AddUser";
 import Background from "./components/Background/Background";
 import Login from "./components/Login/Login";
@@ -16,13 +18,9 @@ import ChangePassword from "./components/ChangePassword/ChangePassword";
 import FavoriteObjects from "./components/FavoriteObjects/FavoriteObjects";
 import UpdateRealtyObject from "./components/UpdateRealtyObject/UpdateRealtyObject";
 import Search from "./components/Search/Search";
-import React, {useEffect} from "react";
-
 
 
 function App() {
-
-
 
     return (
     <div className="App">

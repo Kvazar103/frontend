@@ -1,10 +1,9 @@
 import {useNavigate, Navigate, Link} from "react-router-dom";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import axios from "axios";
-import css from "../AddObject/FormStyle.module.css";
-import AuthService from "../../services/auth.service";
-import {Button, CloseButton} from "react-bootstrap";
+import {Button} from "react-bootstrap";
 
+import AuthService from "../../services/auth.service";
 
 
 export default function UpdateUser() {

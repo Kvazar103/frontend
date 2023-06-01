@@ -2,8 +2,13 @@ import axios from "axios";
 import {useEffect, useState} from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from "react-responsive-carousel";
+import {Button,Form} from "react-bootstrap";
+import {useNavigate} from "react-router-dom";
+import Popup from 'reactjs-popup';
+import 'reactjs-popup/dist/index.css';
+import { FacebookShareButton, FacebookIcon,TwitterShareButton, TwitterIcon } from 'react-share';
+
 import css from './RealtyObject.module.css'
-import {Alert, Button,Form} from "react-bootstrap";
 import deleteIcon from '../../images/realtyObject_image_icons/delete-1487-svgrepo-com.svg';
 import editIcon from '../../images/realtyObject_image_icons/edit-svgrepo-com.svg';
 import heartIcon from '../../images/realtyObject_image_icons/heart-01-svgrepo-com.svg';
@@ -13,14 +18,8 @@ import shareIcon from '../../images/realtyObject_image_icons/share-ios-export-sv
 import closeButton from '../../images/close_icon/211652_close_icon.png';
 import copyLinkButton from '../../images/copy_link_icon/copy-link-icon-3.jpg'
 import AuthService from "../../services/auth.service";
-import realtyObjectNoImage from "../../images/realtyObjectImageIfNoImage/realtyObjectNoImage.jpg";
-import {Link, Navigate, useNavigate} from "react-router-dom";
-import toast from "bootstrap/js/src/toast";
-import modal from "bootstrap/js/src/modal";
-import Popup from 'reactjs-popup';
-import 'reactjs-popup/dist/index.css';
-import CloseButton from 'react-bootstrap/CloseButton';
-import { FacebookShareButton, FacebookIcon,TwitterShareButton, TwitterIcon } from 'react-share';
+
+
 function RealtyObject(){
 
     const [realtyObject,setRealtyObject]=useState("");
@@ -206,7 +205,7 @@ function RealtyObject(){
         } else {
             e.target.setAttribute('src', heartIcon)
 
-            await axios.patch(`http://localhost:8080/delete/customer/${currentUser.id}/addedToFavoriteRealtyObject/${realtyObject.id}`)
+            await axios.delete(`http://localhost:8080/delete/customer/${currentUser.id}/addedToFavoriteRealtyObject/${realtyObject.id}`)
             const t=await axios.get(`http://localhost:8080/customer/${currentUser.id}`)
             localStorage.setItem('customer',JSON.stringify(t.data));
         }
@@ -250,7 +249,7 @@ function RealtyObject(){
     const deleteRealtyObject =async (e) => {
         if(window.confirm("Ви дійсно хочете видалити об'єкт?")) {
             try {
-                await axios.patch(`http://localhost:8080/customer/${currentUser.id}/realtyObject/${realtyIdFromUrl}`)
+                await axios.delete(`http://localhost:8080/customer/${currentUser.id}/realtyObject/${realtyIdFromUrl}`)
             } catch (e) {
                 console.log(e)
             }

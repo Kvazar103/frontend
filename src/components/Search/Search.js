@@ -1,11 +1,10 @@
 import {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
-import search_black_and_yellow from "../../images/search_icon/search_black_and_yellow.png";
 import axios from "axios";
-import css from "../Profile/profile.module.css";
-import async from "async";
 import {Dropdown} from "react-bootstrap";
 import _ from "lodash";
+
+import search_black_and_yellow from "../../images/search_icon/search_black_and_yellow.png";
+import css from "../Profile/profile.module.css";
 
 
 export default function Search() {

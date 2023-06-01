@@ -1,11 +1,8 @@
-import {Button, Col, Form, Row} from "react-bootstrap";
-import css from './FormStyle.module.css'
 import {useState} from "react";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
-import AuthService from "../../services/auth.service";
-import realtyObject from "../RealtyObject/RealtyObject";
 
+import css from './FormStyle.module.css'
 
 export default function AddObject(){
 
@@ -28,52 +25,115 @@ export default function AddObject(){
     const [images,setImages]=useState('');
     const [selectedImages, setSelectedImages] = useState([]);
 
+    const [requiredFieldForDistrict,setRequiredFieldForDistrict]=useState(false);
+    const [requiredFieldForAddress,setRequiredFieldForAddress]=useState(false);
+    const [requiredFieldForAptSuiteBuilding,setRequiredFieldForAptSuiteBuilding]=useState(false);
+    const [requiredFieldForRooms,setRequiredFieldForRooms]=useState(false);
+    const [requiredFieldForSquare,setRequiredFieldForSquare]=useState(false);
+    const [requiredFieldForDetails,setRequiredFieldForDetails]=useState(false);
+    const [requiredFieldForRealEstate,setRequiredFieldForRealEstate]=useState(false);
+    const [requiredFieldForPriceSum,setRequiredFieldForPriceSum]=useState(false)
+    const [requiredFieldForPriceCurrency,setRequiredFieldForPriceCurrency]=useState(false)
+    const [requiredFieldForPriceTypeOfOrderOfRealEstate,setRequiredFieldForPriceTypeOfOrderOfRealEstate]=useState(false);
+    const [requiredFieldForImages,setRequiredFieldForImages]=useState(false);
 
     const handleSave =async (e) => {
         e.preventDefault();
 
-        const customer=JSON.parse(localStorage.getItem("customer"));
-        const formData = new FormData();
-        formData.append("body",JSON.stringify(object))
-        for (let i = 0; i < images.length; i++) {
-            formData.append(`images`, images[i])
+
+        if(object.district === ""){
+            setRequiredFieldForDistrict(true)
         }
-        // formData.append("images", images[0]);
-        console.log(images[0])
-        console.log(object)
-        // formData.append("body",JSON.stringify(object));
-        await axios.post(`http://localhost:8080/${customer.id}/addObject`,formData)
-        // await AuthService.saveObjectV2(object, formData)
-        const c= await axios.get(`http://localhost:8080/customer/${customer.id}`);
+        if(object.address===""){
+            setRequiredFieldForAddress(true)
+        }
+        if(object.apt_suite_building===""){
+            setRequiredFieldForAptSuiteBuilding(true)
+        }
+        if(object.rooms===""){
+            setRequiredFieldForRooms(true)
+        }
+        if(object.square===""){
+            setRequiredFieldForSquare(true)
+        }
+        if(object.details===""){
+            setRequiredFieldForDetails(true)
+        }
+        if(object.real_estate===""){
+            setRequiredFieldForRealEstate(true)
+        }
+        if(object.price.sum===""){
+            setRequiredFieldForPriceSum(true)
+        }
+        if (object.price.currency===""){
+            setRequiredFieldForPriceCurrency(true)
+        }
+        if(object.price.type_of_order_of_real_estate===""){
+            setRequiredFieldForPriceTypeOfOrderOfRealEstate(true)
+        }
+        // if(images===""){
+        //     setRequiredFieldForImages(true)
+        // }
+        if(object.district !== "" && object.address!=="" && object.apt_suite_building!=="" &&
+            object.rooms!==""&& object.square!==""&&object.details!==""&&object.real_estate!==""&&
+            object.price.sum!=="" && object.price.currency!=="" && object.price.type_of_order_of_real_estate!==""){
 
-        localStorage.setItem('customer', JSON.stringify(c.data));
-        console.log(c.data.my_realty_objectList)
-        // setRealtyList(c.data.my_realty_objectList)
-        let realtyList=c.data.my_realty_objectList;
-        console.log(realtyList)
-        let lastElement=realtyList.slice(-1)
-        console.log(lastElement[0].id)
+            const customer=JSON.parse(localStorage.getItem("customer"));
+            const formData = new FormData();
+            formData.append("body",JSON.stringify(object))
+            for (let i = 0; i < images.length; i++) {
+                console.log("imgs")
+                console.log(images)
+                formData.append(`images`, images[i])
+            }
+            // formData.append("images", images[0]);
+            console.log(images[0])
+            console.log(object)
+            formData.append("body",JSON.stringify(object));
+            await axios.post(`http://localhost:8080/${customer.id}/addObject`,formData)
+            // await AuthService.saveObjectV2(object, formData)
+            const c= await axios.get(`http://localhost:8080/customer/${customer.id}`);
 
-        navigate(`/object/${lastElement[0].id}`)
-        window.location.reload()
+            localStorage.setItem('customer', JSON.stringify(c.data));
+            console.log(c.data.my_realty_objectList)
+            // setRealtyList(c.data.my_realty_objectList)
+            let realtyList=c.data.my_realty_objectList;
+            console.log(realtyList)
+            let lastElement=realtyList.slice(-1)
+            console.log(lastElement[0].id)
+
+            navigate(`/object/${lastElement[0].id}`)
+            // window.location.reload()
+        }
+
     }
 
     const onInputChange = (e) => {    ///обовязкове інакше поля просто будуть read only
         setObject({ ...object,[e.target.name]: e.target.value });
+        setRequiredFieldForDistrict(false)
+        setRequiredFieldForAddress(false)
+        setRequiredFieldForAptSuiteBuilding(false)
+        setRequiredFieldForRooms(false)
+        setRequiredFieldForSquare(false)
+        setRequiredFieldForDetails(false)
+        setRequiredFieldForRealEstate(false)
     };
     const onSumChange = (e) => {
+        setRequiredFieldForPriceSum(false)
         setObject({...object,price:{
                 ...object.price,
                 sum: e.target.value
             }})
     }
     const onCurrencyChange=(e)=>{
+        setRequiredFieldForPriceCurrency(false)
         setObject({...object,price:{
                 ...object.price,
                 currency: e.target.value
             }})
     }
     const onTypeOfRealEstateChange=(e)=>{
+        setRequiredFieldForPriceTypeOfOrderOfRealEstate(false)
         setObject({...object,price:{
                 ...object.price,
                 type_of_order_of_real_estate: e.target.value
@@ -82,7 +142,7 @@ export default function AddObject(){
 
     const onFileChangeHandler=(e)=>{
 
-
+        setRequiredFieldForImages(false)
         setImages(e.target.files);
 
 
@@ -124,24 +184,30 @@ export default function AddObject(){
                                 <option value="Frankivskiy">Frankivskiy</option>
                                 <option value="Shevchenkivskiy">Shevchenkivskiy</option>
                             </select>
+                            {requiredFieldForDistrict&&(<span style={{color:"red"}}>cannot be null</span>)}
                         </div>
 
                         <div className="col-12">
                             <label htmlFor="inputAddress" className="form-label">Street Address</label>
                             <input type="text" className="form-control" name="address" value={object.address} onChange={(e) => onInputChange(e)} id="inputAddress" placeholder="1234 Main St"/>
+                            {requiredFieldForAddress&&(<span style={{color:"red"}}>cannot be null</span>)}
                         </div>
                         <div className="col-12">
                             <label htmlFor="inputAddress2" className="form-label">Apt,suite or building</label>
                             <input type="text" className="form-control" name="apt_suite_building" value={object.apt_suite_building} onChange={(e) => onInputChange(e)} id="inputAddress2"
                                    placeholder="Apt,suite or building"/>
+                            {requiredFieldForAptSuiteBuilding&&(<span style={{color:"red"}}>cannot be null</span>)}
                         </div>
                         <div className="col-md-4">
                             <label htmlFor="inputEmail4" className="form-label">Rooms</label>
                             <input type="number" className="form-control" name="rooms" value={object.rooms} onChange={(e) => onInputChange(e)} id="inputEmail4"/>
+                            {requiredFieldForRooms&&(<span style={{color:"red"}}>cannot be null</span>)}
+
                         </div>
                         <div className="col-md-4">
                             <label htmlFor="inputPassword4" className="form-label">Square</label>
                             <input type="number" className="form-control" name="square" value={object.square} onChange={(e) => onInputChange(e)} id="inputPassword4"/>
+                            {requiredFieldForSquare&&(<span style={{color:"red"}}>cannot be null</span>)}
                         </div>
                         <div className="col-md-4">
                             <label htmlFor="inputZip" className="form-label">Real estate</label>
@@ -152,6 +218,8 @@ export default function AddObject(){
                                 <option value="Garage">Garage</option>
                                 <option value="Land">Land</option>
                             </select>
+                            {requiredFieldForRealEstate&&(<span style={{color:"red"}}>cannot be null</span>)}
+
                         </div>
                         <div className="col-12"><br/>
                             Price
@@ -159,6 +227,7 @@ export default function AddObject(){
                         <div className="col-md-6">
                             <label htmlFor="inputCity" className="form-label">Sum</label>
                             <input type="number" name="sum" value={object.price.sum} onChange={(e) => onSumChange(e)}  className="form-control" id="inputCity"/>
+                            {requiredFieldForPriceSum&&(<span style={{color:"red"}}>cannot be null</span>)}
                         </div>
                         <div className="col-md-2">
                             <label htmlFor="inputZip" className="form-label">Currency</label>
@@ -168,6 +237,7 @@ export default function AddObject(){
                                 <option value="USD">USD</option>
                                 <option value="UAH">UAH</option>
                             </select>
+                            {requiredFieldForPriceCurrency&&(<span style={{color:"red"}}>cannot be null</span>)}
                         </div>
                         <div className="col-md-4">
                             <label htmlFor="inputState" className="form-label">Type of real estate</label>
@@ -177,6 +247,7 @@ export default function AddObject(){
                                 <option value="Rent_for_a_month">Rent for a month</option>
                                 <option value="Rent_per_day">Rent per day</option>
                             </select>
+                            {requiredFieldForPriceTypeOfOrderOfRealEstate&&(<span style={{color:"red"}}>cannot be null</span>)}
                         </div>
                         <section>
                             <label>
@@ -191,9 +262,11 @@ export default function AddObject(){
                                     multiple
                                     accept="image/png , image/jpeg, image/webp"
                                 />
-                            </label>
-                            <br />
 
+                            </label>
+
+                            <br />
+                            {/*{requiredFieldForImages&&(<span style={{color:"red"}}>cannot be null</span>)}*/}
                             {selectedImages.length>10?(          <p className="error">
                                 You can't upload more than 10 images! <br />
                                 <span>
@@ -206,6 +279,7 @@ export default function AddObject(){
                             <label htmlFor="inputDetails" className="form-label">Details</label>
                             <textarea style={{width:500,height:200,whiteSpace:"pre-line"}} name="details" onChange={onInputChange} rows="5" cols="30" placeholder="write something about your object">
                             </textarea>
+                            {requiredFieldForDetails&&(<span style={{color:"red"}}>cannot be null</span>)}
                         </div>
 
                         {selectedImages.length>10?(<div className="col-12">   <br/>

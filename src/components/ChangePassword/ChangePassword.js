@@ -1,8 +1,9 @@
 import {Link, Navigate, useNavigate} from "react-router-dom";
-import AuthService from "../../services/auth.service";
 import {useState} from "react";
 import axios from "axios";
 import {Button} from "react-bootstrap";
+
+import AuthService from "../../services/auth.service";
 
 
 export default function ChangePassword() {

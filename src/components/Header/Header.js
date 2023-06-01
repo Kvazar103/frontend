@@ -2,11 +2,9 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import {NavDropdown} from "react-bootstrap";
-import React, {useEffect, useRef, useState} from "react";
-import icon from '../../images/register_icon/icon.png';
-// import css from '../../images/register_icon/icon.module.css';
-import AddUser from "../AddUser/AddUser";
-import {Link, useNavigate} from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import {useNavigate} from "react-router-dom";
+
 import AuthService from "../../services/auth.service";
 import css from './addOrder.module.css'
 import "./addOrder.module.css"
@@ -17,7 +15,7 @@ function Header() {
     const [showForSell, setShowForSell] = useState(false);
     const [showForDaily, setShowForDaily] = useState(false);
 
-    const [currentUser,setCurrentUser]=useState(undefined);
+    const [currentUser,setCurrentUser]=useState("");
     const [url,setUrl]=useState("")
 
     let navigate = useNavigate();
@@ -40,29 +38,37 @@ function Header() {
     // }, []);
 
 
+    const customer=AuthService.getCurrentUser();
 
-    useEffect(()=>{
-        const customer=AuthService.getCurrentUser();
 
-        if(customer){
-            setCurrentUser(customer)
-            setUrl(`/${customer.id}/profile`)
-            console.log(customer)
-        }
-        // EventBus.on("logout", () => {
-        //     logOut();
-        // });
-        //
-        // return () => {
-        //     EventBus.remove("logout");
-        // };
-    },[])
+
+    // useEffect(()=>{
+    //     // const customer=AuthService.getCurrentUser();
+    //     if(customer){
+    //         setCurrentUser(customer)
+    //         setUrl(`/${customer.id}/profile`)
+    //      // document.getElementById("signed").style.display="block"
+    //         // console.log(customer)
+    //     }
+    //     // else {
+    //     //     document.getElementById("signed").style.display="none"
+    //     //
+    //     // }
+    //
+    //     // EventBus.on("logout", () => {
+    //     //     logOut();
+    //     // });
+    //     //
+    //     // return () => {
+    //     //     EventBus.remove("logout");
+    //     // };
+    // },[])
 
     const logOut=()=>{
         AuthService.logout();
         setCurrentUser(undefined);
         navigate("/");
-        window.location.reload();
+        // window.location.reload();
     };
 
     const showDropdownForRent = (e)=>{
@@ -91,7 +97,7 @@ function Header() {
                     {/*<Navbar.Brand id="search_on_header" hidden={true}><input type="search"/></Navbar.Brand>*/}
                     <Nav className="me-auto" >
 
-                        {currentUser&&<Nav.Link className={css.addOrder} href="/:id/addObject">Додати оголошення</Nav.Link>}
+                        {customer&&<Nav.Link className={css.addOrder} href="/:id/addObject">Додати оголошення</Nav.Link>}
                         <NavDropdown title="Оренда" id="navbarScrollingDropdown"
                                      onMouseEnter={showDropdownForRent}
                                      onMouseLeave={hideDropdownForRent}
@@ -150,17 +156,23 @@ function Header() {
                         </NavDropdown>
 
 
-                        {currentUser&&(<Navbar.Collapse className="justify-content-end">
-                            <Navbar.Text>
-                                &nbsp;&nbsp;Signed in as: <a href={url}>{currentUser.name}</a>
+                        {/*{currentUser&&(<Navbar.Collapse className="justify-content-end">*/}
+                        {/*    <Navbar.Text>*/}
+                        {/*        &nbsp;&nbsp;Signed in as: <a href={url}>{currentUser.name}</a>*/}
+                        {/*    </Navbar.Text>*/}
+                        {/*</Navbar.Collapse>)}*/}
+                        {/*style={{display:"block"}}*/}
+                        {customer&&(<Navbar.Collapse  className="justify-content-end">
+                            <Navbar.Text id={"signed"} >
+                                &nbsp;&nbsp;Signed in as: <a style={{cursor:"pointer"}} onClick={()=>navigate(`${customer.id}/profile`)}>{customer.name}</a>
                             </Navbar.Text>
                         </Navbar.Collapse>)}
 
-                        {currentUser?(<Nav.Link to={'/login'} onClick={logOut}>&nbsp;&nbsp;LogOut</Nav.Link>):
+                        {customer?(<Nav.Link to={'/login'} onClick={logOut}>&nbsp;&nbsp;LogOut</Nav.Link>):
                             (<Nav.Link href="/login">Login</Nav.Link>)
                         }
                         {
-                            currentUser?(<Nav.Link href="/login"></Nav.Link>):(<Nav.Link href="/register">Register</Nav.Link>)
+                            customer?(<Nav.Link href="/login"></Nav.Link>):(<Nav.Link href="/register">Register</Nav.Link>)
                         }
 
                             {/*<Nav.Link href="/login"> <img src={icon} className={css.icon}/></Nav.Link>*/}

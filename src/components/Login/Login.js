@@ -1,15 +1,11 @@
 import {Link, useNavigate} from "react-router-dom";
-import {useRef, useState} from "react";
-import axios from "axios";
-import AuthService from "../../services/auth.service";
-import CheckButton from "react-validation/build/button";
+import {useState} from "react";
 
+import AuthService from "../../services/auth.service";
 
 
     const Login = () => {
         let navigate = useNavigate();
-
-
 
         const [login, setLogin] = useState("");
         const [password, setPassword] = useState("");
@@ -32,9 +28,13 @@ import CheckButton from "react-validation/build/button";
 
 
                 AuthService.login(login, password).then(
-                    () => {
+                    (value) => {
+                        console.log(value)
+                        console.log("login trig")
+                        localStorage.setItem("customer",JSON.stringify(value))
                         navigate("/");
-                        // window.location.reload();
+                        // window.location.reload(false);
+
                     },
                     (error) => {
                         const resMessage =

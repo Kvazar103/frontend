@@ -1,8 +1,11 @@
 import {Link, useNavigate} from "react-router-dom";
 import {useState} from "react";
 import axios from "axios";
-import css from "../../images/lviv_city/lviv_sunrises_and_sunsets.module.css";
+import { useForm } from 'react-hook-form';
+
 import AuthService from "../../services/auth.service";
+import {usePasswordValidation} from "./usePasswordValidation";
+import checkMark from '../../images/check_mark/check-mark-button-svgrepo-com.png'
 
 
 export default function AddUser(){
@@ -17,36 +20,92 @@ export default function AddUser(){
         phone_number:"",
     });
     const [avatar,setAvatar]=useState('');
+    const [passwordToConfirm,setPasswordToConfirm]=useState("");
+    const [emailMsg,setEmailMsg]=useState(false);
+    const [requireMsgForName,setRequireMsgForName]=useState(false);
+    const [requireMsgForSurname,setRequireMsgForSurname]=useState(false);
+    const [requireMsgForLogin,setRequireMsgForLogin]=useState(false);
+    const [requireMsgForPhoneNumber,setRequireMsgForPhoneNumber]=useState(false);
+    const [requireMsgForFile,setRequireMsgForFile]=useState(false);
+
 
     const { name, surname, email,login,password,phone_number } = user;
 
+    const [
+        validLength,
+        hasNumber,
+        upperCase,
+        lowerCase
+    ] = usePasswordValidation({
+        passwordToCheck: user.password,
+    });
+
+    const {
+        register,
+        handleSubmit,
+        formState: { errors,isValid }
+    } = useForm({ mode: 'all'});
+
     const onInputChange = (e) => {
         setUser({ ...user, [e.target.name]: e.target.value });
+        setEmailMsg(false)
+        setRequireMsgForName(false)
+        setRequireMsgForSurname(false)
+        setRequireMsgForLogin(false)
+        setRequireMsgForPhoneNumber(false)
+
     };
     const onFileChange = (e) => {
       setAvatar(e.target.files)
+      setRequireMsgForFile(false)
     }
 
     const onSubmit = async (e) => {
         e.preventDefault();
 
+        if(user.name === ""){
+            setRequireMsgForName(true)
+        }
+        if(user.surname===""){
+            setRequireMsgForSurname(true)
+        } if(user.login===""){
+            setRequireMsgForLogin(true)
+        }
+        if(user.phone_number===""){
+            setRequireMsgForPhoneNumber(true)
+        }
+        if(avatar===""){
+            setRequireMsgForFile(true)
+        }
+        console.log(errors)
+        if(errors.email){
+            console.log(errors.email)
+        }
         const formData=new FormData();
         formData.append("customer",JSON.stringify(user))
         formData.append("avatar",avatar[0])
-        console.log(user)
-        console.log(avatar)
-        await axios.post("http://localhost:8080/save",formData);
-        // navigate("/");
-        AuthService.login(user.login,user.password).then(()=>{
-            navigate("/");
-            window.location.reload();
-        })
+
+        if(user.email === ""){
+            setEmailMsg(true)
+        }
+        if((validLength && hasNumber && upperCase && lowerCase)&&(user.email!=="")&&(!errors.email)&&(user.name!=="" && user.surname!==""&&user.phone_number!=="" && user.login!=="")){
+            console.log("everything true")
+            console.log(user)
+            console.log(avatar)
+            await axios.post("http://localhost:8080/save",formData);
+            // navigate("/");
+            AuthService.login(user.login,user.password).then(()=>{
+                navigate("/");
+                // window.location.reload();
+            })
+        }
+
     };
 
 
 
     return (
-        <div className="container">
+        <div className="container" style={{textAlign:"left"}}>
             <div className="row">
                 <div className="col-md-6 offset-md-3 border rounded p-4 mt-2 shadow">
                     <h2 className="text-center m-4">Register User</h2>
@@ -65,6 +124,7 @@ export default function AddUser(){
                                 onChange={(e) => onInputChange(e)}
                             />
                         </div>
+                        {requireMsgForName?<span style={{color:"red"}}>required field</span>:""}
                         <div className="mb-3">
                             <label htmlFor="Surname" className="form-label">
                                 Surname
@@ -78,6 +138,8 @@ export default function AddUser(){
                                 onChange={(e) => onInputChange(e)}
                             />
                         </div>
+                        {requireMsgForSurname?<span style={{color:"red"}}>required field</span>:""}
+
                         <div className="mb-3">
                             <label htmlFor="Email" className="form-label">
                                 E-mail
@@ -88,8 +150,11 @@ export default function AddUser(){
                                 placeholder="Enter your e-mail address"
                                 name="email"
                                 value={email}
+                                {...register("email",{required:true, pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i})}
                                 onChange={(e) => onInputChange(e)}
                             />
+                            {errors.email && <span style={{color:"red"}}>invalid email</span>}<br/>
+                            {emailMsg && <span style={{color:"red"}}>email cannot be null</span>}
                         </div>
                         <div className="mb-3">
                             <label htmlFor="Login" className="form-label">
@@ -104,6 +169,7 @@ export default function AddUser(){
                                 onChange={(e) => onInputChange(e)}
                             />
                         </div>
+                        {requireMsgForLogin?<span style={{color:"red"}}>required field</span>:""}
                         <div className="mb-3">
                             <label htmlFor="Password" className="form-label">
                                 Password
@@ -114,8 +180,39 @@ export default function AddUser(){
                                 placeholder="Enter your password"
                                 name="password"
                                 value={password}
+                                {...register("password",{required:true,minLength:{value:6,message:"Minimum six characters"}})}
                                 onChange={(e) => onInputChange(e)}
                             />
+                            {/*{errors.password && <span style={{color:"red"}}>{errors.password.message}</span>}*/}
+
+                            <div>
+
+                                  <div>
+                                      {validLength?
+                                      <div>
+                                          <img src={checkMark} width={"20px"} height={"20px"}/><span style={{color:"#77b255"}}>Valid Length 6</span>
+                                      </div>:(<span style={{color:"lightgray"}}>Valid length 6</span>)}
+                                  </div>
+
+                               <div>
+                                   {hasNumber?
+                                   <div>
+                                       <img src={checkMark} width={"20px"} height={"20px"}/><span style={{color:"#77b255"}}>Has a number</span>
+                                   </div>:(<span style={{color:"lightgray"}}>Has a number</span>)}
+                               </div>
+                               <div>
+                                   {upperCase?
+                                    <div>
+                                        <img src={checkMark} width={"20px"} height={"20px"}/><span style={{color:"#77b255"}}>Upper character</span>
+                                    </div>:(<span style={{color:"lightgray"}}>Upper character</span>)}
+                               </div>
+                               <div>
+                                   {lowerCase?
+                                       <div>
+                                           <img src={checkMark} width={"20px"} height={"20px"}/><span style={{color:"#77b255"}}>Lower character</span>
+                                       </div>:(<span style={{color:"lightgray"}}>Lower character</span>)}
+                               </div>
+                            </div>
                         </div>
                         <div className="mb-3">
                             <label htmlFor="Phone number" className="form-label">
@@ -127,9 +224,12 @@ export default function AddUser(){
                                 placeholder="Enter your phone number"
                                 name="phone_number"
                                 value={phone_number}
+                                {...register("phone_number",{required:true,minLength:{value:6,message:"Minimum seven characters"}})}
                                 onChange={(e) => onInputChange(e)}
                             />
+                            {errors.phone_number&&<span style={{color:'red'}}>{errors.phone_number.message}</span>}
                         </div>
+                        {requireMsgForPhoneNumber?<span style={{color:"red"}}>required field</span>:""}
                         <div className="mb-3">
                             <label htmlFor="Choose your avatar" className="form-label">
                                 Choose your avatar
@@ -140,7 +240,8 @@ export default function AddUser(){
                                    accept="image/png, image/jpeg"
                                    onChange={onFileChange}/>
                         </div>
-                        <button type="submit" className="btn btn-outline-primary">
+                        {requireMsgForFile&&<span style={{color:"red"}}>choose avatar</span>}<br/>
+                        <button  type="submit" className="btn btn-outline-primary">
                             Submit
                         </button>
                         <Link className="btn btn-outline-danger mx-2" to="/">

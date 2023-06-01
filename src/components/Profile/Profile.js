@@ -1,11 +1,11 @@
-import AuthService from "../../services/auth.service";
 import {useEffect, useMemo, useState} from "react";
 import axios from "axios";
-import css from './profile.module.css'
-import {Button, Form, Stack} from "react-bootstrap";
-import Pagination from "./Pagination";
+import {Button, Form} from "react-bootstrap";
 import {useNavigate} from "react-router-dom";
-// import RealtyObjectPaginationElement from "./RealtyObjectPaginationElement";
+
+import css from './profile.module.css'
+import Pagination from "./Pagination";
+import AuthService from "../../services/auth.service";
 
 let pageSize = 5;
 function Profile (){
@@ -44,6 +44,7 @@ function Profile (){
         axios.get("http://localhost:8080/customer/"+customerIdFromUrl)
             .then(value => {
                 console.log(value)
+                console.log("f")
                 setCustomer(value.data)
                 setCustomerRealtyList(value.data.my_realty_objectList)
                 setCustomerAddedToFavorite(value.data.added_to_favorites)

@@ -2,9 +2,9 @@ import lviv_sunrises_and_sunsets from "../../images/lviv_city/lviv_sunrises_and_
 import css from "../../images/lviv_city/lviv_sunrises_and_sunsets.module.css";
 import RealtyObjectsSlider from "../RealtySlider/RealtyObjectsSlider";
 import search_black_and_yellow from "../../images/search_icon/search_black_and_yellow.png"
-import {useState} from "react";
-import {useNavigate} from "react-router-dom";
 import './titleStyle.css'
+
+import {useNavigate} from "react-router-dom";
 
 
 export default function Background(props){

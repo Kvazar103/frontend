@@ -1,4 +1,3 @@
-import css from './FooterStyle.module.css'
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 

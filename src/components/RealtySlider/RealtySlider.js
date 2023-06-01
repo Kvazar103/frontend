@@ -1,10 +1,8 @@
-import {Component, useEffect, useState} from "react";
-import Slider from "react-slick";
+import { useEffect, useState} from "react";
+import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
 import css from "./slider.module.css";
-import axios from "axios";
-import {forEach} from "react-bootstrap/ElementChildren";
-import {useNavigate} from "react-router-dom";
 
 
 export default function RealtySlider(props){
