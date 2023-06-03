@@ -53,42 +53,6 @@ function Profile (){
             })
     },[customerIdFromUrl])
 
-    // useEffect(()=>{
-    //       axios.get("http://localhost:8080/customer/"+customerIdFromUrl)
-    //         .then(value => {
-    //             if (((currentUser!=null) && (currentUser.id !== value.data.id))||(currentUser==null)) {
-    //                 console.log(currentUser)
-    //                 console.log("curr and cus")
-    //                 // console.log(customer)
-    //                 document.getElementById("edit_profile_button").hidden=true;
-    //             }
-    //         })
-    //
-    // },[currentUser, customer, customer.id, customerIdFromUrl])
-
-    // useEffect(()=>{
-    //     // axios.get("http://localhost:8080/customer/"+customerIdFromUrl)
-    //     //     .then(value => {
-    //     //         if (((currentUser!=null) && (currentUser.id !== value.data.id))||(currentUser==null)) {
-    //     //             console.log(currentUser)
-    //     //             console.log("curr and cus")
-    //     //             // console.log(customer)
-    //     //             document.getElementById("edit_profile_button").hidden=true;
-    //     //         }
-    //     //     })
-    //     const fetchCustomer=async ()=>{
-    //         let res=await axios.get("http://localhost:8080/customer/"+customerIdFromUrl)
-    //                 if (((currentUser!=null) && (currentUser.id === res.data.id))) {
-    //                     console.log(currentUser)
-    //                     console.log("curr and cus")
-    //                     // console.log(customer)
-    //                     document.getElementById("edit_profile_button").hidden=false;
-    //                 }
-    //     };
-    //     fetchCustomer();
-    //
-    // },[currentUser, customer, customer.id, customerIdFromUrl])
-
     useEffect(()=>{
               axios.get("http://localhost:8080/customer/"+customerIdFromUrl)
                 .then(value => {
@@ -194,7 +158,7 @@ function Profile (){
             return(
                 <div className={css.one_realty}>
                     <div>
-                        <a href={`http://localhost:3000/object/${item.id}`}> <img src={x} width="120px" height="93px"/></a>
+                        <a onClick={()=>navigate(`/object/${item.id}`)} style={{cursor:"pointer"}}> <img src={x} width="120px" height="93px"/></a>
                     </div>
                     <div style={{textAlign:"left",width:"142px"}}>
                         {/*{item.address}*/}
@@ -202,7 +166,7 @@ function Profile (){
                         <span>{item.price?item.price.sum:"0"} {item.price?item.price.currency:"0"}{monthOrDay?monthOrDay:""}</span>
                     </div>
                     <div style={{textAlign:"left",width:"350px"}}>
-                        <a href={`http://localhost:3000/object/${item.id}`}>
+                        <a onClick={()=>navigate(`/object/${item.id}`)} style={{cursor:"pointer",color:"blue"}}>
                             <span>{item.address} {item.apt_suite_building},{item.city},{item.district} district</span></a><br/>
                         <span>{item.square} sq.m</span>
                     </div>

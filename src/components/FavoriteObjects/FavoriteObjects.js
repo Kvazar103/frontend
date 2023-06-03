@@ -4,7 +4,7 @@ import {useEffect} from "react";
 import Pagination from "../Profile/Pagination";
 import axios from "axios";
 import css from "../Profile/profile.module.css";
-import {Navigate} from "react-router-dom";
+import {Navigate, useNavigate} from "react-router-dom";
 
 
 let pageSize=4;
@@ -12,6 +12,7 @@ export default function FavoriteObjects() {
 
     let currentUser=AuthService.getCurrentUser();
     const [currentPage, setCurrentPage] = useState(1);
+    let navigate=useNavigate();
 
     const [realtyCustomers,setRealtyCustomers]=useState([]);
 
@@ -71,7 +72,7 @@ export default function FavoriteObjects() {
             }
             return (<div className={css.one_realty}>
                 <div>
-                    <a href={`http://localhost:3000/object/${realtyObject.id}`}> <img src={x} width="120px" height="93px"/></a>
+                    <a style={{cursor:"pointer"}} onClick={()=>navigate(`/object/${realtyObject.id}`)}> <img src={x} width="120px" height="93px"/></a>
                 </div>
                 <div style={{textAlign: "left", width: "142px"}}>
                     {/*{item.address}*/}
@@ -79,8 +80,8 @@ export default function FavoriteObjects() {
                     <span>{realtyObject.price ? realtyObject.price.sum : "0"} {realtyObject.price ? realtyObject.price.currency : "0"}{monthOrDay ? monthOrDay : ""}</span>
                 </div>
                 <div style={{textAlign: "left", width: "350px"}}>
-                    <a href={`http://localhost:3000/object/${realtyObject.id}`}>
-                        <span>{realtyObject.address} {realtyObject.apt_suite_building},{realtyObject.city},{realtyObject.district} district</span></a><br/>
+                    <a style={{cursor:"pointer"}} onClick={()=>navigate(`/object/${realtyObject.id}`)}>
+                        <span style={{color:"blue"}}>{realtyObject.address} {realtyObject.apt_suite_building},{realtyObject.city},{realtyObject.district} district</span></a><br/>
                     <span>{realtyObject.square} sq.m</span>
                 </div>
 

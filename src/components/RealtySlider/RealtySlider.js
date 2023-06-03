@@ -38,7 +38,7 @@ export default function RealtySlider(props){
     const handleClick = (e) => {
         e.preventDefault();
         navigate("/object/"+item.id)
-        window.location.reload()
+        // window.location.reload()
     }
     let x=`http://localhost:8080/images/${nameSurname}/${images[0]}`;
     console.log(x)

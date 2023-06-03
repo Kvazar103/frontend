@@ -91,8 +91,6 @@ export default function UpdateUser() {
         localStorage.setItem('customer',JSON.stringify(c.data))
 
         navigate(`/${idFromUrl[0]}/profile`);
-        window.location.reload();
-
 
     };
 

@@ -228,7 +228,7 @@ export default function UpdateRealtyObject() {
         localStorage.setItem('customer',JSON.stringify(c.data));
 
         navigate(`/object/${idFromUrl[0]}`)
-        window.location.reload();
+        // window.location.reload();
     };
 
 

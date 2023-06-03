@@ -161,6 +161,7 @@ function RealtyObject(){
     const [open, setOpen] = useState(false);
     const closeModal = () => setOpen(false);
 
+
     function handleChange(index) {
         setCurrentIndex(index);
     }
@@ -256,7 +257,7 @@ function RealtyObject(){
             const c = await axios.get(`http://localhost:8080/customer/${currentUser.id}`)
             localStorage.setItem('customer', JSON.stringify(c.data))
             navigate(`/${currentUser.id}/profile`)
-            window.location.reload();
+            // window.location.reload();
         }
     }
 
@@ -307,7 +308,7 @@ function RealtyObject(){
                 </Button><br/><br/>
                 <Form.Group className={css.form_image}>
                     <div>
-                        <a href={`/${userObject.id}/profile`}>
+                        <a  onClick={()=>navigate(`/${userObject.id}/profile`)}>
                     <img src={img} width="80px" height="80px"/>
                         </a>
                     </div>
@@ -426,7 +427,7 @@ function RealtyObject(){
             </div>
             <div className={css.for_details}>
                {/*<h3 className={css.for_details_h3}>details</h3>*/}
-                 <p className={css.p_wrap}>
+                 <p id={"realty_details"} className={css.p_wrap}>
                      {realtyDetails}
                  </p>
             </div>

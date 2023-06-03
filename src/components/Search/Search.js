@@ -5,13 +5,17 @@ import _ from "lodash";
 
 import search_black_and_yellow from "../../images/search_icon/search_black_and_yellow.png";
 import css from "../Profile/profile.module.css";
+import {useNavigate} from "react-router-dom";
 
 
 export default function Search() {
+
     let url=window.location.toString();
 
     // console.log(url);
     // console.log(url.split("/",5))
+    let navigate=useNavigate();
+
     let splittedUrl=url.split("/",5)
 
     let typedByUserText=splittedUrl[splittedUrl.length-1]
@@ -28,6 +32,7 @@ export default function Search() {
         selectData:`${selectedByUserType}`,
         inputData:`${decodedTypedText}`
     })
+
     const [currency,setCurrency]=useState("");
     const [sumFrom,setSumFrom]=useState(0);
     const [sumTo,setSumTo]=useState(0);
@@ -113,9 +118,10 @@ export default function Search() {
                 console.log(value)
                 // console.log(value.data)
                 // eslint-disable-next-line no-restricted-globals
-                location.replace(`http://localhost:3000/${data.selectData}/${data.inputData}/search`)
-
+                // location.replace(`http://localhost:3000/${data.selectData}/${data.inputData}/search`)
+                navigate(`/${data.selectData}/${data.inputData}/search`)
                 setSearchedRealtyObjectList(value.data);
+                // setData({selectData: data.selectData,inputData:data.inputData})
             })
     }
 
@@ -363,7 +369,7 @@ export default function Search() {
                     return(
                         <div className={css.one_realty}>
                             <div>
-                                <a href={`http://localhost:3000/object/${realtyObject.id}`}> <img src={x} width="120px" height="93px"/></a>
+                                <a style={{cursor:"pointer"}} onClick={()=>navigate(`/object/${realtyObject.id}`)}> <img src={x} width="120px" height="93px"/></a>
                             </div>
                             <div style={{textAlign:"left",width:"142px"}}>
                                 {/*{item.address}*/}
@@ -371,8 +377,8 @@ export default function Search() {
                                 <span>{realtyObject.price?realtyObject.price.sum:"0"} {realtyObject.price?realtyObject.price.currency:"0"}{monthOrDay?monthOrDay:""}</span>
                             </div>
                             <div style={{textAlign:"left",width:"350px"}}>
-                                <a href={`http://localhost:3000/object/${item.id}`}>
-                                    <span>{realtyObject.address} {realtyObject.apt_suite_building},{realtyObject.city},{realtyObject.district} district</span></a><br/>
+                                <a style={{cursor:"pointer"}} onClick={()=>navigate(`/object/${realtyObject.id}`)}>
+                                    <span style={{color:"blue"}}>{realtyObject.address} {realtyObject.apt_suite_building},{realtyObject.city},{realtyObject.district} district</span></a><br/>
                                 <span>{realtyObject.square} sq.m ,{realtyObject.rooms} rooms</span>
                             </div>
                         </div>)

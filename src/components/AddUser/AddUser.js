@@ -27,6 +27,8 @@ export default function AddUser(){
     const [requireMsgForLogin,setRequireMsgForLogin]=useState(false);
     const [requireMsgForPhoneNumber,setRequireMsgForPhoneNumber]=useState(false);
     const [requireMsgForFile,setRequireMsgForFile]=useState(false);
+    const [requireMsgForPhone,setRequireMsgForPhone]=useState('')
+    const [loginAlreadyExists,setLoginAlreadyExists]=useState(false);
 
 
     const { name, surname, email,login,password,phone_number } = user;
@@ -53,6 +55,8 @@ export default function AddUser(){
         setRequireMsgForSurname(false)
         setRequireMsgForLogin(false)
         setRequireMsgForPhoneNumber(false)
+        setRequireMsgForPhone('');
+        setLoginAlreadyExists(false);
 
     };
     const onFileChange = (e) => {
@@ -77,6 +81,10 @@ export default function AddUser(){
         if(avatar===""){
             setRequireMsgForFile(true)
         }
+        if(user.phone_number.length<6){
+            setRequireMsgForPhone("Min phone number length:6")
+        }
+
         console.log(errors)
         if(errors.email){
             console.log(errors.email)
@@ -92,7 +100,12 @@ export default function AddUser(){
             console.log("everything true")
             console.log(user)
             console.log(avatar)
-            await axios.post("http://localhost:8080/save",formData);
+            await axios.post("http://localhost:8080/save",formData).catch((value)=>{
+                console.log(value)
+                console.log("error(Найімовірніше, вже подібний логін існує)")
+                //тут помилка може появлятися тільки якщо такий самий логін вже існує
+                setLoginAlreadyExists(true)
+            })
             // navigate("/");
             AuthService.login(user.login,user.password).then(()=>{
                 navigate("/");
@@ -170,6 +183,7 @@ export default function AddUser(){
                             />
                         </div>
                         {requireMsgForLogin?<span style={{color:"red"}}>required field</span>:""}
+                        {loginAlreadyExists&&<span style={{color:"red"}}>login already exists</span>}
                         <div className="mb-3">
                             <label htmlFor="Password" className="form-label">
                                 Password
@@ -219,16 +233,20 @@ export default function AddUser(){
                                 Phone number
                             </label>
                             <input
-                                type={"tel"}
+                                type={"number"}
                                 className="form-control"
                                 placeholder="Enter your phone number"
                                 name="phone_number"
+                                pattern="[0-9]*"
+                                inputMode="numeric"
                                 value={phone_number}
-                                {...register("phone_number",{required:true,minLength:{value:6,message:"Minimum seven characters"}})}
+                                {...register("phone_number",{required:true,minLength:{value:6,message:"Minimum seven characters"},valueAsNumber:true})}
                                 onChange={(e) => onInputChange(e)}
                             />
                             {errors.phone_number&&<span style={{color:'red'}}>{errors.phone_number.message}</span>}
+
                         </div>
+                        {requireMsgForPhone&&<span style={{color:"red"}}>{requireMsgForPhone}</span>}
                         {requireMsgForPhoneNumber?<span style={{color:"red"}}>required field</span>:""}
                         <div className="mb-3">
                             <label htmlFor="Choose your avatar" className="form-label">
