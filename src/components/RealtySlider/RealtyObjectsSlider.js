@@ -14,9 +14,16 @@ export default function RealtyObjectsSlider() {
 
     }
 
-    useEffect(()=>{
 
-        const c=axios.get("http://localhost:8080/get12RandomRealtyObject")
+    useEffect(()=>{
+        let token=JSON.parse(localStorage.getItem('token'));
+        const config={
+            headers:{
+                Authorization:`${token}`
+            }
+        }
+
+        const c=axios.get("http://localhost:8080/get12RandomRealtyObject",config)
         c.then(value =>{
             setData(value.data)
             }

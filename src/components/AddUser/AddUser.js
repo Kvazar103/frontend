@@ -2,6 +2,7 @@ import {Link, useNavigate} from "react-router-dom";
 import {useState} from "react";
 import axios from "axios";
 import { useForm } from 'react-hook-form';
+import validator from 'validator'
 
 import AuthService from "../../services/auth.service";
 import {usePasswordValidation} from "./usePasswordValidation";
@@ -20,7 +21,6 @@ export default function AddUser(){
         phone_number:"",
     });
     const [avatar,setAvatar]=useState('');
-    const [passwordToConfirm,setPasswordToConfirm]=useState("");
     const [emailMsg,setEmailMsg]=useState(false);
     const [requireMsgForName,setRequireMsgForName]=useState(false);
     const [requireMsgForSurname,setRequireMsgForSurname]=useState(false);
@@ -29,7 +29,6 @@ export default function AddUser(){
     const [requireMsgForFile,setRequireMsgForFile]=useState(false);
     const [requireMsgForPhone,setRequireMsgForPhone]=useState('')
     const [loginAlreadyExists,setLoginAlreadyExists]=useState(false);
-
 
     const { name, surname, email,login,password,phone_number } = user;
 
@@ -59,6 +58,7 @@ export default function AddUser(){
         setLoginAlreadyExists(false);
 
     };
+
     const onFileChange = (e) => {
       setAvatar(e.target.files)
       setRequireMsgForFile(false)
@@ -85,6 +85,7 @@ export default function AddUser(){
             setRequireMsgForPhone("Min phone number length:6")
         }
 
+
         console.log(errors)
         if(errors.email){
             console.log(errors.email)
@@ -96,7 +97,7 @@ export default function AddUser(){
         if(user.email === ""){
             setEmailMsg(true)
         }
-        if((validLength && hasNumber && upperCase && lowerCase)&&(user.email!=="")&&(!errors.email)&&(user.name!=="" && user.surname!==""&&user.phone_number!=="" && user.login!=="")){
+        if((validLength && hasNumber && upperCase && lowerCase)&&(user.email!=="")&&(!errors.email)&&(user.name!=="" && user.surname!==""&&user.phone_number!=="" && user.login!==""&&user.phone_number.length>=6)){
             console.log("everything true")
             console.log(user)
             console.log(avatar)
@@ -237,16 +238,16 @@ export default function AddUser(){
                                 className="form-control"
                                 placeholder="Enter your phone number"
                                 name="phone_number"
-                                pattern="[0-9]*"
-                                inputMode="numeric"
+                                // pattern="[0-9]*"
+                                // inputMode="numeric"
                                 value={phone_number}
-                                {...register("phone_number",{required:true,minLength:{value:6,message:"Minimum seven characters"},valueAsNumber:true})}
+                                {...register("phone_number",{required:true,minLength:{value:6,message:"Minimum six characters"},valueAsNumber:true})}
                                 onChange={(e) => onInputChange(e)}
                             />
-                            {errors.phone_number&&<span style={{color:'red'}}>{errors.phone_number.message}</span>}
+                            {errors.phone_number&&<span style={{color:'red'}}>{errors.phone_number.message}Only numbers!</span>}
 
                         </div>
-                        {requireMsgForPhone&&<span style={{color:"red"}}>{requireMsgForPhone}</span>}
+                        {requireMsgForPhone&&<span style={{color:"red"}}>{requireMsgForPhone}</span>}<br/>
                         {requireMsgForPhoneNumber?<span style={{color:"red"}}>required field</span>:""}
                         <div className="mb-3">
                             <label htmlFor="Choose your avatar" className="form-label">

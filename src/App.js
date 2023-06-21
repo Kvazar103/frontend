@@ -19,7 +19,6 @@ import FavoriteObjects from "./components/FavoriteObjects/FavoriteObjects";
 import UpdateRealtyObject from "./components/UpdateRealtyObject/UpdateRealtyObject";
 import Search from "./components/Search/Search";
 
-
 function App() {
 
     return (

@@ -100,7 +100,7 @@ function Header() {
             <Navbar bg="dark" variant="dark"  fixed="top">
                 <Container>
                     <Navbar.Brand className={"for_title"} onClick={()=>(navigate("/"))} style={{cursor:"pointer"}}
-                    >Нерухомості Львів</Navbar.Brand>
+                    >Нерухомості України</Navbar.Brand>
                     {/*<Navbar.Brand id="search_on_header" hidden={true}><input type="search"/></Navbar.Brand>*/}
                     <Nav className="me-auto" >
 

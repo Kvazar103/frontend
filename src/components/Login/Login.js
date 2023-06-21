@@ -9,7 +9,6 @@ import AuthService from "../../services/auth.service";
 
         const [login, setLogin] = useState("");
         const [password, setPassword] = useState("");
-        // const [loading, setLoading] = useState(false);
         const [message, setMessage] = useState(null);
 
         const onChangeLogin = (e) => {
@@ -31,10 +30,9 @@ import AuthService from "../../services/auth.service";
                     (value) => {
                         console.log(value)
                         console.log("login trig")
-                        localStorage.setItem("customer",JSON.stringify(value))
+                        localStorage.setItem("customer",JSON.stringify(value.data))
+                        localStorage.setItem("token",JSON.stringify(value.headers.authorization))
                         navigate("/");
-                        // window.location.reload(false);
-
                     },
                     (error) => {
                         const resMessage =
@@ -50,9 +48,6 @@ import AuthService from "../../services/auth.service";
                     }
                 );
             }
-
-
-
 
         return (
            <div className="container">

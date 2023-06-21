@@ -38,7 +38,7 @@ export default function Background(props){
         <div style={{position:"relative",top:"-340px"}}>
             <form onSubmit={(e)=>onClickSearchButton(e)}>
                 <div style={{color:"yellow",fontSize:"100px"}} className="for_title">
-                    Нерухомість Львів
+                    Нерухомість Україна
                 </div>
             <select id="select_type" name="selectData" style={{height:"45px",width:"100px"}}
                     // value={data.selectData}

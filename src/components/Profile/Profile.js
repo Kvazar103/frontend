@@ -109,7 +109,7 @@ function Profile (){
                     <div className="col-4 text-muted ">Email:</div>
                     <div className="col-8">&nbsp;&nbsp;{customer.email}</div>
                 </div>
-                <Button id="edit_profile_button" onClick={onUpdateClick} style={{marginRight:"83px",marginTop:"18px"}} variant="success" hidden={true}>Update profile</Button>
+                <Button id="edit_profile_button" onClick={onUpdateClick} style={{position:"absolute",top:"216px",right:"1020px"}} variant="success" hidden={true}>Update profile</Button>
                 <Button id="change_password_profile_button" onClick={onChangePasswordClick}  style={{position:"absolute",top:"216px",right:"850px"}} variant="success" hidden={true}>Change password</Button>
                 <Button id="saved_objects_button" onClick={onSavedObjectsClick} style={{position:"absolute",top:"216px",right:"710px"}} hidden={true}>Saved objects</Button>
                 <Button id="delete_profile_button" style={{position:"absolute",top:"216px",right:"570px"}} variant="danger" hidden={true}>Delete profile</Button>

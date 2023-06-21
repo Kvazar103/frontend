@@ -3,6 +3,7 @@ import axios from "axios";
 import {useNavigate} from "react-router-dom";
 
 import css from './FormStyle.module.css'
+import {useForm} from "react-hook-form";
 
 export default function AddObject(){
 
@@ -28,14 +29,20 @@ export default function AddObject(){
     const [requiredFieldForDistrict,setRequiredFieldForDistrict]=useState(false);
     const [requiredFieldForAddress,setRequiredFieldForAddress]=useState(false);
     const [requiredFieldForAptSuiteBuilding,setRequiredFieldForAptSuiteBuilding]=useState(false);
-    const [requiredFieldForRooms,setRequiredFieldForRooms]=useState(false);
-    const [requiredFieldForSquare,setRequiredFieldForSquare]=useState(false);
+    const [requiredFieldForRooms,setRequiredFieldForRooms]=useState("");
+    const [requiredFieldForSquare,setRequiredFieldForSquare]=useState("");
     const [requiredFieldForDetails,setRequiredFieldForDetails]=useState(false);
     const [requiredFieldForRealEstate,setRequiredFieldForRealEstate]=useState(false);
-    const [requiredFieldForPriceSum,setRequiredFieldForPriceSum]=useState(false)
+    const [requiredFieldForPriceSum,setRequiredFieldForPriceSum]=useState("")
     const [requiredFieldForPriceCurrency,setRequiredFieldForPriceCurrency]=useState(false)
     const [requiredFieldForPriceTypeOfOrderOfRealEstate,setRequiredFieldForPriceTypeOfOrderOfRealEstate]=useState(false);
     const [requiredFieldForImages,setRequiredFieldForImages]=useState(false);
+
+    const {
+        register,
+        handleSubmit,
+        formState: { errors,isValid }
+    } = useForm({ mode: 'all'});
 
     const handleSave =async (e) => {
         e.preventDefault();
@@ -51,10 +58,14 @@ export default function AddObject(){
             setRequiredFieldForAptSuiteBuilding(true)
         }
         if(object.rooms===""){
-            setRequiredFieldForRooms(true)
+            setRequiredFieldForRooms("Rooms cannot be null")
+        }else if(object.rooms<=0){
+            setRequiredFieldForRooms("Please select a value that is no less than 1")
         }
         if(object.square===""){
-            setRequiredFieldForSquare(true)
+            setRequiredFieldForSquare("Square cannot be null")
+        }else if(object.square<=0){
+            setRequiredFieldForSquare("Please select a value that is no less than 1")
         }
         if(object.details===""){
             setRequiredFieldForDetails(true)
@@ -63,7 +74,9 @@ export default function AddObject(){
             setRequiredFieldForRealEstate(true)
         }
         if(object.price.sum===""){
-            setRequiredFieldForPriceSum(true)
+            setRequiredFieldForPriceSum("Sum cannot be null")
+        }else if(object.price.sum<=0){
+            setRequiredFieldForPriceSum("Please select a value that is no less than 1")
         }
         if (object.price.currency===""){
             setRequiredFieldForPriceCurrency(true)
@@ -76,10 +89,17 @@ export default function AddObject(){
         // }
         if(object.district !== "" && object.address!=="" && object.apt_suite_building!=="" &&
             object.rooms!==""&& object.square!==""&&object.details!==""&&object.real_estate!==""&&
-            object.price.sum!=="" && object.price.currency!=="" && object.price.type_of_order_of_real_estate!==""){
+            object.price.sum!=="" && object.price.currency!=="" && object.price.type_of_order_of_real_estate!=="" &&
+            object.price.sum>=0 &&object.rooms>=0 && object.square>=0){
 
             const customer=JSON.parse(localStorage.getItem("customer"));
             const formData = new FormData();
+            let token=JSON.parse(localStorage.getItem('token'));
+            const config={
+                headers:{
+                    Authorization:`${token}`
+                }
+            }
             formData.append("body",JSON.stringify(object))
             for (let i = 0; i < images.length; i++) {
                 console.log("imgs")
@@ -90,7 +110,7 @@ export default function AddObject(){
             console.log(images[0])
             console.log(object)
             formData.append("body",JSON.stringify(object));
-            await axios.post(`http://localhost:8080/${customer.id}/addObject`,formData)
+            await axios.post(`http://localhost:8080/${customer.id}/addObject`,formData,config)
             // await AuthService.saveObjectV2(object, formData)
             const c= await axios.get(`http://localhost:8080/customer/${customer.id}`);
 
@@ -119,7 +139,7 @@ export default function AddObject(){
         setRequiredFieldForRealEstate(false)
     };
     const onSumChange = (e) => {
-        setRequiredFieldForPriceSum(false)
+        setRequiredFieldForPriceSum("")
         setObject({...object,price:{
                 ...object.price,
                 sum: e.target.value
@@ -200,14 +220,20 @@ export default function AddObject(){
                         </div>
                         <div className="col-md-4">
                             <label htmlFor="inputEmail4" className="form-label">Rooms</label>
-                            <input type="number" className="form-control" name="rooms" value={object.rooms} onChange={(e) => onInputChange(e)} id="inputEmail4"/>
-                            {requiredFieldForRooms&&(<span style={{color:"red"}}>cannot be null</span>)}
-
+                            <input type="number" className="form-control" name="rooms" value={object.rooms}
+                                   {...register("rooms",{required:true,valueAsNumber:true})}
+                                   onChange={(e) => onInputChange(e)} id="inputEmail4"/>
+                            {requiredFieldForRooms&&(<span style={{color:"red"}}>{requiredFieldForRooms}</span>)}
+                            {errors.rooms&&<span style={{color:'red'}}>Only numbers!</span>}
                         </div>
                         <div className="col-md-4">
                             <label htmlFor="inputPassword4" className="form-label">Square</label>
-                            <input type="number" className="form-control" name="square" value={object.square} onChange={(e) => onInputChange(e)} id="inputPassword4"/>
-                            {requiredFieldForSquare&&(<span style={{color:"red"}}>cannot be null</span>)}
+                            <input type="number" className="form-control" name="square" value={object.square}
+                                   {...register("square",{required:true,valueAsNumber:true})}
+                                   onChange={(e) => onInputChange(e)} id="inputPassword4"/>
+                            {requiredFieldForSquare&&(<span style={{color:"red"}}>{requiredFieldForSquare}</span>)}
+                            {errors.square&&<span style={{color:'red'}}>Only numbers!</span>}
+
                         </div>
                         <div className="col-md-4">
                             <label htmlFor="inputZip" className="form-label">Real estate</label>
@@ -226,8 +252,11 @@ export default function AddObject(){
                         </div>
                         <div className="col-md-6">
                             <label htmlFor="inputCity" className="form-label">Sum</label>
-                            <input type="number" name="sum" value={object.price.sum} onChange={(e) => onSumChange(e)}  className="form-control" id="inputCity"/>
-                            {requiredFieldForPriceSum&&(<span style={{color:"red"}}>cannot be null</span>)}
+                            <input type="number"  name="sum" value={object.price.sum}
+                                   {...register("sum",{required:true,valueAsNumber:true})}
+                                   onChange={(e) => onSumChange(e)}  className="form-control" id="inputCity"/>
+                            {requiredFieldForPriceSum&&(<span style={{color:"red"}}>{requiredFieldForPriceSum}</span>)}
+                            {errors.sum&&<span style={{color:'red'}}>Only numbers!</span>}
                         </div>
                         <div className="col-md-2">
                             <label htmlFor="inputZip" className="form-label">Currency</label>

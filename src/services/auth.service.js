@@ -42,16 +42,19 @@ const login=(login,password)=>{
     })
         .then((response)=>{
             if(response.headers.authorization){
-                // console.log(response.headers)
-                // console.log(response.data)
+                console.log(response)
+                console.log(response.headers.authorization)
+                console.log(response.data)
                 localStorage.setItem("customer",JSON.stringify(response.data))
+                localStorage.setItem("token",JSON.stringify(response.headers.authorization))
             }
-            return response.data;
+            return response;
         });
 };
 
 const logout = () => {
   localStorage.removeItem("customer");
+  localStorage.removeItem("token");
 }
 
 const getCurrentUser=()=>{

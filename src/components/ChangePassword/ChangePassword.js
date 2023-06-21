@@ -73,7 +73,13 @@ export default function ChangePassword() {
       }else {
           setMessageCanNotBeNull("")
       }
-      await axios.patch(`http://localhost:8080/${idFromUrl[0]}/checkPassword`,formData)
+        let token=JSON.parse(localStorage.getItem('token'));
+        const config={
+            headers:{
+                Authorization:`${token}`
+            }
+        }
+      await axios.patch(`http://localhost:8080/${idFromUrl[0]}/checkPassword`,formData,config)
           .then((response)=> {
                   console.log("respo")
                   console.log(response)

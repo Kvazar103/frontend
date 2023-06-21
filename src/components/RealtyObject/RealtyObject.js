@@ -197,16 +197,28 @@ function RealtyObject(){
               if(currentUser==null){
                 navigate("/login");
             }
+            let token=JSON.parse(localStorage.getItem('token'));
+            const config={
+                headers:{
+                    Authorization:`${token}`
+                }
+            }
             e.target.setAttribute('src', heartRedIcon)
             formData.append("realtyObject",JSON.stringify(realtyObject));
             // formData.append("userObject",JSON.stringify(currentUser));
-            await axios.patch(`http://localhost:8080/update/customer/${currentUser.id}/addedToFavoriteList`,formData)
+            await axios.patch(`http://localhost:8080/update/customer/${currentUser.id}/addedToFavoriteList`,formData,config)
             const c=await axios.get(`http://localhost:8080/customer/${currentUser.id}`)
             localStorage.setItem('customer',JSON.stringify(c.data));
         } else {
+            let token=JSON.parse(localStorage.getItem('token'));
+            const config={
+                headers:{
+                    Authorization:`${token}`
+                }
+            }
             e.target.setAttribute('src', heartIcon)
 
-            await axios.delete(`http://localhost:8080/delete/customer/${currentUser.id}/addedToFavoriteRealtyObject/${realtyObject.id}`)
+            await axios.delete(`http://localhost:8080/delete/customer/${currentUser.id}/addedToFavoriteRealtyObject/${realtyObject.id}`,config)
             const t=await axios.get(`http://localhost:8080/customer/${currentUser.id}`)
             localStorage.setItem('customer',JSON.stringify(t.data));
         }
@@ -250,7 +262,13 @@ function RealtyObject(){
     const deleteRealtyObject =async (e) => {
         if(window.confirm("Ви дійсно хочете видалити об'єкт?")) {
             try {
-                await axios.delete(`http://localhost:8080/customer/${currentUser.id}/realtyObject/${realtyIdFromUrl}`)
+                let token=JSON.parse(localStorage.getItem('token'));
+                const config={
+                    headers:{
+                        Authorization:`${token}`
+                    }
+                }
+                await axios.delete(`http://localhost:8080/customer/${currentUser.id}/realtyObject/${realtyIdFromUrl}`,config)
             } catch (e) {
                 console.log(e)
             }

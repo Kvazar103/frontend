@@ -5,6 +5,7 @@ import {Button} from "react-bootstrap";
 
 import AuthService from "../../services/auth.service";
 import css from "../AddObject/FormStyle.module.css";
+import {useForm} from "react-hook-form";
 
 
 const imageTypeRegex = /image\/(png|jpg|jpeg)/gm;
@@ -25,25 +26,6 @@ export default function UpdateRealtyObject() {
 
     const [imageFiles, setImageFiles] = useState([]);
     const [images, setImages] = useState([]);
-    // const [currentRealtyObjectFromCurrentUser,setCurrentRealtyObjectFromCurrentUser]=useState('');
-
-    //
-    // useEffect(  () => {
-    //     axios.get(`http://localhost:8080/object/${idFromUrl[0]}`)
-    //         .then(value => {
-    //             let c = []
-    //             // setCurrentRealtyObject(value.data)
-    //             for (let x of value.data.images) {
-    //                 c.push(`http://localhost:8080/images/${currentUser.id}id/` + x)
-    //             }
-    //             setRealtyImagesUrl(c);
-    //             // console.log(realtyImagesUrl)
-    //
-    //
-    //         })
-    // },[currentUser.id, idFromUrl, realtyImagesUrl])
-
-
 
 
     const result=currentUser.my_realty_objectList.filter(realty=>realty.id==idFromUrl[0]);
@@ -80,23 +62,30 @@ export default function UpdateRealtyObject() {
         }
     });
 
+    const [requiredFieldForRooms,setRequiredFieldForRooms]=useState("");
+    const [requiredFieldForSquare,setRequiredFieldForSquare]=useState("");
+    const [requiredFieldForPriceSum,setRequiredFieldForPriceSum]=useState("")
 
-
-    // currentUser.my_realty_objectList.map(value=>{
-    //     if(value.id==idFromUrl[0]){
-    //         return value.address;
-    //     }
-    // }),
-
-    // if((currentUser == null)||(currentUser && ((currentUser.id > idFromUrl[0])||(currentUser.id < idFromUrl[0])))){   ///захист від не авторизованих користувачів
-    //     return <Navigate to={"/login"}/>
-    // }
+    const {
+        register,
+        handleSubmit,
+        formState: { errors,isValid }
+    } = useForm({ mode: 'all'});
 
     const onSumChange = (e) => {
+        setRequiredFieldForPriceSum("")
         setRealtyObject({...realtyObject,price:{
                 ...realtyObject.price,
                 sum: e.target.value
             }})
+    }
+    const onRoomsChange=(e)=>{
+        setRealtyObject({ ...realtyObject, rooms: e.target.value });
+        setRequiredFieldForRooms("")
+    }
+    const onSquareChange = (e) => {
+        setRequiredFieldForSquare("")
+        setRealtyObject({ ...realtyObject, [e.target.name]: e.target.value });
     }
     const onCurrencyChange=(e)=>{
         setRealtyObject({...realtyObject,price:{
@@ -111,14 +100,10 @@ export default function UpdateRealtyObject() {
             }})
     }
 
-
     const onInputChange = (e) => {
         setRealtyObject({ ...realtyObject, [e.target.name]: e.target.value });
     };
 
-
-
-    
     const onFileChange = (e) => {
         const { files } = e.target;
         const validImageFiles = [];
@@ -206,33 +191,57 @@ export default function UpdateRealtyObject() {
 
     const onSubmit = async (e) => {
         e.preventDefault();
-        const formData=new FormData();
-        formData.append("realty_object",JSON.stringify(realtyObject))
-        console.log("imageFiles")
-        console.log(imageFiles)
-        if(imageFiles!=null){
-            for (let i=0;i<imageFiles.length;i++){
-                formData.append("images_to_add",imageFiles[i])
-            }
-        }
-        console.log("imageUrlsToDelte")
-        console.log(imageUrlsToDelete)
-        if(imageUrlsToDelete!=null){
-            for(let i=0;i<imageUrlsToDelete.length;i++){
-                formData.append("currentImages_to_delete",imageUrlsToDelete[i])
-            }
-        }
-        console.log(formData)
-        await axios.patch(`http://localhost:8080/${idFromUrl[0]}/${currentUser.id}/updateRealtyObject`,formData);
-        const c=await axios.get(`http://localhost:8080/customer/${currentUser.id}`);
-        localStorage.setItem('customer',JSON.stringify(c.data));
 
-        navigate(`/object/${idFromUrl[0]}`)
-        // window.location.reload();
+        if(realtyObject.price.sum===""){
+            setRequiredFieldForPriceSum("Sum cannot be null")
+        }else if(realtyObject.price.sum<=0){
+            setRequiredFieldForPriceSum("Please select a value that is no less than 1")
+        }
+
+        if(realtyObject.square===""){
+            setRequiredFieldForSquare("Square cannot be null")
+        }else if(realtyObject.square<=0){
+            setRequiredFieldForSquare("Please select a value that is no less than 1")
+        }
+
+        if(realtyObject.rooms===""){
+            setRequiredFieldForRooms("Rooms cannot be null")
+        }else if(realtyObject.rooms<=0){
+            setRequiredFieldForRooms("Please select a value that is no less than 1")
+        }
+
+        if(realtyObject.price.sum!=="" && realtyObject.price.sum>=0 &&
+            realtyObject.square!=="" && realtyObject.square>=0 &&
+            realtyObject.rooms!=="" && realtyObject.rooms>=0) {
+            const formData = new FormData();
+            formData.append("realty_object", JSON.stringify(realtyObject))
+            console.log("imageFiles")
+            console.log(imageFiles)
+            if (imageFiles != null) {
+                for (let i = 0; i < imageFiles.length; i++) {
+                    formData.append("images_to_add", imageFiles[i])
+                }
+            }
+            console.log("imageUrlsToDelte")
+            console.log(imageUrlsToDelete)
+            if (imageUrlsToDelete != null) {
+                for (let i = 0; i < imageUrlsToDelete.length; i++) {
+                    formData.append("currentImages_to_delete", imageUrlsToDelete[i])
+                }
+            }
+            let token=JSON.parse(localStorage.getItem('token'));
+            const config={
+                headers:{
+                    Authorization:`${token}`
+                }
+            }
+            console.log(formData)
+            await axios.patch(`http://localhost:8080/${idFromUrl[0]}/${currentUser.id}/updateRealtyObject`, formData,config);
+            const c = await axios.get(`http://localhost:8080/customer/${currentUser.id}`);
+            localStorage.setItem('customer', JSON.stringify(c.data));
+            navigate(`/object/${idFromUrl[0]}`)
+        }
     };
-
-
-
 
     return(<div className="container"><br/><br/><br/>
             <div className="row">
@@ -268,11 +277,20 @@ export default function UpdateRealtyObject() {
                         </div>
                         <div className="col-md-4">
                             <label htmlFor="inputEmail4" className="form-label">Rooms</label>
-                            <input type="number" className="form-control" name="rooms" value={realtyObject.rooms} onChange={(e) => onInputChange(e)} id="inputEmail4"/>
+                            <input type="number" className="form-control" name="rooms" value={realtyObject.rooms}
+                                   {...register("rooms",{required:true,valueAsNumber:true})}
+                                   onChange={(e) => onRoomsChange(e)} id="inputEmail4"
+                            />
+                            {requiredFieldForRooms&&(<span style={{color:"red"}}>{requiredFieldForRooms}</span>)}<br/>
+                            {errors.rooms&&<span style={{color:'red'}}>Only numbers!</span>}
                         </div>
                         <div className="col-md-4">
                             <label htmlFor="inputPassword4" className="form-label">Square</label>
-                            <input type="number" className="form-control" name="square" value={realtyObject.square} onChange={(e) => onInputChange(e)} id="inputPassword4"/>
+                            <input type="number" className="form-control" name="square" value={realtyObject.square}
+                                   {...register("square",{required:true,valueAsNumber:true})}
+                                   onChange={(e) => onSquareChange(e)} id="inputPassword4"/>
+                            {requiredFieldForSquare&&(<span style={{color:"red"}}>{requiredFieldForSquare}</span>)}<br/>
+                            {errors.square&&<span style={{color:'red'}}>Only numbers!</span>}
                         </div>
                         <div className="col-md-4">
                             <label htmlFor="inputZip" className="form-label">Real estate</label>
@@ -290,9 +308,14 @@ export default function UpdateRealtyObject() {
                         <div className="col-md-6">
                             <label htmlFor="inputCity" className="form-label">Sum</label>
                             <input type="number" name="sum" value={realtyObject.price?realtyObject.price.sum:""}
+                                   {...register("sum",{required:true,valueAsNumber:true})}
+
                                    onChange={(e) => onSumChange(e)}
                                    className="form-control" id="inputCity"/>
+                            {requiredFieldForPriceSum&&(<span style={{color:"red"}}>{requiredFieldForPriceSum}</span>)}<br/>
+                            {errors.sum&&<span style={{color:'red'}}>Only numbers!</span>}
                         </div>
+
                         <div className="col-md-2">
                             <label htmlFor="inputZip" className="form-label">Currency</label>
                             <select id="inputState2" name="currency" value={realtyObject.price?realtyObject.price.currency:""}
