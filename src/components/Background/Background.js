@@ -11,13 +11,7 @@ export default function Background(props){
 
     console.log(props)
     const navigate=useNavigate();
-    // const[data,setData]=useState({
-    //     selectData:``,
-    //     inputData:``
-    // })
-    // const onInputChange = (e) => {
-    //   setData({...data,[e.target.name]:e.target.value})
-    // }
+
     function onClickSelect() {
         document.getElementById("select_type").style.width="200px";
     }
@@ -71,7 +65,7 @@ export default function Background(props){
                    // onChange={(e)=>onInputChange(e)}
             />
 
-            <button type="submit" style={{border:"none",background:"black",width:"50px",height:"45px"}}><img src={search_black_and_yellow} style={{width:"25px",height:"25px"}}/></button>
+            <button type="submit" style={{border:"none",background:"black",width:"50px",height:"45px"}}><img src={search_black_and_yellow} style={{width:"25px",height:"25px"}} alt={"submit_butt"}/></button>
             </form>
         </div>
         <div style={{marginTop:"-170px"}}>

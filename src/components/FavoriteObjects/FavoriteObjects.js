@@ -4,7 +4,9 @@ import {useEffect} from "react";
 import Pagination from "../Profile/Pagination";
 import axios from "axios";
 import css from "../Profile/profile.module.css";
-import {Navigate, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
+
+import noImage from '../../images/realtyObjectImageIfNoImage/realtyObjectNoImage.jpg'
 
 
 let pageSize=4;
@@ -30,7 +32,20 @@ export default function FavoriteObjects() {
 
 
     useEffect(()=>{
-        axios.get(`http://localhost:8080/customer/favorites/${currentUser.id}`)
+        // axios.get(`http://localhost:8080/customer/favorites/${currentUser.id}`)
+        //     .then(value => {
+        //         console.log(value.data)
+        //         console.log("favorites")
+        //         setRealtyCustomers(value.data)
+        //         console.log(value.data)
+        //         for(let x of value.data){
+        //             console.log(x)
+        //             console.log(Object.keys(x));
+        //             console.log(Object.values(x));
+        //         }
+        //         // setFavoriteRealtyObjectList(value.data)
+        //     })
+        AuthService.getFavorites(currentUser.id)
             .then(value => {
                 console.log(value.data)
                 console.log("favorites")
@@ -59,8 +74,10 @@ export default function FavoriteObjects() {
             let realtyObject=realtyObjectInObject[0];
 
 
-            let x = `http://localhost:8080/images/${customerId}id/${realtyObject.images[0]}`;
-            console.log(x)
+            // let x = `http://localhost:8080/images/${customerId}id/${realtyObject.images[0]}`;
+            let x = (realtyObject.images[0])?(`http://localhost:8080/images/${customerId}id/${realtyObject.images[0]}`):(noImage);
+
+            // console.log(x)
             // console.log(value)
             let monthOrDay = "";
             if (realtyObject.price != null && realtyObject.price.type_of_order_of_real_estate === "Rent_for_a_month") {
@@ -72,7 +89,7 @@ export default function FavoriteObjects() {
             }
             return (<div className={css.one_realty}>
                 <div>
-                    <a style={{cursor:"pointer"}} onClick={()=>navigate(`/object/${realtyObject.id}`)}> <img src={x} width="120px" height="93px"/></a>
+                    <a style={{cursor:"pointer"}} onClick={()=>navigate(`/object/${realtyObject.id}`)}> <img src={x} width="120px" style={{border:"1px solid black"}} height="93px"/></a>
                 </div>
                 <div style={{textAlign: "left", width: "142px"}}>
                     {/*{item.address}*/}

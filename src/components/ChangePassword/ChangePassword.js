@@ -73,25 +73,37 @@ export default function ChangePassword() {
       }else {
           setMessageCanNotBeNull("")
       }
-        let token=JSON.parse(localStorage.getItem('token'));
-        const config={
-            headers:{
-                Authorization:`${token}`
-            }
-        }
-      await axios.patch(`http://localhost:8080/${idFromUrl[0]}/checkPassword`,formData,config)
-          .then((response)=> {
-                  console.log("respo")
-                  console.log(response)
-                  navigate(`/${idFromUrl[0]}/profile`)
-              // window.location.reload()
-              }
-          )
-          .catch((error)=>{
-              console.log("error")
-              console.log(error)
-              setMessageOldPasswordMatch("The current password is incorrect")
-          })
+        // let token=JSON.parse(localStorage.getItem('token'));
+        // const config={
+        //     headers:{
+        //         Authorization:`${token}`
+        //     }
+        // }
+      // await axios.patch(`http://localhost:8080/${idFromUrl[0]}/checkPassword`,formData,config)
+      //     .then((response)=> {
+      //             console.log("respo")
+      //             console.log(response)
+      //             navigate(`/${idFromUrl[0]}/profile`)
+      //         // window.location.reload()
+      //         }
+      //     )
+      //     .catch((error)=>{
+      //         console.log("error")
+      //         console.log(error)
+      //         setMessageOldPasswordMatch("The current password is incorrect")
+      //     })
+        AuthService.changePassword(formData,idFromUrl[0])
+            .then((response)=> {
+                    console.log("respo")
+                    console.log(response)
+                    navigate(`/${idFromUrl[0]}/profile`)
+                }
+            )
+            .catch((error)=>{
+                console.log("error")
+                console.log(error)
+                setMessageOldPasswordMatch("The current password is incorrect")
+            })
 
     }
 

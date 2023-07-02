@@ -4,6 +4,7 @@ import {useNavigate} from "react-router-dom";
 
 import css from './FormStyle.module.css'
 import {useForm} from "react-hook-form";
+import AuthService from "../../services/auth.service";
 
 export default function AddObject(){
 
@@ -40,8 +41,7 @@ export default function AddObject(){
 
     const {
         register,
-        handleSubmit,
-        formState: { errors,isValid }
+        formState: { errors }
     } = useForm({ mode: 'all'});
 
     const handleSave =async (e) => {
@@ -84,22 +84,22 @@ export default function AddObject(){
         if(object.price.type_of_order_of_real_estate===""){
             setRequiredFieldForPriceTypeOfOrderOfRealEstate(true)
         }
-        // if(images===""){
-        //     setRequiredFieldForImages(true)
-        // }
+        if(images===""){
+            setRequiredFieldForImages(true)
+        }
         if(object.district !== "" && object.address!=="" && object.apt_suite_building!=="" &&
             object.rooms!==""&& object.square!==""&&object.details!==""&&object.real_estate!==""&&
             object.price.sum!=="" && object.price.currency!=="" && object.price.type_of_order_of_real_estate!=="" &&
-            object.price.sum>=0 &&object.rooms>=0 && object.square>=0){
+            object.price.sum>=0 &&object.rooms>=0 && object.square>=0 && images!==""){
 
             const customer=JSON.parse(localStorage.getItem("customer"));
             const formData = new FormData();
-            let token=JSON.parse(localStorage.getItem('token'));
-            const config={
-                headers:{
-                    Authorization:`${token}`
-                }
-            }
+            // let token=JSON.parse(localStorage.getItem('token'));
+            // const config={
+            //     headers:{
+            //         Authorization:`${token}`
+            //     }
+            // }
             formData.append("body",JSON.stringify(object))
             for (let i = 0; i < images.length; i++) {
                 console.log("imgs")
@@ -110,20 +110,28 @@ export default function AddObject(){
             console.log(images[0])
             console.log(object)
             formData.append("body",JSON.stringify(object));
-            await axios.post(`http://localhost:8080/${customer.id}/addObject`,formData,config)
-            // await AuthService.saveObjectV2(object, formData)
-            const c= await axios.get(`http://localhost:8080/customer/${customer.id}`);
+            // await axios.post(`http://localhost:8080/${customer.id}/addObject`,formData,config)
+            AuthService.addObject(customer.id,formData).then(()=>{
+               AuthService.getCustomer(customer.id).then(value => {
+                   localStorage.setItem('customer', JSON.stringify(value.data));
+                   console.log(value.data.my_realty_objectList)
+                   let realtyList=value.data.my_realty_objectList;
+                   console.log(realtyList)
+                   let lastElement=realtyList.slice(-1)
+                   console.log(lastElement[0].id)
+                   navigate(`/object/${lastElement[0].id}`)
+               })
+            })
+            // const c= await axios.get(`http://localhost:8080/customer/${customer.id}`);
 
-            localStorage.setItem('customer', JSON.stringify(c.data));
-            console.log(c.data.my_realty_objectList)
-            // setRealtyList(c.data.my_realty_objectList)
-            let realtyList=c.data.my_realty_objectList;
-            console.log(realtyList)
-            let lastElement=realtyList.slice(-1)
-            console.log(lastElement[0].id)
+            // localStorage.setItem('customer', JSON.stringify(c.data));
+            // console.log(c.data.my_realty_objectList)
+            // let realtyList=c.data.my_realty_objectList;
+            // console.log(realtyList)
+            // let lastElement=realtyList.slice(-1)
+            // console.log(lastElement[0].id)
 
-            navigate(`/object/${lastElement[0].id}`)
-            // window.location.reload()
+            // navigate(`/object/${lastElement[0].id}`)
         }
 
     }
@@ -295,7 +303,7 @@ export default function AddObject(){
                             </label>
 
                             <br />
-                            {/*{requiredFieldForImages&&(<span style={{color:"red"}}>cannot be null</span>)}*/}
+                            {requiredFieldForImages&&(<span style={{color:"red"}}>cannot be null</span>)}
                             {selectedImages.length>10?(          <p className="error">
                                 You can't upload more than 10 images! <br />
                                 <span>

@@ -4,8 +4,10 @@ import {Dropdown} from "react-bootstrap";
 import _ from "lodash";
 
 import search_black_and_yellow from "../../images/search_icon/search_black_and_yellow.png";
+import noImage from '../../images/realtyObjectImageIfNoImage/realtyObjectNoImage.jpg'
 import css from "../Profile/profile.module.css";
 import {useNavigate} from "react-router-dom";
+import AuthService from "../../services/auth.service";
 
 
 export default function Search() {
@@ -43,7 +45,8 @@ export default function Search() {
             const formData=new FormData();
             formData.append("selectType",selectedByUserType)
             formData.append("inputData",decodedTypedText);
-            axios.post(`http://localhost:8080/getSelectedRealtyObjects`,formData)
+            // axios.post(`http://localhost:8080/getSelectedRealtyObjects`,formData)
+            AuthService.getSelectedRealtyObject(formData)
                 .then(value => {
                     console.log("axios post")
                     console.log(value.data)
@@ -113,7 +116,8 @@ export default function Search() {
         const formData=new FormData();
         formData.append("selectType",data.selectData)
         formData.append("inputData",data.inputData);
-        await axios.post(`http://localhost:8080/getSelectedRealtyObjects`,formData)
+        // await axios.post(`http://localhost:8080/getSelectedRealtyObjects`,formData)
+        AuthService.getSelectedRealtyObject(formData)
             .then(value => {
                 console.log(value)
                 // console.log(value.data)
@@ -350,7 +354,8 @@ export default function Search() {
                     let realtyObjectInArray=Object.values(item);
                     let realtyObject=realtyObjectInArray[0];
                     let customerId=Object.keys(item);
-                    let x=`http://localhost:8080/images/${customerId}id/${realtyObject.images[0]}`;
+                    // let x=`http://localhost:8080/images/${customerId}id/${realtyObject.images[0]}`;
+                    let x=(realtyObject.images[0])?(`http://localhost:8080/images/${customerId}id/${realtyObject.images[0]}`):(noImage);
                     // console.log(x)
                     console.log(item)
                     // console.log(realtyObject)
@@ -369,7 +374,7 @@ export default function Search() {
                     return(
                         <div className={css.one_realty}>
                             <div>
-                                <a style={{cursor:"pointer"}} onClick={()=>navigate(`/object/${realtyObject.id}`)}> <img src={x} width="120px" height="93px"/></a>
+                                <a style={{cursor:"pointer"}} onClick={()=>navigate(`/object/${realtyObject.id}`)}> <img src={x} style={{border:"1px solid black"}} width="120px" height="93px"/></a>
                             </div>
                             <div style={{textAlign:"left",width:"142px"}}>
                                 {/*{item.address}*/}

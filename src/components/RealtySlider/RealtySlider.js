@@ -3,6 +3,9 @@ import axios from "axios";
 import {useNavigate} from "react-router-dom";
 
 import css from "./slider.module.css";
+import noImage from '../../images/realtyObjectImageIfNoImage/realtyObjectNoImage.jpg'
+import AuthService from "../../services/auth.service";
+
 
 
 export default function RealtySlider(props){
@@ -14,23 +17,40 @@ export default function RealtySlider(props){
     let navigate=useNavigate();
 
     useEffect(()=>{
-        let allCustomers=axios.get("http://localhost:8080/getAllCustomers")
-        allCustomers.then(value => {
-            let customers=value.data;
-            for(let customer of customers){
-                let realtyObjectList=customer.my_realty_objectList;
-                if(realtyObjectList!=null){
-                    for (let realty of realtyObjectList){
-                        // console.log(realty)
-                        if(realty.id===item.id){
-                            console.log(realty)
-                            setNameSurname(customer.id+"id")
-                            setUser(customer)
+        // let allCustomers=axios.get("http://localhost:8080/getAllCustomers")
+        // allCustomers.then(value => {
+        //     let customers=value.data;
+        //     for(let customer of customers){
+        //         let realtyObjectList=customer.my_realty_objectList;
+        //         if(realtyObjectList!=null){
+        //             for (let realty of realtyObjectList){
+        //                 // console.log(realty)
+        //                 if(realty.id===item.id){
+        //                     console.log(realty)
+        //                     setNameSurname(customer.id+"id")
+        //                     setUser(customer)
+        //                 }
+        //             }
+        //         }
+        //     }
+        // })
+        AuthService.getAllCustomers()
+            .then((value)=>{
+                let customers=value.data;
+                for(let customer of customers){
+                    let realtyObjectList=customer.my_realty_objectList;
+                    if(realtyObjectList!=null){
+                        for (let realty of realtyObjectList){
+                            // console.log(realty)
+                            if(realty.id===item.id){
+                                console.log(realty)
+                                setNameSurname(customer.id+"id")
+                                setUser(customer)
+                            }
                         }
                     }
                 }
-            }
-        })
+            })
     },[item.id])
 
     console.log(nameSurname.toString())
@@ -38,9 +58,10 @@ export default function RealtySlider(props){
     const handleClick = (e) => {
         e.preventDefault();
         navigate("/object/"+item.id)
-        // window.location.reload()
     }
-    let x=`http://localhost:8080/images/${nameSurname}/${images[0]}`;
+    // let x=`http://localhost:8080/images/${nameSurname}/${images[0]}`;
+    let x=(images[0])?(`http://localhost:8080/images/${nameSurname}/${images[0]}`):(noImage);
+
     console.log(x)
 
 

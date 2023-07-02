@@ -2,7 +2,6 @@ import {Link, useNavigate} from "react-router-dom";
 import {useState} from "react";
 import axios from "axios";
 import { useForm } from 'react-hook-form';
-import validator from 'validator'
 
 import AuthService from "../../services/auth.service";
 import {usePasswordValidation} from "./usePasswordValidation";
@@ -43,8 +42,7 @@ export default function AddUser(){
 
     const {
         register,
-        handleSubmit,
-        formState: { errors,isValid }
+        formState: { errors }
     } = useForm({ mode: 'all'});
 
     const onInputChange = (e) => {
@@ -97,21 +95,27 @@ export default function AddUser(){
         if(user.email === ""){
             setEmailMsg(true)
         }
-        if((validLength && hasNumber && upperCase && lowerCase)&&(user.email!=="")&&(!errors.email)&&(user.name!=="" && user.surname!==""&&user.phone_number!=="" && user.login!==""&&user.phone_number.length>=6)){
+        if((validLength && hasNumber && upperCase && lowerCase)&&(user.email!=="")&&(!errors.email)&&(user.name!=="" && user.surname!==""&&user.phone_number!=="" && user.login!==""&&user.phone_number.length>=6&&avatar!=="")){
             console.log("everything true")
             console.log(user)
             console.log(avatar)
-            await axios.post("http://localhost:8080/save",formData).catch((value)=>{
+            // await axios.post("http://localhost:8080/save",formData).catch((value)=>{
+            //     console.log(value)
+            //     console.log("error(Найімовірніше, вже подібний логін існує)")
+            //     //тут помилка може появлятися тільки якщо такий самий логін вже існує
+            //     setLoginAlreadyExists(true)
+            // })
+            AuthService.addUser(formData).catch((value)=>{
                 console.log(value)
                 console.log("error(Найімовірніше, вже подібний логін існує)")
                 //тут помилка може появлятися тільки якщо такий самий логін вже існує
                 setLoginAlreadyExists(true)
+            }).then(()=>{
+                AuthService.login(user.login,user.password).then(()=>{
+                    navigate("/");
+                })
             })
-            // navigate("/");
-            AuthService.login(user.login,user.password).then(()=>{
-                navigate("/");
-                // window.location.reload();
-            })
+
         }
 
     };
@@ -205,26 +209,26 @@ export default function AddUser(){
                                   <div>
                                       {validLength?
                                       <div>
-                                          <img src={checkMark} width={"20px"} height={"20px"}/><span style={{color:"#77b255"}}>Valid Length 6</span>
+                                          <img src={checkMark} width={"20px"} height={"20px"} alt={"check_mark_for_password_length"}/><span style={{color:"#77b255"}}>Valid Length 6</span>
                                       </div>:(<span style={{color:"lightgray"}}>Valid length 6</span>)}
                                   </div>
 
                                <div>
                                    {hasNumber?
                                    <div>
-                                       <img src={checkMark} width={"20px"} height={"20px"}/><span style={{color:"#77b255"}}>Has a number</span>
+                                       <img src={checkMark} width={"20px"} height={"20px"} alt={"check_mark_for_number_in_password"}/><span style={{color:"#77b255"}}>Has a number</span>
                                    </div>:(<span style={{color:"lightgray"}}>Has a number</span>)}
                                </div>
                                <div>
                                    {upperCase?
                                     <div>
-                                        <img src={checkMark} width={"20px"} height={"20px"}/><span style={{color:"#77b255"}}>Upper character</span>
+                                        <img src={checkMark} width={"20px"} height={"20px"} alt={"check_mark_for_upper_character"}/><span style={{color:"#77b255"}}>Upper character</span>
                                     </div>:(<span style={{color:"lightgray"}}>Upper character</span>)}
                                </div>
                                <div>
                                    {lowerCase?
                                        <div>
-                                           <img src={checkMark} width={"20px"} height={"20px"}/><span style={{color:"#77b255"}}>Lower character</span>
+                                           <img src={checkMark} width={"20px"} height={"20px"} alt={"check_mark_for_lower_character"}/><span style={{color:"#77b255"}}>Lower character</span>
                                        </div>:(<span style={{color:"lightgray"}}>Lower character</span>)}
                                </div>
                             </div>

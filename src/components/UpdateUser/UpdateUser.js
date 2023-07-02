@@ -137,32 +137,60 @@ export default function UpdateUser() {
                 console.log("new avatar")
                 formData.append("avatar",avatar[0])
             }
-            let token=JSON.parse(localStorage.getItem('token'));
-            const config={
-                headers:{
-                    Authorization:`${token}`
-                }
-            }
+            // let token=JSON.parse(localStorage.getItem('token'));
+            // const config={
+            //     headers:{
+            //         Authorization:`${token}`
+            //     }
+            // }
             console.log(formData)
-            await axios.patch(`http://localhost:8080/${idFromUrl[0]}/updateProfile`,formData,config)
-                .catch((value)=>{
-                console.log(value)
-                console.log("error(Найімовірніше, вже подібний логін існує)")
-                //тут помилка може появлятися тільки якщо такий самий логін вже існує
-                setLoginAlreadyExists("Login already exists")
-                setLoginExists(true)
-            });
-
-            const c=await axios.get(`http://localhost:8080/customer/${idFromUrl[0]}`);
-            localStorage.setItem('customer',JSON.stringify(c.data))
-
+            console.log(idFromUrl[0])
+            // await axios.patch(`http://localhost:8080/${idFromUrl[0]}/updateProfile`,formData,config)
+          // AuthService.updateProfile(formData,idFromUrl[0])
+          //     .then(()=>{
+          //         AuthService.getCustomer(idFromUrl[0])
+          //             .then((value)=>{
+          //                 localStorage.setItem('customer',JSON.stringify(value.data))
+          //                 if(loginExists!==false){
+          //                     navigate(`/${idFromUrl[0]}/profile`);
+          //                 }
+          //             })
+          //     })
+          //    .catch((value)=>{
+          //       console.log(value)
+          //       console.log("error(Найімовірніше, вже подібний логін існує)")
+          //       //тут помилка може появлятися тільки якщо такий самий логін вже існує
+          //       setLoginAlreadyExists("Login already exists")
+          //       setLoginExists(true)
+          //   });
+           AuthService.updateProfile(formData,idFromUrl[0])
+                .then(()=>{
+                    AuthService.getCustomer(idFromUrl[0])
+                        .then((value)=>{
+                            localStorage.setItem("customer",JSON.stringify(value.data))
+                            navigate(`/${idFromUrl[0]}/profile`);
+                        })
+                }
+                ,(value)=>{
+                    console.log(value)
+                    console.log("error(Найімовірніше, вже подібний логін існує)")
+                    //тут помилка може появлятися тільки якщо такий самий логін вже існує
+                    setLoginAlreadyExists("Login already exists")
+                    setLoginExists(true)
+                }
+                );
             if(loginExists!==false){
                 navigate(`/${idFromUrl[0]}/profile`);
             }
+
+
+            // const c=await axios.get(`http://localhost:8080/customer/${idFromUrl[0]}`);
+            // localStorage.setItem('customer',JSON.stringify(c.data))
+            //
+            // if(loginExists!==false){
+            //     navigate(`/${idFromUrl[0]}/profile`);
+            // }
         }
-
-
-
     };
 
 
@@ -243,6 +271,7 @@ export default function UpdateUser() {
                                 className="form-control"
                                 placeholder="Enter your phone number"
                                 name="phone_number"
+                                pattern="[0-9]*"
                                 value={phone_number}
                                 {...register("phone_number",{required:true,minLength:{value:6,message:"Minimum six characters"},valueAsNumber:true})}
                                 onChange={(e) => onInputChange(e)}

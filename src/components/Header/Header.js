@@ -2,7 +2,7 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import {NavDropdown} from "react-bootstrap";
-import React, {useEffect, useState} from "react";
+import React, { useState} from "react";
 import {useNavigate} from "react-router-dom";
 
 import AuthService from "../../services/auth.service";
@@ -20,55 +20,12 @@ function Header() {
 
     let navigate = useNavigate();
 
-    // useEffect(()=>{
-    //     // document.getElementById("search_on_header").hidden=true;
-    //     if(document.getElementById("search_on_header").hidden ===false){
-    //         window.location.reload();
-    //
-    //     }
-    // },[])
-
-
-
-    // useEffect(() => {
-    // if(document.getElementById("search_on_header").hidden === true){
-    //     window.location.reload();
-    //     // document.getElementById("search_on_header").hidden=true;
-    // }
-    // }, []);
-
-
     const customer=AuthService.getCurrentUser();
-
-
-
-    // useEffect(()=>{
-    //     // const customer=AuthService.getCurrentUser();
-    //     if(customer){
-    //         setCurrentUser(customer)
-    //         setUrl(`/${customer.id}/profile`)
-    //      // document.getElementById("signed").style.display="block"
-    //         // console.log(customer)
-    //     }
-    //     // else {
-    //     //     document.getElementById("signed").style.display="none"
-    //     //
-    //     // }
-    //
-    //     // EventBus.on("logout", () => {
-    //     //     logOut();
-    //     // });
-    //     //
-    //     // return () => {
-    //     //     EventBus.remove("logout");
-    //     // };
-    // },[])
 
     const logOut=()=>{
         AuthService.logout();
         setCurrentUser(undefined);
         navigate("/");
-        // window.location.reload();
     };
 
     const showDropdownForRent = (e)=>{
@@ -89,12 +46,11 @@ function Header() {
     const hideDropdownForDaily = e => {
         setShowForDaily(false);
     }
-    const onClickRealEstateHeaderDropdown = (e) => {
-      console.log(e.target.attributes[0].nodeValue)
-
-      console.log("on click trig")
-    }
-    // {(e)=>onClickRealEstateHeaderDropdown(e)}
+    // const onClickRealEstateHeaderDropdown = (e) => {
+    //   console.log(e.target.attributes[0].nodeValue)
+    //
+    //   console.log("on click trig")
+    // }
     return (
         <>
             <Navbar bg="dark" variant="dark"  fixed="top">

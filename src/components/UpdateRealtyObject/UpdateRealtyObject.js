@@ -30,8 +30,7 @@ export default function UpdateRealtyObject() {
 
     const result=currentUser.my_realty_objectList.filter(realty=>realty.id==idFromUrl[0]);
 
-    useEffect(  () => {
-
+    useEffect(() => {
                 let c = []
                 // setCurrentRealtyObject(value.data)
                 for (let x of result[0].images) {
@@ -40,9 +39,6 @@ export default function UpdateRealtyObject() {
                 setRealtyImagesUrl(c);
                 // console.log(realtyImagesUrl)
         document.getElementById("inputAddImageId").hidden=true;
-
-
-
     },[currentUser.id, result])
 
 
@@ -229,17 +225,25 @@ export default function UpdateRealtyObject() {
                     formData.append("currentImages_to_delete", imageUrlsToDelete[i])
                 }
             }
-            let token=JSON.parse(localStorage.getItem('token'));
-            const config={
-                headers:{
-                    Authorization:`${token}`
-                }
-            }
+            // let token=JSON.parse(localStorage.getItem('token'));
+            // const config={
+            //     headers:{
+            //         Authorization:`${token}`
+            //     }
+            // }
             console.log(formData)
-            await axios.patch(`http://localhost:8080/${idFromUrl[0]}/${currentUser.id}/updateRealtyObject`, formData,config);
-            const c = await axios.get(`http://localhost:8080/customer/${currentUser.id}`);
-            localStorage.setItem('customer', JSON.stringify(c.data));
-            navigate(`/object/${idFromUrl[0]}`)
+            // await axios.patch(`http://localhost:8080/${idFromUrl[0]}/${currentUser.id}/updateRealtyObject`, formData,config);
+            AuthService.updateRealtyObject(formData,idFromUrl[0],currentUser.id)
+                .then(()=>{
+                    AuthService.getCustomer(currentUser.id)
+                        .then((value)=>{
+                            localStorage.setItem('customer', JSON.stringify(value.data));
+                            navigate(`/object/${idFromUrl[0]}`)
+                        })
+                })
+            // const c = await axios.get(`http://localhost:8080/customer/${currentUser.id}`);
+            // localStorage.setItem('customer', JSON.stringify(c.data));
+            // navigate(`/object/${idFromUrl[0]}`)
         }
     };
 

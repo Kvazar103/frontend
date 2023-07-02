@@ -17,7 +17,9 @@ import reportIcon from '../../images/realtyObject_image_icons/report-flag-1420-s
 import shareIcon from '../../images/realtyObject_image_icons/share-ios-export-svgrepo-com.svg';
 import closeButton from '../../images/close_icon/211652_close_icon.png';
 import copyLinkButton from '../../images/copy_link_icon/copy-link-icon-3.jpg'
+import noImage from '../../images/realtyObjectImageIfNoImage/realtyObjectNoImage.jpg'
 import AuthService from "../../services/auth.service";
+import {useForm} from "react-hook-form";
 
 
 function RealtyObject(){
@@ -44,6 +46,13 @@ function RealtyObject(){
 
     let currentUser=AuthService.getCurrentUser();
     let navigate=useNavigate();
+
+    const {register, handleSubmit,  formState: {errors, isValid}} = useForm({
+        mode: 'all'
+    });
+    const {register:register2, handleSubmit:handleSubmit2, formState: {errors:errors2, isValid:isValid2}} = useForm({
+        mode: 'all'
+    });
     // const currentUser=AuthService.getCurrentUser();
     //
     // console.log("curr")
@@ -53,7 +62,8 @@ function RealtyObject(){
     console.log(url.substring(29));
     let realtyIdFromUrl=url.substring(29);
     useEffect(()=>{
-        axios.get("http://localhost:8080/object/"+realtyIdFromUrl)
+        // axios.get("http://localhost:8080/object/"+realtyIdFromUrl)
+        AuthService.getRealtyObject(realtyIdFromUrl)
             .then(value => {
                 setRealtyObject(value.data)
                 console.log(value.data)
@@ -122,7 +132,8 @@ function RealtyObject(){
 
     useEffect( () => {
 
-              axios.get("http://localhost:8080/getAllCustomers")
+              // axios.get("http://localhost:8080/getAllCustomers")
+        AuthService.getAllCustomers()
             .then(value => {
 
                 let customers = value.data
@@ -166,14 +177,22 @@ function RealtyObject(){
         setCurrentIndex(index);
     }
 
-    const renderSlides=realtyObjectImages.map((image)=>(
-      <div>
+    let renderSlides;
+    if(realtyObjectImages.length>0){
+        renderSlides=realtyObjectImages.map((image)=>(
+            <div>
+                <br/><br/><br/>
+                <img src={`http://localhost:8080/images/${userObjectId}id/${image}`} className={css.img}/>
+
+            </div>
+        ))
+    }else {
+        renderSlides=<div>
             <br/><br/><br/>
-            <img src={`http://localhost:8080/images/${userObjectId}id/${image}`} className={css.img}/>
-
+            <img src={noImage} style={{border:"1px solid black"}} className={css.img}/>
         </div>
+    }
 
-    ))
 
 
     useEffect(()=>{
@@ -197,30 +216,44 @@ function RealtyObject(){
               if(currentUser==null){
                 navigate("/login");
             }
-            let token=JSON.parse(localStorage.getItem('token'));
-            const config={
-                headers:{
-                    Authorization:`${token}`
-                }
-            }
+            // let token=JSON.parse(localStorage.getItem('token'));
+            // const config={
+            //     headers:{
+            //         Authorization:`${token}`
+            //     }
+            // }
             e.target.setAttribute('src', heartRedIcon)
             formData.append("realtyObject",JSON.stringify(realtyObject));
             // formData.append("userObject",JSON.stringify(currentUser));
-            await axios.patch(`http://localhost:8080/update/customer/${currentUser.id}/addedToFavoriteList`,formData,config)
-            const c=await axios.get(`http://localhost:8080/customer/${currentUser.id}`)
-            localStorage.setItem('customer',JSON.stringify(c.data));
+
+            // await axios.patch(`http://localhost:8080/update/customer/${currentUser.id}/addedToFavoriteList`,formData,config)
+            AuthService.addRealtyObjectToFavorite(currentUser.id,formData)
+                .then(()=>{
+                    // const c=await axios.get(`http://localhost:8080/customer/${currentUser.id}`)
+                    AuthService.getCustomer(currentUser.id)
+                        .then((value)=>{
+                            localStorage.setItem('customer',JSON.stringify(value.data));
+                        })
+                })
         } else {
-            let token=JSON.parse(localStorage.getItem('token'));
-            const config={
-                headers:{
-                    Authorization:`${token}`
-                }
-            }
+            // let token=JSON.parse(localStorage.getItem('token'));
+            // const config={
+            //     headers:{
+            //         Authorization:`${token}`
+            //     }
+            // }
             e.target.setAttribute('src', heartIcon)
 
-            await axios.delete(`http://localhost:8080/delete/customer/${currentUser.id}/addedToFavoriteRealtyObject/${realtyObject.id}`,config)
-            const t=await axios.get(`http://localhost:8080/customer/${currentUser.id}`)
-            localStorage.setItem('customer',JSON.stringify(t.data));
+            // await axios.delete(`http://localhost:8080/delete/customer/${currentUser.id}/addedToFavoriteRealtyObject/${realtyObject.id}`,config)
+            AuthService.deleteRealtyObjectFromFavoriteList(currentUser.id,realtyObject.id)
+                .then(()=>{
+                    AuthService.getCustomer(currentUser.id)
+                        .then((value)=>{
+                            localStorage.setItem('customer',JSON.stringify(value.data));
+                        })
+                })
+            // const t=await axios.get(`http://localhost:8080/customer/${currentUser.id}`)
+            // localStorage.setItem('customer',JSON.stringify(t.data));
         }
 
 
@@ -262,21 +295,37 @@ function RealtyObject(){
     const deleteRealtyObject =async (e) => {
         if(window.confirm("Ви дійсно хочете видалити об'єкт?")) {
             try {
-                let token=JSON.parse(localStorage.getItem('token'));
-                const config={
-                    headers:{
-                        Authorization:`${token}`
-                    }
-                }
-                await axios.delete(`http://localhost:8080/customer/${currentUser.id}/realtyObject/${realtyIdFromUrl}`,config)
+                // let token=JSON.parse(localStorage.getItem('token'));
+                // const config={
+                //     headers:{
+                //         Authorization:`${token}`
+                //     }
+                // }
+                // await axios.delete(`http://localhost:8080/customer/${currentUser.id}/realtyObject/${realtyIdFromUrl}`,config)
+                await AuthService.deleteRealtyObject(currentUser.id, realtyIdFromUrl)
             } catch (e) {
                 console.log(e)
             }
-            const c = await axios.get(`http://localhost:8080/customer/${currentUser.id}`)
-            localStorage.setItem('customer', JSON.stringify(c.data))
-            navigate(`/${currentUser.id}/profile`)
+            AuthService.getCustomer(currentUser.id)
+                .then((value)=>{
+                    localStorage.setItem('customer', JSON.stringify(value.data))
+                    navigate(`/${currentUser.id}/profile`)
+                })
+
+            // const c = await axios.get(`http://localhost:8080/customer/${currentUser.id}`)
+            // localStorage.setItem('customer', JSON.stringify(c.data))
+            // navigate(`/${currentUser.id}/profile`)
             // window.location.reload();
         }
+    }
+    const contactFormSubmit = (obj) => {
+        console.log(obj)
+        alert("Success")
+    }
+    const reportFormSubmit=(obj)=>{
+        console.log(obj)
+        setOpen(false)
+        alert("Success")
     }
 
 
@@ -298,30 +347,52 @@ function RealtyObject(){
             renderThumbs={renderCustomThumbs}
         >
                    {renderSlides}
-                   <img src={`http://localhost:8080/images/realtyObjectEmptyImages/no_image_found.png`} className={css.img} style={{marginTop:"80px"}}/>
+                   {/*<img src={`http://localhost:8080/images/realtyObjectEmptyImages/no_image_found.png`} className={css.img} style={{marginTop:"80px"}}/>*/}
 
                </Carousel>
 
         </div>
         <div>
-            <Form className={css.form}><br/>
-                <Form.Group className="mb-3" controlId="formBasicName">
-                    <Form.Control type="text" placeholder="Enter your name" />
+            <form onSubmit={handleSubmit(contactFormSubmit)} className={css.form}><br/>
+                <Form.Group  className="mb-3" controlId="formBasicName"><br/>
+                    <input type="text" name="name" placeholder="Enter your name"
+                           style={{width:"299px",height:"38px",borderColor:"lightgray",borderRadius:"5px"}}
+                           {...register('name',{required:true})}
+                    />
+                    {errors.name&&<span style={{color:"red"}}>Поле ім'я є обовязковим</span>}
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formBasicPhoneNumber">
-                    <Form.Control type="tel" placeholder="Enter your phone number" />
+                    <input type="tel" name="phone" placeholder="Enter your phone number"
+                                  style={{width:"299px",height:"38px",borderColor:"lightgray",borderRadius:"5px"}}
+                           {...register('phone',{required:true,pattern: /^\d{10}$/})}
+                    />
+                    {errors.phone?.type === 'required' && (
+                        <span style={{color:"red"}}>Поле Телефон є обов'язковим</span>
+                    )}
+                    {errors.phone?.type === 'pattern' && (
+                        <span style={{color:"red"}}>Неправильний формат Телефону (10 цифр)</span>
+                    )}
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formBasicEmail">
-                    <Form.Control type="email" placeholder="Enter your email" />
+                    <input type="email" name="email" placeholder="Enter your email" style={{width:"299px",height:"38px",borderColor:"lightgray",borderRadius:"5px"}}
+                           {...register('email',{required:true,pattern: /^\S+@\S+$/i})}/>
+                    {errors.email?.type === 'required' && (
+                        <span style={{color:"red"}}>Поле Електрона пошта є обов'язковим</span>
+                    )}
+                    {errors.email?.type === 'pattern' && (
+                        <span style={{color:"red"}}>Неправильний формат Електроної пошти</span>
+                    )}
 
                 </Form.Group>
                 <Form.Group>
-                    <textarea className="form-control" id="exampleFormControlTextarea1" rows="3" value={messageInTextArea} placeholder="Enter message">
+                    <textarea name="message" className="form-control" id="exampleFormControlTextarea1" rows="3" value={messageInTextArea} placeholder="Enter message" {...register('message',{required:true})}>
 
                     </textarea>
+                    {errors.message && <span style={{color:"red"}}>Поле Повідомлення є обов'язковим</span>}
+
                     <br/>
                 </Form.Group>
-                <Button variant="primary" type="submit">
+                <Button disabled={!isValid} variant="primary" type="submit">
                     Contact with agent
                 </Button><br/><br/>
                 <Form.Group className={css.form_image}>
@@ -339,7 +410,7 @@ function RealtyObject(){
                 </Form.Group>
 
 
-            </Form>
+            </form>
 
         </div>
         </div>
@@ -375,9 +446,9 @@ function RealtyObject(){
                         <img src={closeButton} style={{cursor:"pointer",marginLeft:"160px",marginTop:"-88px"}} onClick={()=>{setShareButt(o=>!o)}} width="24px" height="24px"/>
 
                     </div>}
-                {open&&<Popup contentStyle={{ width: "520px",height:"430px",padding:"10px" }} open={open} closeOnDocumentClick onClose={closeModal}>
+                {open&&<Popup contentStyle={{ width: "520px",height:"500px",padding:"10px" }} open={open} closeOnDocumentClick onClose={closeModal}>
 
-                          <form >
+
                               <div style={{display:"flex",gap:"110px"}}> <h3>Повідомити про проблему </h3>
                                   {/*<Button style={{width:"24px",height:"24px",backgroundColor:"white",borderColor:"white",outline:"none"}}  onClick={()=>{setOpen(false)}}><img src={closeButton} width="24px" height="24px"/></Button>*/}
                                 <img src={closeButton} style={{cursor:"pointer"}} onClick={()=>{setOpen(false)}} width="24px" height="24px"/>
@@ -385,24 +456,41 @@ function RealtyObject(){
                               </div>
                               <hr/>
                               <label>Причина</label><br/>
-                              <select style={{width:"500px",height:"35px"}}>
-                                  <option defaultValue={""}></option>
-                                  <option>Об'єкт зданий/проданий</option>
-                                  <option>Недоречне оголошення</option>
-                                  <option>Спам</option>
-                                  <option>Хибні контактні дані</option>
-                                  <option>Змінилась ціна</option>
-                                  <option>Фото не відповідає дійсності</option>
-                                  <option>У автора багато некоректних оголошень</option>
-                              </select><br/>
+                              <form onSubmit={handleSubmit2(reportFormSubmit)}>
+                              <select  id="report_option" style={{width:"500px",height:"35px"}}
+                                      {...register2("report_option",{required:true})}>
+                                  <option value={""}></option>
+                                  <option value={"1"}>Об'єкт зданий/проданий</option>
+                                  <option value={"2"}>Недоречне оголошення</option>
+                                  <option value={"3"}>Спам</option>
+                                  <option value={"4"}>Хибні контактні дані</option>
+                                  <option value={"5"}>Змінилась ціна</option>
+                                  <option value={"6"}>Фото не відповідає дійсності</option>
+                                  <option value={"7"}>У автора багато некоректних оголошень</option>
+                              </select>
+                              {errors2.report_option && <p style={{color:"red",margin:"0px"}}>Виберіть причину</p>}
                               <label>Подробиці</label>
-                              <textarea style={{width:500,height:100,whiteSpace:"pre-line",borderRadius:"12px"}} name="details" rows="5" cols="30" placeholder="write something about your object"></textarea>
+                              <textarea style={{width:500,height:100,whiteSpace:"pre-line",borderRadius:"12px"}}  id="details"
+                                        rows="5" cols="30" placeholder="write something about your object"  {...register2('details',{required:true})}
+                              ></textarea>
+                              {errors2.details && <p style={{color:"red",margin:"0px"}}>Напишіть деталі </p>}
                               <label>Ваш e-mail</label><br/>
-                              <input style={{borderRadius:"8px",height:"35px",width:"500px"}} type="email"/><br/><br/>
-                              <Button variant="primary" type="submit">
+                              <input name="emailForReport" id="emailForReport" style={{borderRadius:"8px",height:"35px",width:"500px"}} type="email"
+                                     {...register2('emailForReport',{required:true,pattern:{   value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                                             message: "invalid email address"}})}
+                              />
+
+                              {errors2.emailForReport?.type === 'required' && (
+                                  <span style={{color:"red"}}>Поле Електрона пошта є обов'язковим</span>
+                              )}
+                              {errors2.emailForReport?.type === 'pattern' && (
+                                  <span style={{color:"red"}}>Неправильний формат Електроної пошти</span>
+                              )}
+                              <br/><br/>
+                              <Button disabled={!isValid2} variant="primary" type="submit">
                                   Відправити
                               </Button>&nbsp;&nbsp;
-                              <Button variant="outline-secondary" onClick={()=>setOpen(false)}>
+                              <Button  variant="outline-secondary" onClick={()=>setOpen(false)}>
                                   Cancel
                               </Button>
                           </form>
