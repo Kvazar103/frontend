@@ -15,8 +15,8 @@ function Header() {
     const [showForSell, setShowForSell] = useState(false);
     const [showForDaily, setShowForDaily] = useState(false);
 
-    const [currentUser,setCurrentUser]=useState("");
-    const [url,setUrl]=useState("")
+    // const [currentUser,setCurrentUser]=useState("");
+    // const [url,setUrl]=useState("")
 
     let navigate = useNavigate();
 
@@ -24,33 +24,32 @@ function Header() {
 
     const logOut=()=>{
         AuthService.logout();
-        setCurrentUser(undefined);
+        // setCurrentUser(undefined);
         navigate("/");
     };
 
-    const showDropdownForRent = (e)=>{
+    const showDropdownForRent = ()=>{
         setShowForRent(!showForRent);
     }
-    const hideDropdownForRent = e => {
+    const hideDropdownForRent = () => {
         setShowForRent(false);
     }
-    const showDropdownForSell = (e)=>{
+    const showDropdownForSell = ()=>{
         setShowForSell(!showForSell);
     }
-    const hideDropdownForSell = e => {
+    const hideDropdownForSell = () => {
         setShowForSell(false);
     }
-    const showDropdownForDaily = (e)=>{
+    const showDropdownForDaily = ()=>{
         setShowForDaily(!showForDaily);
     }
-    const hideDropdownForDaily = e => {
+    const hideDropdownForDaily = () => {
         setShowForDaily(false);
     }
-    // const onClickRealEstateHeaderDropdown = (e) => {
-    //   console.log(e.target.attributes[0].nodeValue)
-    //
-    //   console.log("on click trig")
-    // }
+    const onSignInNameClick = () => {
+        navigate('/')
+        navigate(`${customer.id}/profile`)
+    }
     return (
         <>
             <Navbar bg="dark" variant="dark"  fixed="top">
@@ -117,10 +116,10 @@ function Header() {
                                 Земельна ділянка
                             </NavDropdown.Item>
                         </NavDropdown>
-
+                        {/*onClick={()=>navigate(`${customer.id}/profile`)}*/}
                         {customer&&(<Navbar.Collapse  className="justify-content-end">
                             <Navbar.Text id={"signed"} >
-                                &nbsp;&nbsp;Signed in as: <a style={{cursor:"pointer"}} onClick={()=>navigate(`${customer.id}/profile`)}>{customer.name}</a>
+                                &nbsp;&nbsp;Signed in as: <span onClick={onSignInNameClick} style={{cursor:"pointer",color:"white"}} >{customer.name}</span>
                             </Navbar.Text>
                         </Navbar.Collapse>)}
 

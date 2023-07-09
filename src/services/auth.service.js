@@ -2,15 +2,15 @@ import axios from "axios";
 
 
 const API_URL="http://localhost:8080/"
-let token=JSON.parse(localStorage.getItem('token'));
-let config={
-    headers:{
-        Authorization:`${token}`
-    }
-}
+// let token=JSON.parse(localStorage.getItem('token'));
+// let config={
+//     headers:{
+//         Authorization:`${token}`
+//     }
+// }
 
-const register=(name,surname,email,login,password,phone_number)=>{
-    return axios.post(API_URL+"save",{
+const register=async (name,surname,email,login,password,phone_number)=>{
+    return await axios.post(API_URL+"save",{
         name,
         surname,
         email,
@@ -57,29 +57,48 @@ const login=async (login,password)=>{
             return response;
         });
 };
-const addUser = (formData) => {
-    return axios.post(API_URL+"save",formData)
+const addUser = async (formData) => {
+    return await axios.post(API_URL+"save",formData)
 }
-const addObject=(customerID,formData)=>{
-    return axios.post(API_URL+customerID+"/addObject",formData,config)
+// const addObject=async (customerID,formData)=>{
+//     return await axios.post(API_URL+customerID+"/addObject",formData,config)
+// }
+const addObject=async (customerID,formData,config)=>{
+    return await axios.post(API_URL+customerID+"/addObject",formData,config)
 }
 const getCustomer =async (customerID) => {
     return await axios.get(API_URL+"customer/"+customerID)
 }
-const getCustomerWithPassword = (customerID) => {
-  return axios.get(API_URL+"updated/customerWithPassword/"+customerID,config)
+// const getCustomerWithPassword =async (customerID) => {
+//   return await axios.get(API_URL+"updated/customerWithPassword/"+customerID,config)
+// }
+const getCustomerWithPassword =async (customerID,config) => {
+    return await axios.get(API_URL+"updated/customerWithPassword/"+customerID,config)
 }
-const changePassword = (formData,customerID) => {
-    return axios.patch(API_URL+customerID+"/checkPassword",formData,config)
+// const changePassword = async (formData,customerID) => {
+//     return await axios.patch(API_URL+customerID+"/checkPassword",formData,config)
+// }
+const changePassword = async (formData,customerID,config) => {
+    return await axios.patch(API_URL+customerID+"/checkPassword",formData,config)
 }
-const getFavorites = (customerID) => {
-  return axios.get(API_URL+"customer/favorites/"+customerID)
+const getFavorites = async (customerID) => {
+  return await axios.get(API_URL+"customer/favorites/"+customerID)
 }
-const getRealtyObject=(realtyObjectID)=>{
-    return axios.get(API_URL+"object/"+realtyObjectID)
+const getRealtyObject= async (realtyObjectID)=>{
+    return await axios.get(API_URL+"object/"+realtyObjectID)
 }
-const getAllCustomers = () => {
-  return axios.get(API_URL+"getAllCustomers")
+const getAllCustomers =async () => {
+  return await axios.get(API_URL+"getAllCustomers")
+}
+const getCustomerAfterLoginUpdate =async (customerID) => {
+  return await axios.get(API_URL+"customerAfterLoginUpdate/"+customerID)
+      .then((value)=>{
+          console.log(value)
+          console.log("customer after login update")
+      })
+}
+const getCustomerLoginAndPasswordAfterLoginUpdate =async (customerID) => {
+    return await axios.get(API_URL+"customerLoginAndPasswordAfterLoginUpdate/"+customerID)
 }
 
 const logout = () => {
@@ -90,26 +109,47 @@ const logout = () => {
 const getCurrentUser=()=>{
     return JSON.parse(localStorage.getItem("customer"));
 }
-const addRealtyObjectToFavorite = (customerID,formData) => {
-    return axios.patch(API_URL+"update/customer/"+customerID+"/addedToFavoriteList",formData,config)
+// const addRealtyObjectToFavorite =async (customerID,formData) => {
+//     return await axios.patch(API_URL+"update/customer/"+customerID+"/addedToFavoriteList",formData,config)
+// }
+const addRealtyObjectToFavorite =async (customerID,formData,config) => {
+    return await axios.patch(API_URL+"update/customer/"+customerID+"/addedToFavoriteList",formData,config)
 }
-const deleteRealtyObjectFromFavoriteList = (customerID,realtyObjectID) => {
-    return axios.delete(API_URL+"delete/customer/"+customerID+"/addedToFavoriteRealtyObject/"+realtyObjectID,config)
+// const deleteRealtyObjectFromFavoriteList =async (customerID,realtyObjectID) => {
+//     return await axios.delete(API_URL+"delete/customer/"+customerID+"/addedToFavoriteRealtyObject/"+realtyObjectID,config)
+// }
+const deleteRealtyObjectFromFavoriteList =async (customerID,realtyObjectID,config) => {
+    return await axios.delete(API_URL+"delete/customer/"+customerID+"/addedToFavoriteRealtyObject/"+realtyObjectID,config)
 }
-const deleteRealtyObject = (customerID,realtyObjectID) => {
-    return axios.delete(API_URL+"customer/"+customerID+"/realtyObject/"+realtyObjectID,config)
+// const deleteRealtyObject =async (customerID,realtyObjectID) => {
+//     return await axios.delete(API_URL+"customer/"+customerID+"/realtyObject/"+realtyObjectID,config)
+// }
+const deleteRealtyObject =async (customerID,realtyObjectID,config) => {
+    return await axios.delete(API_URL+"customer/"+customerID+"/realtyObject/"+realtyObjectID,config)
 }
-const get12RandomRealtyObjects = () => {
-    return axios.get(API_URL+"get12RandomRealtyObject")
+const get12RandomRealtyObjects =async () => {
+    return await axios.get(API_URL+"get12RandomRealtyObject")
 }
-const getSelectedRealtyObject = (formData) => {
-    return axios.post(API_URL+"getSelectedRealtyObjects",formData)
+const getSelectedRealtyObject =async (formData) => {
+    return await axios.post(API_URL+"getSelectedRealtyObjects",formData)
 }
-const updateRealtyObject = (formData,realtyObjectID,customerID) => {
-    return axios.patch(API_URL+realtyObjectID+"/"+customerID+"/updateRealtyObject",formData,config)
+// const updateRealtyObject =async (formData,realtyObjectID,customerID) => {
+//     return await axios.patch(API_URL+realtyObjectID+"/"+customerID+"/updateRealtyObject",formData,config)
+// }
+const updateRealtyObject =async (formData,realtyObjectID,customerID,config) => {
+    return await axios.patch(API_URL+realtyObjectID+"/"+customerID+"/updateRealtyObject",formData,config)
 }
-const updateProfile =async (formData,customerID) => {
+// const updateProfile =async (formData,customerID) => {
+//     return await axios.patch(API_URL+customerID+"/updateProfile",formData,config)
+// }
+const updateProfile =async (formData,customerID,config) => {
     return await axios.patch(API_URL+customerID+"/updateProfile",formData,config)
+}
+// const deleteProfile =async (customerID) => {
+//     return await axios.delete(API_URL+"customer/deleteProfile/"+customerID,config)
+// }
+const deleteProfile =async (customerID,config) => {
+    return await axios.delete(API_URL+"customer/deleteProfile/"+customerID,config)
 }
 
 const AuthService={
@@ -133,6 +173,9 @@ const AuthService={
     getSelectedRealtyObject,
     updateRealtyObject,
     updateProfile,
-    getCustomerWithPassword
+    getCustomerWithPassword,
+    deleteProfile,
+    getCustomerAfterLoginUpdate,
+    getCustomerLoginAndPasswordAfterLoginUpdate
 }
 export default AuthService;

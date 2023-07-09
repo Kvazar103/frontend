@@ -1,5 +1,4 @@
 import {useState} from "react";
-import axios from "axios";
 import {useNavigate} from "react-router-dom";
 
 import css from './FormStyle.module.css'
@@ -9,6 +8,12 @@ import AuthService from "../../services/auth.service";
 export default function AddObject(){
 
     let navigate = useNavigate();
+    let token=JSON.parse(localStorage.getItem('token'));
+    let config={
+        headers:{
+            Authorization:`${token}`
+        }
+    }
 
     const [object,setObject]=useState({
         district:"",
@@ -94,15 +99,9 @@ export default function AddObject(){
 
             const customer=JSON.parse(localStorage.getItem("customer"));
             const formData = new FormData();
-            // let token=JSON.parse(localStorage.getItem('token'));
-            // const config={
-            //     headers:{
-            //         Authorization:`${token}`
-            //     }
-            // }
+
             formData.append("body",JSON.stringify(object))
             for (let i = 0; i < images.length; i++) {
-                console.log("imgs")
                 console.log(images)
                 formData.append(`images`, images[i])
             }
@@ -111,7 +110,7 @@ export default function AddObject(){
             console.log(object)
             formData.append("body",JSON.stringify(object));
             // await axios.post(`http://localhost:8080/${customer.id}/addObject`,formData,config)
-            AuthService.addObject(customer.id,formData).then(()=>{
+            AuthService.addObject(customer.id,formData,config).then(()=>{
                AuthService.getCustomer(customer.id).then(value => {
                    localStorage.setItem('customer', JSON.stringify(value.data));
                    console.log(value.data.my_realty_objectList)

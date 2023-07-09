@@ -1,5 +1,4 @@
 import {useEffect, useState} from "react";
-import axios from "axios";
 import {Dropdown} from "react-bootstrap";
 import _ from "lodash";
 
@@ -38,7 +37,7 @@ export default function Search() {
     const [currency,setCurrency]=useState("");
     const [sumFrom,setSumFrom]=useState(0);
     const [sumTo,setSumTo]=useState(0);
-    const [rooms,setRooms]=useState(null);
+    // const [rooms,setRooms]=useState(null);
     const [allRealtyObjectList,setAllRealtyObjectList]=useState([]);
 
     useEffect(()=>{
@@ -195,7 +194,7 @@ export default function Search() {
     const onClickOnRoom =async (e) => {
         console.log(e)
         console.log(e.target.attributes.value.value)
-        setRooms(e.target.id)
+        // setRooms(e.target.id)
         // const data=searchedRealtyObjectList;
         const data=allRealtyObjectList;
         let newArr=[];
@@ -268,7 +267,7 @@ export default function Search() {
                     />
                     <button
                         type="submit"
-                        style={{border:"none",background:"black",width:"50px",height:"47px"}}><img src={search_black_and_yellow} style={{width:"25px",height:"25px"}}/>
+                        style={{border:"none",background:"black",width:"50px",height:"47px"}}><img src={search_black_and_yellow} style={{width:"25px",height:"25px"}} alt="search_black_and_yellow"/>
                     </button>
                  <div style={{display:"flex",marginLeft:"7px",marginTop:"10px"}}>
                      <Dropdown className="d-inline mx-2" autoClose="inside">
@@ -374,7 +373,7 @@ export default function Search() {
                     return(
                         <div className={css.one_realty}>
                             <div>
-                                <a style={{cursor:"pointer"}} onClick={()=>navigate(`/object/${realtyObject.id}`)}> <img src={x} style={{border:"1px solid black"}} width="120px" height="93px"/></a>
+                                <span style={{cursor:"pointer"}} onClick={()=>navigate(`/object/${realtyObject.id}`)}> <img src={x} style={{border:"1px solid black"}} width="120px" height="93px" alt="realty_image"/></span>
                             </div>
                             <div style={{textAlign:"left",width:"142px"}}>
                                 {/*{item.address}*/}
@@ -382,8 +381,8 @@ export default function Search() {
                                 <span>{realtyObject.price?realtyObject.price.sum:"0"} {realtyObject.price?realtyObject.price.currency:"0"}{monthOrDay?monthOrDay:""}</span>
                             </div>
                             <div style={{textAlign:"left",width:"350px"}}>
-                                <a style={{cursor:"pointer"}} onClick={()=>navigate(`/object/${realtyObject.id}`)}>
-                                    <span style={{color:"blue"}}>{realtyObject.address} {realtyObject.apt_suite_building},{realtyObject.city},{realtyObject.district} district</span></a><br/>
+                                <span style={{cursor:"pointer"}} onClick={()=>navigate(`/object/${realtyObject.id}`)}>
+                                    <span style={{color:"blue"}}>{realtyObject.address} {realtyObject.apt_suite_building},{realtyObject.city},{realtyObject.district} district</span></span><br/>
                                 <span>{realtyObject.square} sq.m ,{realtyObject.rooms} rooms</span>
                             </div>
                         </div>)

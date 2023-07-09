@@ -1,6 +1,5 @@
 import {useEffect, useMemo, useState} from "react";
-import axios from "axios";
-import {Alert, Button, Form} from "react-bootstrap";
+import { Button, Form} from "react-bootstrap";
 import {useNavigate} from "react-router-dom";
 import {useForm} from "react-hook-form";
 
@@ -15,16 +14,22 @@ let pageSize = 5;
 function Profile (){
 
    let currentUser=AuthService.getCurrentUser();
+   let token=JSON.parse(localStorage.getItem('token'));
+   let config={
+        headers:{
+            Authorization:`${token}`
+        }
+    }
 
    const [img,setImg]=useState('http://localhost:8080/images/profile/profile_picture.jpg');
    const [customer,setCustomer]=useState('');
    const [customerRealtyList,setCustomerRealtyList]=useState([]);
-   const [customerAddedToFavorite,setCustomerAddedToFavorite]=useState([]);
+   // const [customerAddedToFavorite,setCustomerAddedToFavorite]=useState([]);
    const [customerIdFromUrl,setCustomerIdFromUrl]=useState('');
 
     let navigate=useNavigate();
 
-    const {register, handleSubmit, reset, formState: {errors, isValid}, setValue} = useForm({
+    const {register, handleSubmit, formState: {errors, isValid}} = useForm({
         mode: 'all'
     });
 
@@ -36,13 +41,21 @@ function Profile (){
         return customerRealtyList.slice(firstPageIndex, lastPageIndex);
     }, [currentPage, customerRealtyList]);
 
-   useEffect(()=>{
-       let url=window.location.toString()  //присвоюємо стрінгову урлу даної сторінки
-       console.log(url.split('/',4))
-       let splitUrl=url.split('/',4)
-       let customerIdFromUrl=splitUrl.slice(-1)
-       setCustomerIdFromUrl(customerIdFromUrl)
-   },[])
+   // useEffect(()=>{
+   //     let url=window.location.toString()  //присвоюємо стрінгову урлу даної сторінки
+   //     console.log(url.split('/',4))
+   //     let splitUrl=url.split('/',4)
+   //     let customerIdFromUrl=splitUrl.slice(-1)
+   //     setCustomerIdFromUrl(customerIdFromUrl)
+   // },[])
+    let url=window.location.toString()  //присвоюємо стрінгову урлу даної сторінки
+    useEffect(()=>{
+
+        console.log(url.split('/',4))
+        let splitUrl=url.split('/',4)
+        let customerIdFromUrl=splitUrl.slice(-1)
+        setCustomerIdFromUrl(customerIdFromUrl)
+    },[url])
 
 
     useEffect(()=>{
@@ -54,7 +67,7 @@ function Profile (){
                     console.log("f")
                     setCustomer(value.data)
                     setCustomerRealtyList(value.data.my_realty_objectList)
-                    setCustomerAddedToFavorite(value.data.added_to_favorites)
+                    // setCustomerAddedToFavorite(value.data.added_to_favorites)
 
 
                 })
@@ -64,6 +77,7 @@ function Profile (){
 
     useEffect(()=>{
         if(customerIdFromUrl){
+            console.log("useEffect second")
             // axios.get("http://localhost:8080/customer/"+customerIdFromUrl)
             AuthService.getCustomer(customerIdFromUrl)
                 .then(value => {
@@ -78,7 +92,7 @@ function Profile (){
                     }
                 })
         }
-    },[currentUser, customer, customer.id, customerIdFromUrl])
+    },[currentUser, customerIdFromUrl,currentUser.id])
 
 
 
@@ -88,7 +102,7 @@ function Profile (){
         if(customer.avatar!=null){
             setImg(customer_img)
         }
-    },[customer.avatar, customer.name, customer.surname])
+    },[customer.avatar, customer.name, customer.surname,url])
 
     const onUpdateClick = () => {
             navigate(`/${customerIdFromUrl}/updateProfile`)
@@ -98,6 +112,22 @@ function Profile (){
     }
     const onSavedObjectsClick = () => {
       navigate(`/${customerIdFromUrl}/favoriteObjects`)
+    }
+    const onDeleteProfileButtonClick = () => {
+       let customer= JSON.parse(localStorage.getItem("customer"))
+        console.log("delete1")
+        if(window.confirm("Ви дійсно хочете видалити профіль?")) {
+            try{
+                AuthService.deleteProfile(Number(customer.id),config)
+                    .then((value) => {
+                        console.log("delete2")
+                        AuthService.logout()
+                        navigate("/")
+                    })
+            }catch (e){
+                console.log(e)
+            }
+        }
     }
     
     const onContactFormSubmit =  (obj) => {
@@ -111,7 +141,7 @@ function Profile (){
      <div>
        <div className={css.header_and_form}>
         <div className={css.profile_header}>
-            <img className={css.profile_image} src={img}/>
+            <img className={css.profile_image} src={img} alt="profile_image"/>
             <div>
                 <h1>{customer.name}&nbsp;{customer.surname}</h1>
                 <div className={css.for_info}>
@@ -129,7 +159,7 @@ function Profile (){
                 <Button id="edit_profile_button" onClick={onUpdateClick} style={{position:"absolute",top:"216px",right:"1020px"}} variant="success" hidden={true}>Update profile</Button>
                 <Button id="change_password_profile_button" onClick={onChangePasswordClick}  style={{position:"absolute",top:"216px",right:"850px"}} variant="success" hidden={true}>Change password</Button>
                 <Button id="saved_objects_button" onClick={onSavedObjectsClick} style={{position:"absolute",top:"216px",right:"710px"}} hidden={true}>Saved objects</Button>
-                <Button id="delete_profile_button" style={{position:"absolute",top:"216px",right:"570px"}} variant="danger" hidden={true}>Delete profile</Button>
+                <Button id="delete_profile_button" onClick={onDeleteProfileButtonClick} style={{position:"absolute",top:"216px",right:"570px"}} variant="danger" hidden={true}>Delete profile</Button>
             </div>
 
         </div>
@@ -193,7 +223,7 @@ function Profile (){
             return(
                 <div className={css.one_realty}>
                     <div>
-                        <a onClick={()=>navigate(`/object/${item.id}`)} style={{cursor:"pointer"}}> <img src={x} width="120px" style={{border:"1px solid black"}} height="93px"/></a>
+                        <span onClick={()=>navigate(`/object/${item.id}`)} style={{cursor:"pointer"}}> <img src={x} width="120px" style={{border:"1px solid black"}} height="93px" alt="realty_image"/></span>
                     </div>
                     <div style={{textAlign:"left",width:"142px"}}>
                         {/*{item.address}*/}
@@ -201,8 +231,8 @@ function Profile (){
                         <span>{item.price?item.price.sum:"0"} {item.price?item.price.currency:"0"}{monthOrDay?monthOrDay:""}</span>
                     </div>
                     <div style={{textAlign:"left",width:"350px"}}>
-                        <a onClick={()=>navigate(`/object/${item.id}`)} style={{cursor:"pointer",color:"blue"}}>
-                            <span>{item.address} {item.apt_suite_building},{item.city},{item.district} district</span></a><br/>
+                        <span onClick={()=>navigate(`/object/${item.id}`)} style={{cursor:"pointer",color:"blue"}}>
+                            <span>{item.address} {item.apt_suite_building},{item.city},{item.district} district</span></span><br/>
                         <span>{item.square} sq.m</span>
                     </div>
                 </div>)

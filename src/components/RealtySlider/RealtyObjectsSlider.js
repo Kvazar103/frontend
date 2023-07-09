@@ -1,5 +1,4 @@
 import {useEffect, useState} from "react";
-import axios from "axios";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 
@@ -11,9 +10,9 @@ export default function RealtyObjectsSlider() {
 
     const [data,setData]=useState([]);
 
-    const info=(obj)=>{
-
-    }
+    // const info=(obj)=>{
+    //
+    // }
 
 
     useEffect(()=>{
@@ -70,7 +69,9 @@ export default function RealtyObjectsSlider() {
         >
 
 
-            {data.map((value,index)=>(<RealtySlider item={value} key={index} info={info}/>))}
+            {/*{data.map((value,index)=>(<RealtySlider item={value} key={index} info={info}/>))}*/}
+            {data.map((value,index)=>(<RealtySlider item={value} key={index} />))}
+
 
         </Carousel>
 

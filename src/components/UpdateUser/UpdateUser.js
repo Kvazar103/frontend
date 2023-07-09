@@ -1,6 +1,5 @@
 import {useNavigate, Navigate, Link} from "react-router-dom";
 import {useState} from "react";
-import axios from "axios";
 import {Button} from "react-bootstrap";
 
 import AuthService from "../../services/auth.service";
@@ -25,7 +24,7 @@ export default function UpdateUser() {
     const [requireMsgForSurname,setRequireMsgForSurname]=useState("");
     const [requireMsgForLogin,setRequireMsgForLogin]=useState("");
     const [requireMsgForPhoneNumber,setRequireMsgForPhoneNumber]=useState("");
-    const [requireMsgForFile,setRequireMsgForFile]=useState("");
+    // const [requireMsgForFile,setRequireMsgForFile]=useState("");
     const [requireMsgForPhone,setRequireMsgForPhone]=useState('')
     const [loginAlreadyExists,setLoginAlreadyExists]=useState("");
     const [loginExists,setLoginExists]=useState(false);
@@ -40,10 +39,15 @@ export default function UpdateUser() {
     });
     const {
         register,
-        handleSubmit,
-        formState: { errors,isValid }
+        formState: { errors}
     } = useForm({ mode: 'all'});
 
+    let token=JSON.parse(localStorage.getItem('token'));
+    let config={
+        headers:{
+            Authorization:`${token}`
+        }
+    }
 
     if((currentUser == null)||(currentUser && ((currentUser.id > idFromUrl[0])||(currentUser.id < idFromUrl[0])))){   ///захист від не авторизованих користувачів
         return <Navigate to={"/login"}/>
@@ -61,7 +65,7 @@ export default function UpdateUser() {
 
         }
     }
-    const onDeleteImage=(e)=>{
+    const onDeleteImage=()=>{
        document.getElementById("input").value=null
 
         setImageToShow('http://localhost:8080/images/profile/profile_picture.jpg')
@@ -84,6 +88,7 @@ export default function UpdateUser() {
         setRequireMsgForPhoneNumber("")
         setRequireMsgForPhone('');
         setLoginAlreadyExists("");
+        setLoginExists(false)
     };
     // const onFileChange = (e) => {
     //     setAvatar(e.target.files)
@@ -106,9 +111,9 @@ export default function UpdateUser() {
         if(user.phone_number.length<6){
             setRequireMsgForPhone("Min phone number length:6")
         }
-        if(avatar===""){
-            setRequireMsgForFile("Avatar cannot be null")
-        }
+        // if(avatar===""){
+        //     setRequireMsgForFile("Avatar cannot be null")
+        // }
         if(user.email === ""){
             setEmailMsg("Email cannot be null")
         }
@@ -119,7 +124,7 @@ export default function UpdateUser() {
         //
         //         }
         //     })
-        if((user.email!=="")&&(!errors.email)&&(user.name!=="" && user.surname!==""&&user.phone_number!=="" && user.login!==""&&user.phone_number.length>=6)){
+        if((user.email!=="")&&(!errors.email)&&(user.name!=="" && user.surname!==""&&user.phone_number!=="" && user.login!==""&&user.phone_number.length>=6&&!loginExists)){
             const formData=new FormData();
             formData.append("customer",JSON.stringify(user))
             // formData.append("avatar",avatar[0])
@@ -163,13 +168,36 @@ export default function UpdateUser() {
           //       setLoginAlreadyExists("Login already exists")
           //       setLoginExists(true)
           //   });
-           AuthService.updateProfile(formData,idFromUrl[0])
-                .then(()=>{
+           AuthService.updateProfile(formData,idFromUrl[0],config)
+                .then((value)=>{
                     AuthService.getCustomer(idFromUrl[0])
                         .then((value)=>{
                             localStorage.setItem("customer",JSON.stringify(value.data))
+                            //     AuthService.login(value.data.login,"Qwerty1")
+                            //         .then(()=>{
+                            //             navigate(`/${idFromUrl[0]}/profile`);
+                            //         })
                             navigate(`/${idFromUrl[0]}/profile`);
                         })
+                    //     AuthService.getCustomerAfterLoginUpdate(idFromUrl[0],config)
+                    //         .then((value)=>{
+                    //             // localStorage.setItem("customer",JSON.stringify(value.data))
+                    //             // AuthService.login(value.data.login,value.data.password)
+                    //                 // .then(()=>{
+                    //                     navigate(`/${idFromUrl[0]}/profile`);
+                    //                 // })
+                    //         })
+                    // AuthService.getCustomerLoginAndPasswordAfterLoginUpdate(idFromUrl[0])
+                    //     .then((value)=>{
+                    //         console.log(value)
+                    //         console.log("trigggg")
+                    //         AuthService.login(value.data.login,value.data.password)
+                    //             .then(()=>{
+                    //                 navigate(`/${idFromUrl[0]}/profile`);
+                    //             })
+                    //     })
+                    console.log(value)
+                    console.log(value.headers)
                 }
                 ,(value)=>{
                     console.log(value)
@@ -292,7 +320,7 @@ export default function UpdateUser() {
                                    name="avatar"
                                    accept="image/png, image/jpeg"
                                    onChange={onImageChange}/>
-                            <img id="img" style={{width:"150px",height:"150px"}} src={imageToShow}/><br/>
+                            <img id="img" style={{width:"150px",height:"150px"}} src={imageToShow} alt="image_to_show"/><br/>
                             <Button onClick={onDeleteImage}  variant="danger">delete avatar</Button><br/>
                             <Button onClick={onUpdateImage}  variant="success">change avatar</Button>
                         </div>

@@ -1,6 +1,5 @@
 import {Link, Navigate, useNavigate} from "react-router-dom";
 import {useState} from "react";
-import axios from "axios";
 import {Button} from "react-bootstrap";
 
 import AuthService from "../../services/auth.service";
@@ -15,6 +14,12 @@ export default function ChangePassword() {
     console.log(idFromUrl[0])
     let currentUser=AuthService.getCurrentUser();
     let navigate=useNavigate();
+    let token=JSON.parse(localStorage.getItem('token'));
+    let config={
+        headers:{
+            Authorization:`${token}`
+        }
+    }
 
     const [old_password,setOld_password]=useState('');
     const [new_password,setNew_password]=useState('');
@@ -53,13 +58,10 @@ export default function ChangePassword() {
         if(new_password!==ReEntered_New_password){
             setMessagePasswordMatches("Passwords don't match")
             document.getElementById("buttonSubmit").disabled=true;
-
         } else {
             setMessagePasswordMatches("")
             document.getElementById("buttonSubmit").disabled=false;
-
         }
-
     }
 
     const Submit =async (e) => {
@@ -73,26 +75,8 @@ export default function ChangePassword() {
       }else {
           setMessageCanNotBeNull("")
       }
-        // let token=JSON.parse(localStorage.getItem('token'));
-        // const config={
-        //     headers:{
-        //         Authorization:`${token}`
-        //     }
-        // }
-      // await axios.patch(`http://localhost:8080/${idFromUrl[0]}/checkPassword`,formData,config)
-      //     .then((response)=> {
-      //             console.log("respo")
-      //             console.log(response)
-      //             navigate(`/${idFromUrl[0]}/profile`)
-      //         // window.location.reload()
-      //         }
-      //     )
-      //     .catch((error)=>{
-      //         console.log("error")
-      //         console.log(error)
-      //         setMessageOldPasswordMatch("The current password is incorrect")
-      //     })
-        AuthService.changePassword(formData,idFromUrl[0])
+
+        AuthService.changePassword(formData,idFromUrl[0],config)
             .then((response)=> {
                     console.log("respo")
                     console.log(response)
@@ -113,11 +97,7 @@ export default function ChangePassword() {
             <div className="col-md-6 offset-md-3 border rounded p-4 mt-2 shadow">
                 <h2 className="text-center m-4">Change password</h2>
                 <form onSubmit={Submit}>
-                    {/*{message}*/}
                     <div className="mb-3">
-                        {/*<label htmlFor="Old_password" className="form-label">*/}
-                        {/*    Enter old password*/}
-                        {/*</label>*/}
                         <div style={{color:"red"}}>{messageOldPasswordMatch}</div>
                         <input
                             type={"password"}
@@ -132,9 +112,6 @@ export default function ChangePassword() {
                     <div style={{color:"red"}}>{messagePasswordMatches}</div>
                     <div style={{color:"red"}}>{messageCanNotBeNull}</div>
                     <div className="mb-3">
-                        {/*<label htmlFor="New_Password" className="form-label">*/}
-                        {/*    Enter new password*/}
-                        {/*</label>*/}
                         <input
                             type={"password"}
                             className="form-control"
@@ -163,11 +140,8 @@ export default function ChangePassword() {
                     <Link className="btn btn-outline-danger mx-2" to={`/${idFromUrl[0]}/profile`}>
                         Cancel
                     </Link><br/><br/>
-                    <a href={"/"}>Forgot password?</a>
                 </form>
             </div>
         </div>
-
-        {/*<input type="file"/>*/}
     </div>)
 }

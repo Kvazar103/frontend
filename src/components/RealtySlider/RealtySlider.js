@@ -1,5 +1,4 @@
 import { useEffect, useState} from "react";
-import axios from "axios";
 import {useNavigate} from "react-router-dom";
 
 import css from "./slider.module.css";
@@ -12,8 +11,12 @@ export default function RealtySlider(props){
 
     let {item}=props;
     let images = item.images;
+    // console.log(props)
+    // console.log("Realty slider trig")
+    // console.log(item)
     let [nameSurname,setNameSurname]=useState('');
-    let [user,setUser]=useState({});
+    let [url,setUrl]=useState('');
+    // let [user,setUser]=useState({});
     let navigate=useNavigate();
 
     useEffect(()=>{
@@ -43,9 +46,9 @@ export default function RealtySlider(props){
                         for (let realty of realtyObjectList){
                             // console.log(realty)
                             if(realty.id===item.id){
-                                console.log(realty)
+                                // console.log(realty)
                                 setNameSurname(customer.id+"id")
-                                setUser(customer)
+                                // setUser(customer)
                             }
                         }
                     }
@@ -53,21 +56,28 @@ export default function RealtySlider(props){
             })
     },[item.id])
 
-    console.log(nameSurname.toString())
+    // console.log(nameSurname.toString())
 
     const handleClick = (e) => {
         e.preventDefault();
         navigate("/object/"+item.id)
     }
     // let x=`http://localhost:8080/images/${nameSurname}/${images[0]}`;
-    let x=(images[0])?(`http://localhost:8080/images/${nameSurname}/${images[0]}`):(noImage);
+    useEffect(()=>{
+        if(nameSurname!==""){
+            setUrl((images[0])?(`http://localhost:8080/images/${nameSurname}/${images[0]}`):(noImage))
+        }
+    },[images, nameSurname])
 
-    console.log(x)
+    // let x=(images[0])?(`http://localhost:8080/images/${nameSurname}/${images[0]}`):(noImage);
+    //
+    //
+    // console.log(x)
 
 
         return (<div className={css.card} onClick={handleClick} style={{padding:"0px 10px 10px 0px"}}>
-                <img src={x} height="175px" width="398px" style={{borderRadius:"18px"}}/>
-                        <b class="size18">{item.price?item.price.sum:"0"} {item.price?item.price.currency:"0"}</b>
+            <img src={(nameSurname)?url:noImage} height="175px" width="398px" style={{borderRadius:"18px"}} alt="img"/>
+                        <b id="size18">{item.price?item.price.sum:"0"} {item.price?item.price.currency:"0"}</b>
                         <h3>{item.address} </h3>
                         <p>{item.distinct}</p>
                         <p>{item.rooms}rooms * {item.square}square</p>

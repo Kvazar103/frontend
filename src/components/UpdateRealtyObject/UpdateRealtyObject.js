@@ -1,6 +1,5 @@
 import {Link, useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
-import axios from "axios";
 import {Button} from "react-bootstrap";
 
 import AuthService from "../../services/auth.service";
@@ -17,7 +16,15 @@ export default function UpdateRealtyObject() {
     // console.log(url.split('/',4))
     let arrayOfUrl=url.split('/',4)
     let idFromUrl=arrayOfUrl.slice(-1);
-    // console.log(idFromUrl[0])
+    console.log(idFromUrl[0])
+    console.log("id from url")
+    let token=JSON.parse(localStorage.getItem('token'));
+    let config={
+        headers:{
+            Authorization:`${token}`
+        }
+    }
+
 
     // const [currentRealtyObject,setCurrentRealtyObject]=useState('');
     const [realtyImagesUrl,setRealtyImagesUrl]=useState([]);
@@ -28,18 +35,38 @@ export default function UpdateRealtyObject() {
     const [images, setImages] = useState([]);
 
 
+    // const result=currentUser.my_realty_objectList.filter(realty=>realty.id==idFromUrl[0]);
+    //
+    // useEffect(() => {
+    //             let c = []
+    //             // setCurrentRealtyObject(value.data)
+    //     console.log("first useEffect trig")
+    //             for (let x of result[0].images) {
+    //                 c.push(`http://localhost:8080/images/${currentUser.id}id/` + x)
+    //             }
+    //             setRealtyImagesUrl(c);
+    //             // console.log(realtyImagesUrl)
+    //     document.getElementById("inputAddImageId").hidden=true;
+    // },[currentUser.id,result])
+
     const result=currentUser.my_realty_objectList.filter(realty=>realty.id==idFromUrl[0]);
+    console.log("result")
+    console.log(result)
+    console.log(currentUser)
+
 
     useEffect(() => {
-                let c = []
-                // setCurrentRealtyObject(value.data)
-                for (let x of result[0].images) {
-                    c.push(`http://localhost:8080/images/${currentUser.id}id/` + x)
-                }
-                setRealtyImagesUrl(c);
-                // console.log(realtyImagesUrl)
+        const resultForUseEffect=currentUser.my_realty_objectList.filter(realty=>realty.id==idFromUrl[0])
+        let c = []
+        // setCurrentRealtyObject(value.data)
+        console.log("first useEffect trig")
+        for (let x of resultForUseEffect[0].images) {
+            c.push(`http://localhost:8080/images/${currentUser.id}id/` + x)
+        }
+        setRealtyImagesUrl(c);
+        // console.log(realtyImagesUrl)
         document.getElementById("inputAddImageId").hidden=true;
-    },[currentUser.id, result])
+    },[currentUser.id])
 
 
 
@@ -64,8 +91,7 @@ export default function UpdateRealtyObject() {
 
     const {
         register,
-        handleSubmit,
-        formState: { errors,isValid }
+        formState: { errors }
     } = useForm({ mode: 'all'});
 
     const onSumChange = (e) => {
@@ -119,6 +145,7 @@ export default function UpdateRealtyObject() {
     useEffect(() => {
         const images = [], fileReaders = [];
         let isCancel = false;
+        console.log("Second useEffect trig")
         if (imageFiles.length) {
             imageFiles.forEach((file) => {
                 const fileReader = new FileReader();
@@ -134,7 +161,7 @@ export default function UpdateRealtyObject() {
                 }
                 fileReader.readAsDataURL(file);
             })
-        };
+        }
         return () => {
             isCancel = true;
             fileReaders.forEach(fileReader => {
@@ -233,7 +260,7 @@ export default function UpdateRealtyObject() {
             // }
             console.log(formData)
             // await axios.patch(`http://localhost:8080/${idFromUrl[0]}/${currentUser.id}/updateRealtyObject`, formData,config);
-            AuthService.updateRealtyObject(formData,idFromUrl[0],currentUser.id)
+            AuthService.updateRealtyObject(formData,idFromUrl[0],currentUser.id,config)
                 .then(()=>{
                     AuthService.getCustomer(currentUser.id)
                         .then((value)=>{
@@ -383,7 +410,7 @@ export default function UpdateRealtyObject() {
 
                         {realtyImagesUrl.map(value => {
                             return(<div>
-                                <img id={`${value}`} style={{width:"400px",height:"210px"}} src={value}/>
+                                <img id={`${value}`} style={{width:"400px",height:"210px"}} src={value} alt="delete_icon"/>
                                 <Button id={`${value}b`} value={value} onClick={onDeleteImageClick} variant={'danger'}>delete</Button>
                             </div>)
                         })}

@@ -1,6 +1,5 @@
 import {Link, useNavigate} from "react-router-dom";
 import {useState} from "react";
-import axios from "axios";
 import { useForm } from 'react-hook-form';
 
 import AuthService from "../../services/auth.service";
@@ -105,14 +104,19 @@ export default function AddUser(){
             //     //тут помилка може появлятися тільки якщо такий самий логін вже існує
             //     setLoginAlreadyExists(true)
             // })
-            AuthService.addUser(formData).catch((value)=>{
+           await AuthService.addUser(formData).catch((value)=>{
                 console.log(value)
                 console.log("error(Найімовірніше, вже подібний логін існує)")
                 //тут помилка може появлятися тільки якщо такий самий логін вже існує
                 setLoginAlreadyExists(true)
-            }).then(()=>{
-                AuthService.login(user.login,user.password).then(()=>{
-                    navigate("/");
+            }).then(async()=>{
+               await AuthService.login(user.login,user.password).then(()=>{
+                    // AuthService.logout()
+                    // AuthService.login(user.login,user.password)
+                        // .then(()=>{
+                            navigate("/");
+                        // })
+
                 })
             })
 

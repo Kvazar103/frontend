@@ -1,4 +1,3 @@
-import axios from "axios";
 import {useEffect, useState} from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from "react-responsive-carousel";
@@ -27,7 +26,7 @@ function RealtyObject(){
     const [realtyObject,setRealtyObject]=useState("");
     const [realtyObjectImages,setRealtyObjectImages]=useState([]);
     const [userObject,setUserObject]=useState("");
-    const [nameSurname,setNameSurname]=useState('');
+    // const [nameSurname,setNameSurname]=useState('');
     const [currentIndex, setCurrentIndex] = useState();
     const [phoneNumber,setPhoneNumber]=useState('');
     const [slicedPhoneNumber,setSlicedPhoneNumber]=useState('');
@@ -46,6 +45,12 @@ function RealtyObject(){
 
     let currentUser=AuthService.getCurrentUser();
     let navigate=useNavigate();
+    let token=JSON.parse(localStorage.getItem('token'));
+    let config={
+        headers:{
+            Authorization:`${token}`
+        }
+    }
 
     const {register, handleSubmit,  formState: {errors, isValid}} = useForm({
         mode: 'all'
@@ -144,7 +149,7 @@ function RealtyObject(){
                             if (realty.id === realtyObject.id) {
                                 setUserObject(customer)
                                 setUserObjectId(customer.id)
-                                setNameSurname(customer.name + customer.surname)
+                                // setNameSurname(customer.name + customer.surname)
                                 setPhoneNumber(customer.phone_number)
                                 console.log(phoneNumber)
                                 let phoneToString = phoneNumber.toString()
@@ -182,14 +187,14 @@ function RealtyObject(){
         renderSlides=realtyObjectImages.map((image)=>(
             <div>
                 <br/><br/><br/>
-                <img src={`http://localhost:8080/images/${userObjectId}id/${image}`} className={css.img}/>
+                <img src={`http://localhost:8080/images/${userObjectId}id/${image}`} className={css.img} alt="realty_img"/>
 
             </div>
         ))
     }else {
         renderSlides=<div>
             <br/><br/><br/>
-            <img src={noImage} style={{border:"1px solid black"}} className={css.img}/>
+            <img src={noImage} style={{border:"1px solid black"}} className={css.img} alt="no_img"/>
         </div>
     }
 
@@ -227,7 +232,7 @@ function RealtyObject(){
             // formData.append("userObject",JSON.stringify(currentUser));
 
             // await axios.patch(`http://localhost:8080/update/customer/${currentUser.id}/addedToFavoriteList`,formData,config)
-            AuthService.addRealtyObjectToFavorite(currentUser.id,formData)
+            AuthService.addRealtyObjectToFavorite(currentUser.id,formData,config)
                 .then(()=>{
                     // const c=await axios.get(`http://localhost:8080/customer/${currentUser.id}`)
                     AuthService.getCustomer(currentUser.id)
@@ -245,7 +250,7 @@ function RealtyObject(){
             e.target.setAttribute('src', heartIcon)
 
             // await axios.delete(`http://localhost:8080/delete/customer/${currentUser.id}/addedToFavoriteRealtyObject/${realtyObject.id}`,config)
-            AuthService.deleteRealtyObjectFromFavoriteList(currentUser.id,realtyObject.id)
+            AuthService.deleteRealtyObjectFromFavoriteList(currentUser.id,realtyObject.id,config)
                 .then(()=>{
                     AuthService.getCustomer(currentUser.id)
                         .then((value)=>{
@@ -280,7 +285,7 @@ function RealtyObject(){
         const thumbList=realtyObjectImages.map((image,index)=>
             <picture key={index}>
                 <source data-srcSet={`http://localhost:8080/images/${userObjectId}id/${image}`} type="image/jpg"/>
-                <img src={`http://localhost:8080/images/${userObjectId}id/${image}`} height="70"/>
+                <img src={`http://localhost:8080/images/${userObjectId}id/${image}`} height="70" alt="realty_img"/>
             </picture>
         )
         return(thumbList)
@@ -292,7 +297,7 @@ function RealtyObject(){
         setCopy(true);
     }
 
-    const deleteRealtyObject =async (e) => {
+    const deleteRealtyObject =async () => {
         if(window.confirm("Ви дійсно хочете видалити об'єкт?")) {
             try {
                 // let token=JSON.parse(localStorage.getItem('token'));
@@ -302,7 +307,7 @@ function RealtyObject(){
                 //     }
                 // }
                 // await axios.delete(`http://localhost:8080/customer/${currentUser.id}/realtyObject/${realtyIdFromUrl}`,config)
-                await AuthService.deleteRealtyObject(currentUser.id, realtyIdFromUrl)
+                await AuthService.deleteRealtyObject(currentUser.id, realtyIdFromUrl,config)
             } catch (e) {
                 console.log(e)
             }
@@ -397,9 +402,9 @@ function RealtyObject(){
                 </Button><br/><br/>
                 <Form.Group className={css.form_image}>
                     <div>
-                        <a  onClick={()=>navigate(`/${userObject.id}/profile`)}>
-                    <img src={img} width="80px" height="80px"/>
-                        </a>
+                        <span  onClick={()=>navigate(`/${userObject.id}/profile`)}>
+                    <img src={img} width="80px" height="80px" alt="profile_img"/>
+                        </span>
                     </div>
                     <div className={css.image_in_form}>
                         <div>{userObject.name} {userObject.surname}</div>
@@ -417,12 +422,12 @@ function RealtyObject(){
 
             <div className={css.buttons} id="buttons">
 
-                <Button className={css.button} onClick={onHeartClick} variant="light"><img id="heart" width="24px" height="24px" src={heartIcon}/></Button>
-                <Button className={css.button} onClick={() => setShareButt(el=>!el)} variant="light"><img width="24px" height="24px" src={shareIcon}/></Button>
+                <Button className={css.button} onClick={onHeartClick} variant="light"><img id="heart" width="24px" height="24px" src={heartIcon} alt="heart_icon"/></Button>
+                <Button className={css.button} onClick={() => setShareButt(el=>!el)} variant="light"><img width="24px" height="24px" src={shareIcon} alt="share_icon"/></Button>
 
-                <Button className={css.button} onClick={onUpdateRealtyObjectClick} id="button_for_edit" variant="light"><img id="edit" width="24px" height="24px" src={editIcon}/></Button>
-                <Button className={css.button} onClick={deleteRealtyObject} id="button_for_delete" variant="light"><img id="delete" width="24px" height="24px" src={deleteIcon}/></Button>
-                <Button className={css.button} onClick={() => setOpen(o => !o)} variant="light"><img width="24px" height="24px" src={reportIcon}/></Button>
+                <Button className={css.button} onClick={onUpdateRealtyObjectClick} id="button_for_edit" variant="light"><img id="edit" width="24px" height="24px" src={editIcon} alt="edit_icon"/></Button>
+                <Button className={css.button} onClick={deleteRealtyObject} id="button_for_delete" variant="light"><img id="delete" width="24px" height="24px" src={deleteIcon} alt="delete_icon"/></Button>
+                <Button className={css.button} onClick={() => setOpen(o => !o)} variant="light"><img width="24px" height="24px" src={reportIcon} alt="report_icon"/></Button>
                 {shareButt&&
                     <div style={{width:"200px",height:"100px",background:"white",marginLeft:"550px",display:"flex",flexDirection:"column",paddingRight:"130px"}}>
                         <FacebookShareButton
@@ -440,10 +445,10 @@ function RealtyObject(){
                             <TwitterIcon size={32} round />
                         </TwitterShareButton>
                         <div style={{display:"flex",marginLeft:"20px"}}>
-                            <img src={copyLinkButton} onClick={copyToClip} style={{cursor:"pointer"}} height="24px" width="24px"/>
+                            <img src={copyLinkButton} onClick={copyToClip} style={{cursor:"pointer"}} height="24px" width="24px" alt="copy_img"/>
                             {copy&&<div>&nbsp;&nbsp;copied!</div>}
                         </div>
-                        <img src={closeButton} style={{cursor:"pointer",marginLeft:"160px",marginTop:"-88px"}} onClick={()=>{setShareButt(o=>!o)}} width="24px" height="24px"/>
+                        <img src={closeButton} style={{cursor:"pointer",marginLeft:"160px",marginTop:"-88px"}} onClick={()=>{setShareButt(o=>!o)}} width="24px" height="24px" alt="close_img"/>
 
                     </div>}
                 {open&&<Popup contentStyle={{ width: "520px",height:"500px",padding:"10px" }} open={open} closeOnDocumentClick onClose={closeModal}>
@@ -451,7 +456,7 @@ function RealtyObject(){
 
                               <div style={{display:"flex",gap:"110px"}}> <h3>Повідомити про проблему </h3>
                                   {/*<Button style={{width:"24px",height:"24px",backgroundColor:"white",borderColor:"white",outline:"none"}}  onClick={()=>{setOpen(false)}}><img src={closeButton} width="24px" height="24px"/></Button>*/}
-                                <img src={closeButton} style={{cursor:"pointer"}} onClick={()=>{setOpen(false)}} width="24px" height="24px"/>
+                                <img src={closeButton} style={{cursor:"pointer"}} onClick={()=>{setOpen(false)}} width="24px" height="24px" alt="close_butt"/>
 
                               </div>
                               <hr/>

@@ -2,7 +2,6 @@ import {useMemo, useState} from "react";
 import AuthService from "../../services/auth.service";
 import {useEffect} from "react";
 import Pagination from "../Profile/Pagination";
-import axios from "axios";
 import css from "../Profile/profile.module.css";
 import {useNavigate} from "react-router-dom";
 
@@ -73,13 +72,9 @@ export default function FavoriteObjects() {
             console.log(realtyObjectInObject)
             let realtyObject=realtyObjectInObject[0];
 
-
-            // let x = `http://localhost:8080/images/${customerId}id/${realtyObject.images[0]}`;
             let x = (realtyObject.images[0])?(`http://localhost:8080/images/${customerId}id/${realtyObject.images[0]}`):(noImage);
 
-            // console.log(x)
-            // console.log(value)
-            let monthOrDay = "";
+            let monthOrDay ="";
             if (realtyObject.price != null && realtyObject.price.type_of_order_of_real_estate === "Rent_for_a_month") {
                 monthOrDay = "/month";
             } else if (realtyObject.price != null && realtyObject.price.type_of_order_of_real_estate === "Rent_per_day") {
@@ -89,16 +84,15 @@ export default function FavoriteObjects() {
             }
             return (<div className={css.one_realty}>
                 <div>
-                    <a style={{cursor:"pointer"}} onClick={()=>navigate(`/object/${realtyObject.id}`)}> <img src={x} width="120px" style={{border:"1px solid black"}} height="93px"/></a>
+                    <div style={{cursor:"pointer"}} onClick={()=>navigate(`/object/${realtyObject.id}`)}> <img src={x} width="120px" style={{border:"1px solid black"}} height="93px" alt="realty_object"/></div>
                 </div>
                 <div style={{textAlign: "left", width: "142px"}}>
-                    {/*{item.address}*/}
                     <span>{realtyObject.real_estate} for {realtyObject.price.type_of_order_of_real_estate === "Sell" ? "sale" : "rent"}</span><br/>
                     <span>{realtyObject.price ? realtyObject.price.sum : "0"} {realtyObject.price ? realtyObject.price.currency : "0"}{monthOrDay ? monthOrDay : ""}</span>
                 </div>
                 <div style={{textAlign: "left", width: "350px"}}>
-                    <a style={{cursor:"pointer"}} onClick={()=>navigate(`/object/${realtyObject.id}`)}>
-                        <span style={{color:"blue"}}>{realtyObject.address} {realtyObject.apt_suite_building},{realtyObject.city},{realtyObject.district} district</span></a><br/>
+                    <span style={{cursor:"pointer"}} onClick={()=>navigate(`/object/${realtyObject.id}`)}>
+                        <span style={{color:"blue"}}>{realtyObject.address} {realtyObject.apt_suite_building},{realtyObject.city},{realtyObject.district} district</span></span><br/>
                     <span>{realtyObject.square} sq.m</span>
                 </div>
 
