@@ -142,6 +142,7 @@ function RealtyObject(){
             .then(value => {
 
                 let customers = value.data
+                let currentUserForThisUseEffect=AuthService.getCurrentUser();
                 for (let customer of customers) {
                     let realtyObjectList = customer.my_realty_objectList;
                     if (realtyObjectList != null) {
@@ -157,7 +158,7 @@ function RealtyObject(){
                                 let slicedPhone = phoneToString.slice(0, 3)
                                 console.log(slicedPhone)
                                 setSlicedPhoneNumber(slicedPhone)
-                                if (((currentUser != null) && (currentUser.id !== customer.id)) || (currentUser == null)) {
+                                if (((currentUserForThisUseEffect != null) && (currentUserForThisUseEffect.id !== customer.id)) || (currentUserForThisUseEffect == null)) {
                                     document.getElementById("delete").hidden = true
                                     document.getElementById("button_for_delete").hidden = true
                                     document.getElementById("edit").hidden = true
@@ -169,7 +170,7 @@ function RealtyObject(){
                     }
                 }
             })
-    },[ phoneNumber, realtyObject.id])
+    },[phoneNumber, realtyObject.id])
 // },[currentUser, phoneNumber, realtyObject.id])
     console.log(userObject)
     console.log("uo");

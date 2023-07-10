@@ -49,24 +49,30 @@ export default function UpdateRealtyObject() {
     //     document.getElementById("inputAddImageId").hidden=true;
     // },[currentUser.id,result])
 
-    const result=currentUser.my_realty_objectList.filter(realty=>realty.id==idFromUrl[0]);
+    const result=currentUser.my_realty_objectList.filter(realty=>realty.id===Number(idFromUrl[0]));
     console.log("result")
     console.log(result)
     console.log(currentUser)
+    console.log(typeof idFromUrl[0])
+    console.log(typeof currentUser.my_realty_objectList[0].id)
 
 
     useEffect(() => {
-        const resultForUseEffect=currentUser.my_realty_objectList.filter(realty=>realty.id==idFromUrl[0])
+        let urlForThisUseEffect=window.location.toString()  //присвоюємо стрінгову урлу даної сторінки
+        let arrayOfUrlForThisUseEffect=urlForThisUseEffect.split('/',4)
+        let idFromUrlForThisUseEffect=arrayOfUrlForThisUseEffect.slice(-1);
+        let currentUserForThisUseEffect=AuthService.getCurrentUser()
+        const resultForUseEffect=currentUserForThisUseEffect.my_realty_objectList.filter(realty=>realty.id===Number(idFromUrlForThisUseEffect[0]))
         let c = []
         // setCurrentRealtyObject(value.data)
         console.log("first useEffect trig")
         for (let x of resultForUseEffect[0].images) {
-            c.push(`http://localhost:8080/images/${currentUser.id}id/` + x)
+            c.push(`http://localhost:8080/images/${currentUserForThisUseEffect.id}id/` + x)
         }
         setRealtyImagesUrl(c);
         // console.log(realtyImagesUrl)
         document.getElementById("inputAddImageId").hidden=true;
-    },[currentUser.id])
+    },[])
 
 
 

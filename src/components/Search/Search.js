@@ -201,9 +201,9 @@ export default function Search() {
         for(let el of data){
             let a=Object.values(el);
             console.log(a);
-            if(a[0].rooms == e.target.attributes.value.value){
+            if(a[0].rooms === e.target.attributes.value.value){
                 newArr.push(el)
-            }else if(e.target.attributes.value.value=="4"){
+            }else if(e.target.attributes.value.value==="4"){
                 if(a[0].rooms>=4){
                     newArr.push(el)
                 }
@@ -224,7 +224,7 @@ export default function Search() {
         let newArr=[];
       for(let el of data){
           let a=Object.values(el)
-          if(a[0].district==e.target.id){
+          if(a[0].district===e.target.id){
               newArr.push(el)
           }
       }
