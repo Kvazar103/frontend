@@ -15,16 +15,12 @@ function Header() {
     const [showForSell, setShowForSell] = useState(false);
     const [showForDaily, setShowForDaily] = useState(false);
 
-    // const [currentUser,setCurrentUser]=useState("");
-    // const [url,setUrl]=useState("")
-
     let navigate = useNavigate();
 
     const customer=AuthService.getCurrentUser();
 
     const logOut=()=>{
         AuthService.logout();
-        // setCurrentUser(undefined);
         navigate("/");
     };
 
@@ -56,7 +52,6 @@ function Header() {
                 <Container>
                     <Navbar.Brand className={"for_title"} onClick={()=>(navigate("/"))} style={{cursor:"pointer"}}
                     >Нерухомості України</Navbar.Brand>
-                    {/*<Navbar.Brand id="search_on_header" hidden={true}><input type="search"/></Navbar.Brand>*/}
                     <Nav className="me-auto" >
 
                         {customer&&<Nav.Link className={css.addOrder} onClick={()=>navigate("/:id/addObject")}>Додати оголошення</Nav.Link>}
@@ -64,7 +59,6 @@ function Header() {
                                      onMouseEnter={showDropdownForRent}
                                      onMouseLeave={hideDropdownForRent}
                                      show={showForRent}>
-                            {/*{currentUser&& <NavDropdown.Item href="#action3">Квартира</NavDropdown.Item>}*/}
                              <NavDropdown.Item value={`Apartment:Rent_for_a_month`} onClick={()=>{navigate(`/Apartment:Rent_for_a_month/ /search`);}}>
                                  Квартира
                              </NavDropdown.Item>
@@ -116,7 +110,6 @@ function Header() {
                                 Земельна ділянка
                             </NavDropdown.Item>
                         </NavDropdown>
-                        {/*onClick={()=>navigate(`${customer.id}/profile`)}*/}
                         {customer&&(<Navbar.Collapse  className="justify-content-end">
                             <Navbar.Text id={"signed"} >
                                 &nbsp;&nbsp;Signed in as: <span onClick={onSignInNameClick} style={{cursor:"pointer",color:"white"}} >{customer.name}</span>
@@ -129,13 +122,9 @@ function Header() {
                         {
                             customer?(<Nav.Link onClick={()=>navigate(`/login`)}></Nav.Link>):(<Nav.Link onClick={()=>navigate(`/register`)}>Register</Nav.Link>)
                         }
-
-
-
                     </Nav>
                 </Container>
             </Navbar>
-
         </>
     );
 }

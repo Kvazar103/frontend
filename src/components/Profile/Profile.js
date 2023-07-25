@@ -8,8 +8,6 @@ import Pagination from "./Pagination";
 import AuthService from "../../services/auth.service";
 import noImage from '../../images/realtyObjectImageIfNoImage/realtyObjectNoImage.jpg'
 
-
-
 let pageSize = 5;
 function Profile (){
 
@@ -24,7 +22,6 @@ function Profile (){
    const [img,setImg]=useState('http://localhost:8080/images/profile/profile_picture.jpg');
    const [customer,setCustomer]=useState('');
    const [customerRealtyList,setCustomerRealtyList]=useState([]);
-   // const [customerAddedToFavorite,setCustomerAddedToFavorite]=useState([]);
    const [customerIdFromUrl,setCustomerIdFromUrl]=useState('');
 
     let navigate=useNavigate();
@@ -41,13 +38,6 @@ function Profile (){
         return customerRealtyList.slice(firstPageIndex, lastPageIndex);
     }, [currentPage, customerRealtyList]);
 
-   // useEffect(()=>{
-   //     let url=window.location.toString()  //присвоюємо стрінгову урлу даної сторінки
-   //     console.log(url.split('/',4))
-   //     let splitUrl=url.split('/',4)
-   //     let customerIdFromUrl=splitUrl.slice(-1)
-   //     setCustomerIdFromUrl(customerIdFromUrl)
-   // },[])
     let url=window.location.toString()  //присвоюємо стрінгову урлу даної сторінки
     useEffect(()=>{
 
@@ -57,19 +47,14 @@ function Profile (){
         setCustomerIdFromUrl(customerIdFromUrl)
     },[url])
 
-
     useEffect(()=>{
         if(customerIdFromUrl){
-            // axios.get("http://localhost:8080/customer/"+customerIdFromUrl)
             AuthService.getCustomer(customerIdFromUrl)
                 .then(value => {
                     console.log(value)
                     console.log("f")
                     setCustomer(value.data)
                     setCustomerRealtyList(value.data.my_realty_objectList)
-                    // setCustomerAddedToFavorite(value.data.added_to_favorites)
-
-
                 })
         }
 
@@ -77,14 +62,10 @@ function Profile (){
 
     useEffect(()=>{
         if(customerIdFromUrl){
-            console.log("useEffect second")
-            // axios.get("http://localhost:8080/customer/"+customerIdFromUrl)
             AuthService.getCustomer(customerIdFromUrl)
                 .then(value => {
                     if (((currentUser!=null) && (currentUser.id === value.data.id))) {
                         console.log(currentUser)
-                        console.log("curr and cus")
-                        // console.log(customer)
                         document.getElementById("edit_profile_button").hidden=false;
                         document.getElementById("change_password_profile_button").hidden=false;
                         document.getElementById("delete_profile_button").hidden=false;
@@ -93,8 +74,6 @@ function Profile (){
                 })
         }
     },[currentUser, customerIdFromUrl,currentUser.id])
-
-
 
     useEffect(()=>{
         let customer_img=`http://localhost:8080/images/${customer.name}${customer.surname}_avatar/${customer.avatar}`;
@@ -115,12 +94,10 @@ function Profile (){
     }
     const onDeleteProfileButtonClick = () => {
        let customer= JSON.parse(localStorage.getItem("customer"))
-        console.log("delete1")
         if(window.confirm("Ви дійсно хочете видалити профіль?")) {
             try{
                 AuthService.deleteProfile(Number(customer.id),config)
                     .then((value) => {
-                        console.log("delete2")
                         AuthService.logout()
                         navigate("/")
                     })
@@ -131,11 +108,9 @@ function Profile (){
     }
     
     const onContactFormSubmit =  (obj) => {
-       console.log("contact form trig")
        console.log(obj)
        alert("Success")
     }
-
 
     return (
      <div>
@@ -209,7 +184,6 @@ function Profile (){
     <div className={css.my_realty_objects}>
         <h4 style={{display:"flex",marginLeft:"30px"}}>My realty objects({customerRealtyList.length})</h4>
         {currentTableData.map(item=>{
-            // let x=`http://localhost:8080/images/${customer.id}id/${item.images[0]}`;
             let x=(item.images[0])?(`http://localhost:8080/images/${customer.id}id/${item.images[0]}`):(noImage);
             let monthOrDay="";
             if(item.price!=null && item.price.type_of_order_of_real_estate==="Rent_for_a_month"){
@@ -226,7 +200,6 @@ function Profile (){
                         <span onClick={()=>navigate(`/object/${item.id}`)} style={{cursor:"pointer"}}> <img src={x} width="120px" style={{border:"1px solid black"}} height="93px" alt="realty_image"/></span>
                     </div>
                     <div style={{textAlign:"left",width:"142px"}}>
-                        {/*{item.address}*/}
                         <span>{item.real_estate} for {item.price.type_of_order_of_real_estate==="Sell"?"sale":"rent"}</span><br/>
                         <span>{item.price?item.price.sum:"0"} {item.price?item.price.currency:"0"}{monthOrDay?monthOrDay:""}</span>
                     </div>

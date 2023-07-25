@@ -26,7 +26,6 @@ function RealtyObject(){
     const [realtyObject,setRealtyObject]=useState("");
     const [realtyObjectImages,setRealtyObjectImages]=useState([]);
     const [userObject,setUserObject]=useState("");
-    // const [nameSurname,setNameSurname]=useState('');
     const [currentIndex, setCurrentIndex] = useState();
     const [phoneNumber,setPhoneNumber]=useState('');
     const [slicedPhoneNumber,setSlicedPhoneNumber]=useState('');
@@ -58,16 +57,11 @@ function RealtyObject(){
     const {register:register2, handleSubmit:handleSubmit2, formState: {errors:errors2, isValid:isValid2}} = useForm({
         mode: 'all'
     });
-    // const currentUser=AuthService.getCurrentUser();
-    //
-    // console.log("curr")
-    // console.log(currentUser)
-    // console.log("curr")
+
     let url=window.location.toString()  //присвоюємо стрінгову урлу даної сторінки
     console.log(url.substring(29));
     let realtyIdFromUrl=url.substring(29);
     useEffect(()=>{
-        // axios.get("http://localhost:8080/object/"+realtyIdFromUrl)
         AuthService.getRealtyObject(realtyIdFromUrl)
             .then(value => {
                 setRealtyObject(value.data)
@@ -80,10 +74,7 @@ function RealtyObject(){
 
     useEffect(()=>{
         setMessageInTextAre(`I'm interested in: ${realtyObject.real_estate} that located at the address: ${realtyObject.address},${realtyObject.apt_suite_building}.Please contact me as soon as possible.`)
-        // setRealtyDetails(`${realtyObject.details}`)
         setRealtyDetails(realtyObject.details)
-
-
     },[realtyObject.address, realtyObject.apt_suite_building, realtyObject.details, realtyObject.real_estate])
     useEffect(()=>{
         if(realtyObject.price != null && realtyObject.price.currency === "USD"){
@@ -136,11 +127,8 @@ function RealtyObject(){
     },[ realtyObject.price, realtyObject.real_estate, realtyObject.rooms])
 
     useEffect( () => {
-
-              // axios.get("http://localhost:8080/getAllCustomers")
         AuthService.getAllCustomers()
             .then(value => {
-
                 let customers = value.data
                 let currentUserForThisUseEffect=AuthService.getCurrentUser();
                 for (let customer of customers) {
@@ -150,7 +138,6 @@ function RealtyObject(){
                             if (realty.id === realtyObject.id) {
                                 setUserObject(customer)
                                 setUserObjectId(customer.id)
-                                // setNameSurname(customer.name + customer.surname)
                                 setPhoneNumber(customer.phone_number)
                                 console.log(phoneNumber)
                                 let phoneToString = phoneNumber.toString()
@@ -171,13 +158,10 @@ function RealtyObject(){
                 }
             })
     },[phoneNumber, realtyObject.id])
-// },[currentUser, phoneNumber, realtyObject.id])
     console.log(userObject)
-    console.log("uo");
 
     const [open, setOpen] = useState(false);
     const closeModal = () => setOpen(false);
-
 
     function handleChange(index) {
         setCurrentIndex(index);
@@ -199,11 +183,8 @@ function RealtyObject(){
         </div>
     }
 
-
-
     useEffect(()=>{
         let customer_img=`http://localhost:8080/images/${userObject.name}${userObject.surname}_avatar/${userObject.avatar}`;
-
         if(userObject.avatar!=null){
             setImg(customer_img)
         }
@@ -216,41 +197,22 @@ function RealtyObject(){
     }
     const onHeartClick = async (e) => {
         e.preventDefault();
-        //   let x=e.target.getAttribute('src')
         const formData=new FormData();
         if (e.target.getAttribute('src') === heartIcon) {
               if(currentUser==null){
                 navigate("/login");
             }
-            // let token=JSON.parse(localStorage.getItem('token'));
-            // const config={
-            //     headers:{
-            //         Authorization:`${token}`
-            //     }
-            // }
             e.target.setAttribute('src', heartRedIcon)
             formData.append("realtyObject",JSON.stringify(realtyObject));
-            // formData.append("userObject",JSON.stringify(currentUser));
-
-            // await axios.patch(`http://localhost:8080/update/customer/${currentUser.id}/addedToFavoriteList`,formData,config)
             AuthService.addRealtyObjectToFavorite(currentUser.id,formData,config)
                 .then(()=>{
-                    // const c=await axios.get(`http://localhost:8080/customer/${currentUser.id}`)
                     AuthService.getCustomer(currentUser.id)
                         .then((value)=>{
                             localStorage.setItem('customer',JSON.stringify(value.data));
                         })
                 })
         } else {
-            // let token=JSON.parse(localStorage.getItem('token'));
-            // const config={
-            //     headers:{
-            //         Authorization:`${token}`
-            //     }
-            // }
             e.target.setAttribute('src', heartIcon)
-
-            // await axios.delete(`http://localhost:8080/delete/customer/${currentUser.id}/addedToFavoriteRealtyObject/${realtyObject.id}`,config)
             AuthService.deleteRealtyObjectFromFavoriteList(currentUser.id,realtyObject.id,config)
                 .then(()=>{
                     AuthService.getCustomer(currentUser.id)
@@ -258,17 +220,11 @@ function RealtyObject(){
                             localStorage.setItem('customer',JSON.stringify(value.data));
                         })
                 })
-            // const t=await axios.get(`http://localhost:8080/customer/${currentUser.id}`)
-            // localStorage.setItem('customer',JSON.stringify(t.data));
         }
-
-
     }
     const onUpdateRealtyObjectClick = () => {
       navigate(`/${realtyIdFromUrl}/${currentUser.id}/updateRealtyObject`)
     }
-    console.log("added to favorite")
-    // console.log(currentUser.added_to_favorites)
 
     if(currentUser && currentUser.added_to_favorites){
         console.log(currentUser.added_to_favorites)
@@ -279,7 +235,6 @@ function RealtyObject(){
             }
         }
     }
-
 
     console.log(typeOfOrder)
     const renderCustomThumbs =() => {  //функція для рендерінгу thumb(картинки під головною картинкою в каруселі) з фіксованою висотою
@@ -301,13 +256,6 @@ function RealtyObject(){
     const deleteRealtyObject =async () => {
         if(window.confirm("Ви дійсно хочете видалити об'єкт?")) {
             try {
-                // let token=JSON.parse(localStorage.getItem('token'));
-                // const config={
-                //     headers:{
-                //         Authorization:`${token}`
-                //     }
-                // }
-                // await axios.delete(`http://localhost:8080/customer/${currentUser.id}/realtyObject/${realtyIdFromUrl}`,config)
                 await AuthService.deleteRealtyObject(currentUser.id, realtyIdFromUrl,config)
             } catch (e) {
                 console.log(e)
@@ -317,11 +265,6 @@ function RealtyObject(){
                     localStorage.setItem('customer', JSON.stringify(value.data))
                     navigate(`/${currentUser.id}/profile`)
                 })
-
-            // const c = await axios.get(`http://localhost:8080/customer/${currentUser.id}`)
-            // localStorage.setItem('customer', JSON.stringify(c.data))
-            // navigate(`/${currentUser.id}/profile`)
-            // window.location.reload();
         }
     }
     const contactFormSubmit = (obj) => {
@@ -334,11 +277,8 @@ function RealtyObject(){
         alert("Success")
     }
 
-
     return(
         <div>
-
-
         <div className={css.carousel_and_form}>
             <div className="carousel-wrapper" >
 
@@ -353,8 +293,6 @@ function RealtyObject(){
             renderThumbs={renderCustomThumbs}
         >
                    {renderSlides}
-                   {/*<img src={`http://localhost:8080/images/realtyObjectEmptyImages/no_image_found.png`} className={css.img} style={{marginTop:"80px"}}/>*/}
-
                </Carousel>
 
         </div>
@@ -414,15 +352,10 @@ function RealtyObject(){
 
                     </div>
                 </Form.Group>
-
-
             </form>
-
         </div>
         </div>
-
             <div className={css.buttons} id="buttons">
-
                 <Button className={css.button} onClick={onHeartClick} variant="light"><img id="heart" width="24px" height="24px" src={heartIcon} alt="heart_icon"/></Button>
                 <Button className={css.button} onClick={() => setShareButt(el=>!el)} variant="light"><img width="24px" height="24px" src={shareIcon} alt="share_icon"/></Button>
 
@@ -456,7 +389,6 @@ function RealtyObject(){
 
 
                               <div style={{display:"flex",gap:"110px"}}> <h3>Повідомити про проблему </h3>
-                                  {/*<Button style={{width:"24px",height:"24px",backgroundColor:"white",borderColor:"white",outline:"none"}}  onClick={()=>{setOpen(false)}}><img src={closeButton} width="24px" height="24px"/></Button>*/}
                                 <img src={closeButton} style={{cursor:"pointer"}} onClick={()=>{setOpen(false)}} width="24px" height="24px" alt="close_butt"/>
 
                               </div>
@@ -503,9 +435,6 @@ function RealtyObject(){
                       </Popup>}
                 </div>
 
-
-
-            {/*</div>*/}
             <div className={css.address_and_sum}>
                 <div>
                     <h1>{realtyObject.address} street,{realtyObject.apt_suite_building}</h1>
@@ -525,26 +454,21 @@ function RealtyObject(){
                     <li className={css.for_li}>Square:{realtyObject.square}</li>
                     <li className={css.for_li}>Created:{realtyObject.dateOfCreation}</li>
 
-
                 </ul>
                     <ul className={css.for_ul}>
                         <li className={css.for_li}>ID:{realtyObject.id}</li>
                         <li className={css.for_li}>Real&nbsp;estate:{realtyObject.real_estate}</li>
                         <li className={css.for_li}>Last&nbsp;updated:{realtyObject.dateOfUpdate}</li>
-                        {/*<li className={css.for_li}>Days&nbsp;published:</li>*/}
-
                     </ul>
 
                 </div>
             </div>
             <div className={css.for_details}>
-               {/*<h3 className={css.for_details_h3}>details</h3>*/}
                  <p id={"realty_details"} className={css.p_wrap}>
                      {realtyDetails}
                  </p>
             </div>
         </div>)
-
 
 }
 export default RealtyObject

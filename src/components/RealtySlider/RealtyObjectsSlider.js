@@ -10,19 +10,8 @@ export default function RealtyObjectsSlider() {
 
     const [data,setData]=useState([]);
 
-    // const info=(obj)=>{
-    //
-    // }
-
-
     useEffect(()=>{
 
-
-        // const c=axios.get("http://localhost:8080/get12RandomRealtyObject")
-        // c.then(value =>{
-        //     setData(value.data)
-        //     }
-        // )
         AuthService.get12RandomRealtyObjects()
             .then((value)=>{
                 setData(value.data)
@@ -47,8 +36,6 @@ export default function RealtyObjectsSlider() {
     };
 
     return(
-
-
         <Carousel
             swipeable={false}
             draggable={false}
@@ -67,15 +54,8 @@ export default function RealtyObjectsSlider() {
             dotListClass="custom-dot-list-style"
             itemClass="carousel-item-padding-40-px"
         >
-
-
-            {/*{data.map((value,index)=>(<RealtySlider item={value} key={index} info={info}/>))}*/}
             {data.map((value,index)=>(<RealtySlider item={value} key={index} />))}
 
-
         </Carousel>
-
-
-
     )
 }

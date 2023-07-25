@@ -78,13 +78,11 @@ export default function ChangePassword() {
 
         AuthService.changePassword(formData,idFromUrl[0],config)
             .then((response)=> {
-                    console.log("respo")
                     console.log(response)
                     navigate(`/${idFromUrl[0]}/profile`)
                 }
             )
             .catch((error)=>{
-                console.log("error")
                 console.log(error)
                 setMessageOldPasswordMatch("The current password is incorrect")
             })

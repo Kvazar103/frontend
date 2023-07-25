@@ -7,7 +7,6 @@ import {useNavigate} from "react-router-dom";
 
 import noImage from '../../images/realtyObjectImageIfNoImage/realtyObjectNoImage.jpg'
 
-
 let pageSize=4;
 export default function FavoriteObjects() {
 
@@ -17,11 +16,9 @@ export default function FavoriteObjects() {
 
     const [realtyCustomers,setRealtyCustomers]=useState([]);
 
-
     const currentTableData = useMemo(() => {
         const firstPageIndex = (currentPage - 1) * pageSize;
         const lastPageIndex = firstPageIndex + pageSize;
-        console.log("current table data")
         console.log(Object.values(realtyCustomers))
 
         return Object.values(realtyCustomers).slice(firstPageIndex, lastPageIndex);
@@ -31,19 +28,6 @@ export default function FavoriteObjects() {
 
 
     useEffect(()=>{
-        // axios.get(`http://localhost:8080/customer/favorites/${currentUser.id}`)
-        //     .then(value => {
-        //         console.log(value.data)
-        //         console.log("favorites")
-        //         setRealtyCustomers(value.data)
-        //         console.log(value.data)
-        //         for(let x of value.data){
-        //             console.log(x)
-        //             console.log(Object.keys(x));
-        //             console.log(Object.values(x));
-        //         }
-        //         // setFavoriteRealtyObjectList(value.data)
-        //     })
         AuthService.getFavorites(currentUser.id)
             .then(value => {
                 console.log(value.data)
@@ -65,7 +49,6 @@ export default function FavoriteObjects() {
         <h1 style={{textAlign:"left",marginLeft:"20px"}}>Favorites objects</h1>
 
         {currentTableData.map(realtyObjectAndIdOfCustomer => {
-            console.log("mapping")
             console.log(realtyObjectAndIdOfCustomer)
             let realtyObjectInObject=Object.values(realtyObjectAndIdOfCustomer)
             let customerId=Object.keys(realtyObjectAndIdOfCustomer)

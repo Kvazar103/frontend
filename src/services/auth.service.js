@@ -1,14 +1,6 @@
 import axios from "axios";
 
-
 const API_URL="http://localhost:8080/"
-// let token=JSON.parse(localStorage.getItem('token'));
-// let config={
-//     headers:{
-//         Authorization:`${token}`
-//     }
-// }
-
 const register=async (name,surname,email,login,password,phone_number)=>{
     return await axios.post(API_URL+"save",{
         name,
@@ -60,24 +52,15 @@ const login=async (login,password)=>{
 const addUser = async (formData) => {
     return await axios.post(API_URL+"save",formData)
 }
-// const addObject=async (customerID,formData)=>{
-//     return await axios.post(API_URL+customerID+"/addObject",formData,config)
-// }
 const addObject=async (customerID,formData,config)=>{
     return await axios.post(API_URL+customerID+"/addObject",formData,config)
 }
 const getCustomer =async (customerID) => {
     return await axios.get(API_URL+"customer/"+customerID)
 }
-// const getCustomerWithPassword =async (customerID) => {
-//   return await axios.get(API_URL+"updated/customerWithPassword/"+customerID,config)
-// }
 const getCustomerWithPassword =async (customerID,config) => {
     return await axios.get(API_URL+"updated/customerWithPassword/"+customerID,config)
 }
-// const changePassword = async (formData,customerID) => {
-//     return await axios.patch(API_URL+customerID+"/checkPassword",formData,config)
-// }
 const changePassword = async (formData,customerID,config) => {
     return await axios.patch(API_URL+customerID+"/checkPassword",formData,config)
 }
@@ -100,7 +83,6 @@ const getCustomerAfterLoginUpdate =async (customerID) => {
 const getCustomerLoginAndPasswordAfterLoginUpdate =async (customerID) => {
     return await axios.get(API_URL+"customerLoginAndPasswordAfterLoginUpdate/"+customerID)
 }
-
 const logout = () => {
   localStorage.removeItem("customer");
   localStorage.removeItem("token");
@@ -109,21 +91,12 @@ const logout = () => {
 const getCurrentUser=()=>{
     return JSON.parse(localStorage.getItem("customer"));
 }
-// const addRealtyObjectToFavorite =async (customerID,formData) => {
-//     return await axios.patch(API_URL+"update/customer/"+customerID+"/addedToFavoriteList",formData,config)
-// }
 const addRealtyObjectToFavorite =async (customerID,formData,config) => {
     return await axios.patch(API_URL+"update/customer/"+customerID+"/addedToFavoriteList",formData,config)
 }
-// const deleteRealtyObjectFromFavoriteList =async (customerID,realtyObjectID) => {
-//     return await axios.delete(API_URL+"delete/customer/"+customerID+"/addedToFavoriteRealtyObject/"+realtyObjectID,config)
-// }
 const deleteRealtyObjectFromFavoriteList =async (customerID,realtyObjectID,config) => {
     return await axios.delete(API_URL+"delete/customer/"+customerID+"/addedToFavoriteRealtyObject/"+realtyObjectID,config)
 }
-// const deleteRealtyObject =async (customerID,realtyObjectID) => {
-//     return await axios.delete(API_URL+"customer/"+customerID+"/realtyObject/"+realtyObjectID,config)
-// }
 const deleteRealtyObject =async (customerID,realtyObjectID,config) => {
     return await axios.delete(API_URL+"customer/"+customerID+"/realtyObject/"+realtyObjectID,config)
 }
@@ -133,21 +106,12 @@ const get12RandomRealtyObjects =async () => {
 const getSelectedRealtyObject =async (formData) => {
     return await axios.post(API_URL+"getSelectedRealtyObjects",formData)
 }
-// const updateRealtyObject =async (formData,realtyObjectID,customerID) => {
-//     return await axios.patch(API_URL+realtyObjectID+"/"+customerID+"/updateRealtyObject",formData,config)
-// }
 const updateRealtyObject =async (formData,realtyObjectID,customerID,config) => {
     return await axios.patch(API_URL+realtyObjectID+"/"+customerID+"/updateRealtyObject",formData,config)
 }
-// const updateProfile =async (formData,customerID) => {
-//     return await axios.patch(API_URL+customerID+"/updateProfile",formData,config)
-// }
 const updateProfile =async (formData,customerID,config) => {
     return await axios.patch(API_URL+customerID+"/updateProfile",formData,config)
 }
-// const deleteProfile =async (customerID) => {
-//     return await axios.delete(API_URL+"customer/deleteProfile/"+customerID,config)
-// }
 const deleteProfile =async (customerID,config) => {
     return await axios.delete(API_URL+"customer/deleteProfile/"+customerID,config)
 }

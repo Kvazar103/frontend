@@ -3,10 +3,8 @@ import Navbar from 'react-bootstrap/Navbar';
 
  function Footer(){
     return(
-
         <Navbar  expand="lg" variant="dark" bg="dark" style={{height:"360px"}}>
             <Container style={{textAlign:"left"}}>
-                {/*<Navbar.Brand className={css.FooterStyle} href="#">Львів 2023</Navbar.Brand>*/}
                 <Navbar.Brand style={{marginBottom:"210px"}}>
                     <h6 style={{textAlign:"left"}}>Call-центр</h6>
                     <div>
@@ -59,11 +57,7 @@ import Navbar from 'react-bootstrap/Navbar';
                         вихідний(неділя)
                     </div>
                 </Navbar.Brand>
-
             </Container>
-
-
-
         </Navbar>
 
     )

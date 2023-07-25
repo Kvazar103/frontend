@@ -121,16 +121,6 @@ export default function AddObject(){
                    navigate(`/object/${lastElement[0].id}`)
                })
             })
-            // const c= await axios.get(`http://localhost:8080/customer/${customer.id}`);
-
-            // localStorage.setItem('customer', JSON.stringify(c.data));
-            // console.log(c.data.my_realty_objectList)
-            // let realtyList=c.data.my_realty_objectList;
-            // console.log(realtyList)
-            // let lastElement=realtyList.slice(-1)
-            // console.log(lastElement[0].id)
-
-            // navigate(`/object/${lastElement[0].id}`)
         }
 
     }
@@ -171,7 +161,6 @@ export default function AddObject(){
 
         setRequiredFieldForImages(false)
         setImages(e.target.files);
-
 
         const selectedFiles = e.target.files;
 

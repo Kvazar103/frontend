@@ -34,10 +34,7 @@ export default function Background(props){
                 <div style={{color:"yellow",fontSize:"100px"}} className="for_title">
                     Нерухомість Україна
                 </div>
-            <select id="select_type" name="selectData" style={{height:"45px",width:"100px"}}
-                    // value={data.selectData}
-                    // onChange={(e)=>onInputChange(e)}
-            >
+            <select id="select_type" name="selectData" style={{height:"45px",width:"100px"}}>
                 <option value="" disabled selected>Виберіть тип</option>
                 <option onClick={onClickSelect} value="Apartment:Rent_for_a_month">Apartment:rent for a month</option>
                 <option onClick={onClickSelect} value="Apartment:Sell">Apartment:sell</option>
@@ -51,18 +48,13 @@ export default function Background(props){
                 <option onClick={onClickSelect} value="Land:Rent_for_a_month">Land:rent for a month</option>
                 <option onClick={onClickSelect} value="Land:Sell">Land:sell</option>
                 <option onClick={onClickSelect} value="Land:Rent_per_day">Land:rent per day</option>
-
-
-
             </select>
 
             <input type="search"
                    id="site-search"
                    name="inputData"
                    placeholder={"Введіть район,вулицю або місто "}
-                   // value={data.inputData}
                    style={{width:"500px",borderTopLeftRadius:"0px",borderBottomLeftRadius:"0px",height:"45px"}}
-                   // onChange={(e)=>onInputChange(e)}
             />
 
             <button type="submit" style={{border:"none",background:"black",width:"50px",height:"45px"}}><img src={search_black_and_yellow} style={{width:"25px",height:"25px"}} alt={"submit_butt"}/></button>

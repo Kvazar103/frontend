@@ -3,7 +3,6 @@ import {useState} from "react";
 
 import AuthService from "../../services/auth.service";
 
-
     const Login = () => {
         let navigate = useNavigate();
 
@@ -25,11 +24,9 @@ import AuthService from "../../services/auth.service";
         const handleLogin = (e) => {
             e.preventDefault();
 
-
                 AuthService.login(login, password).then(
                     (value) => {
                         console.log(value)
-                        console.log("login trig")
                         localStorage.setItem("customer",JSON.stringify(value.data))
                         localStorage.setItem("token",JSON.stringify(value.headers.authorization))
                         navigate("/");

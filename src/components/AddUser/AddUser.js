@@ -6,7 +6,6 @@ import AuthService from "../../services/auth.service";
 import {usePasswordValidation} from "./usePasswordValidation";
 import checkMark from '../../images/check_mark/check-mark-button-svgrepo-com.png'
 
-
 export default function AddUser(){
     let navigate = useNavigate();
 
@@ -82,7 +81,6 @@ export default function AddUser(){
             setRequireMsgForPhone("Min phone number length:6")
         }
 
-
         console.log(errors)
         if(errors.email){
             console.log(errors.email)
@@ -95,15 +93,8 @@ export default function AddUser(){
             setEmailMsg(true)
         }
         if((validLength && hasNumber && upperCase && lowerCase)&&(user.email!=="")&&(!errors.email)&&(user.name!=="" && user.surname!==""&&user.phone_number!=="" && user.login!==""&&user.phone_number.length>=6&&avatar!=="")){
-            console.log("everything true")
             console.log(user)
             console.log(avatar)
-            // await axios.post("http://localhost:8080/save",formData).catch((value)=>{
-            //     console.log(value)
-            //     console.log("error(Найімовірніше, вже подібний логін існує)")
-            //     //тут помилка може появлятися тільки якщо такий самий логін вже існує
-            //     setLoginAlreadyExists(true)
-            // })
            await AuthService.addUser(formData).catch((value)=>{
                 console.log(value)
                 console.log("error(Найімовірніше, вже подібний логін існує)")
@@ -111,20 +102,11 @@ export default function AddUser(){
                 setLoginAlreadyExists(true)
             }).then(async()=>{
                await AuthService.login(user.login,user.password).then(()=>{
-                    // AuthService.logout()
-                    // AuthService.login(user.login,user.password)
-                        // .then(()=>{
                             navigate("/");
-                        // })
-
                 })
             })
-
         }
-
     };
-
-
 
     return (
         <div className="container" style={{textAlign:"left"}}>

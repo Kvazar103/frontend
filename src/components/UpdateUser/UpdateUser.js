@@ -5,7 +5,6 @@ import {Button} from "react-bootstrap";
 import AuthService from "../../services/auth.service";
 import {useForm} from "react-hook-form";
 
-
 export default function UpdateUser() {
 
     const navigate=useNavigate();
@@ -24,7 +23,6 @@ export default function UpdateUser() {
     const [requireMsgForSurname,setRequireMsgForSurname]=useState("");
     const [requireMsgForLogin,setRequireMsgForLogin]=useState("");
     const [requireMsgForPhoneNumber,setRequireMsgForPhoneNumber]=useState("");
-    // const [requireMsgForFile,setRequireMsgForFile]=useState("");
     const [requireMsgForPhone,setRequireMsgForPhone]=useState('')
     const [loginAlreadyExists,setLoginAlreadyExists]=useState("");
     const [loginExists,setLoginExists]=useState(false);
@@ -34,7 +32,6 @@ export default function UpdateUser() {
         surname: `${currentUser?currentUser.surname:""}`,
         email: `${currentUser?currentUser.email:""}`,
         login:`${currentUser?currentUser.login:""}`,
-        // password:`${currentUser?currentUser.password:""}`,
         phone_number:`${currentUser?currentUser.phone_number:""}`,
     });
     const {
@@ -53,21 +50,16 @@ export default function UpdateUser() {
         return <Navigate to={"/login"}/>
     }
 
-
     const { name, surname, email,login, phone_number } = user;
-
-
 
     const onImageChange = (event) => {
         if (event.target.files && event.target.files[0]) {
             setImageToShow(URL.createObjectURL(event.target.files[0]));
                 setAvatar(event.target.files)
-
         }
     }
     const onDeleteImage=()=>{
        document.getElementById("input").value=null
-
         setImageToShow('http://localhost:8080/images/profile/profile_picture.jpg')
         setAvatar('')
     }
@@ -78,7 +70,6 @@ export default function UpdateUser() {
             setAvatar(e.target.files)
         }
     }
-
     const onInputChange = (e) => {
         setUser({ ...user, [e.target.name]: e.target.value });
         setEmailMsg("")
@@ -90,9 +81,6 @@ export default function UpdateUser() {
         setLoginAlreadyExists("");
         setLoginExists(false)
     };
-    // const onFileChange = (e) => {
-    //     setAvatar(e.target.files)
-    // }
 
     const onSubmit = async (e) => {
         e.preventDefault();
@@ -111,25 +99,13 @@ export default function UpdateUser() {
         if(user.phone_number.length<6){
             setRequireMsgForPhone("Min phone number length:6")
         }
-        // if(avatar===""){
-        //     setRequireMsgForFile("Avatar cannot be null")
-        // }
         if(user.email === ""){
             setEmailMsg("Email cannot be null")
         }
-        // await axios.get(`http://localhost:8080/getAllCustomers`)
-        //     .then((value)=>{
-        //         console.log(value)
-        //         for(let el of value.data){
-        //
-        //         }
-        //     })
         if((user.email!=="")&&(!errors.email)&&(user.name!=="" && user.surname!==""&&user.phone_number!=="" && user.login!==""&&user.phone_number.length>=6&&!loginExists)){
             const formData=new FormData();
             formData.append("customer",JSON.stringify(user))
-            // formData.append("avatar",avatar[0])
             console.log(user)
-            console.log("user and avatar")
             console.log(avatar)
             if(avatar === "avatar"){
                 console.log("avatar is not changed")
@@ -142,60 +118,15 @@ export default function UpdateUser() {
                 console.log("new avatar")
                 formData.append("avatar",avatar[0])
             }
-            // let token=JSON.parse(localStorage.getItem('token'));
-            // const config={
-            //     headers:{
-            //         Authorization:`${token}`
-            //     }
-            // }
             console.log(formData)
             console.log(idFromUrl[0])
-            // await axios.patch(`http://localhost:8080/${idFromUrl[0]}/updateProfile`,formData,config)
-          // AuthService.updateProfile(formData,idFromUrl[0])
-          //     .then(()=>{
-          //         AuthService.getCustomer(idFromUrl[0])
-          //             .then((value)=>{
-          //                 localStorage.setItem('customer',JSON.stringify(value.data))
-          //                 if(loginExists!==false){
-          //                     navigate(`/${idFromUrl[0]}/profile`);
-          //                 }
-          //             })
-          //     })
-          //    .catch((value)=>{
-          //       console.log(value)
-          //       console.log("error(Найімовірніше, вже подібний логін існує)")
-          //       //тут помилка може появлятися тільки якщо такий самий логін вже існує
-          //       setLoginAlreadyExists("Login already exists")
-          //       setLoginExists(true)
-          //   });
            AuthService.updateProfile(formData,idFromUrl[0],config)
                 .then((value)=>{
                     AuthService.getCustomer(idFromUrl[0])
                         .then((value)=>{
                             localStorage.setItem("customer",JSON.stringify(value.data))
-                            //     AuthService.login(value.data.login,"Qwerty1")
-                            //         .then(()=>{
-                            //             navigate(`/${idFromUrl[0]}/profile`);
-                            //         })
                             navigate(`/${idFromUrl[0]}/profile`);
                         })
-                    //     AuthService.getCustomerAfterLoginUpdate(idFromUrl[0],config)
-                    //         .then((value)=>{
-                    //             // localStorage.setItem("customer",JSON.stringify(value.data))
-                    //             // AuthService.login(value.data.login,value.data.password)
-                    //                 // .then(()=>{
-                    //                     navigate(`/${idFromUrl[0]}/profile`);
-                    //                 // })
-                    //         })
-                    // AuthService.getCustomerLoginAndPasswordAfterLoginUpdate(idFromUrl[0])
-                    //     .then((value)=>{
-                    //         console.log(value)
-                    //         console.log("trigggg")
-                    //         AuthService.login(value.data.login,value.data.password)
-                    //             .then(()=>{
-                    //                 navigate(`/${idFromUrl[0]}/profile`);
-                    //             })
-                    //     })
                     console.log(value)
                     console.log(value.headers)
                 }
@@ -210,23 +141,13 @@ export default function UpdateUser() {
             if(loginExists!==false){
                 navigate(`/${idFromUrl[0]}/profile`);
             }
-
-
-            // const c=await axios.get(`http://localhost:8080/customer/${idFromUrl[0]}`);
-            // localStorage.setItem('customer',JSON.stringify(c.data))
-            //
-            // if(loginExists!==false){
-            //     navigate(`/${idFromUrl[0]}/profile`);
-            // }
         }
     };
-
 
     return(<div className="container">
             <div className="row">
                 <div className="col-md-6 offset-md-3 border rounded p-4 mt-2 shadow">
                     <h2 className="text-center m-4">Update Profile</h2>
-
                     <form onSubmit={(e) => onSubmit(e)}>
                         <div className="mb-3">
                             <label htmlFor="Name" className="form-label">
@@ -241,7 +162,6 @@ export default function UpdateUser() {
                                 onChange={(e) => onInputChange(e)}
                             />
                             {requireMsgForName&&<span style={{color:"red"}}>{requireMsgForName}</span>}
-
                         </div>
                         <div className="mb-3">
                             <label htmlFor="Surname" className="form-label">
